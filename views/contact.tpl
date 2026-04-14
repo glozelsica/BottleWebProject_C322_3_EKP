@@ -1,16 +1,9 @@
-% rebase('layout.tpl', title=title, year=year)
+﻿<h3>📞 Связь с нами</h3>
+<p>Телефон: <a href="tel:+79212666117">+7 (921) 266-61-17</a></p>
+<p>Email: team3@mathmodel.ru</p>
+<p>ВК: <a href="#">vk.com/team3_lp</a></p>
 
-<h2>{{ title }}.</h2>
-<h3>{{ message }}</h3>
-
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
-
-<address>
-    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+<form action="/send_question" method="post">
+    <textarea name="question" placeholder="Ваш вопрос..."></textarea>
+    <button>Отправить</button>
+</form>
