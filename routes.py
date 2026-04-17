@@ -76,15 +76,13 @@ def setup_routes(app):
         from controllers.transport import solve_transport
         return solve_transport()
     
-    # ==================== ПРЯМАЯ ЗЛП (заглушка) ====================
+    # ==================== ПРЯМАЯ ЗЛП (СИМПЛЕКС-МЕТОД) ====================
     
     @app.route('/direct_lp', method=['GET', 'POST'])
     def direct_lp():
         """Страница решения прямой ЗЛП (симплекс-метод)"""
-        return template('direct_lp', 
-            title='Прямая ЗЛП', 
-            year=datetime.now().year,
-            message='Страница в разработке. Скоро здесь появится симплекс-метод.')
+        from controllers.direct_lp import solve_direct_lp
+        return solve_direct_lp()
     
     # ==================== ЗАДАЧА О НАЗНАЧЕНИЯХ (заглушка) ====================
     
