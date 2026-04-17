@@ -18,7 +18,7 @@
     <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
     <Name>BottleWebProject_С322_3_ EKP</Name>
     <RootNamespace>BottleWebProject_С322_3_ EKP</RootNamespace>
-    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>MSBuild|zlata_env|$(MSBuildProjectFullPath)</InterpreterId>
     <TestFramework>Pytest</TestFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -68,6 +68,9 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="static\data\theory_direct.json">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="static\data\theory_transport.json">
       <SubType>Code</SubType>
     </Content>
     <Content Include="static\fonts\glyphicons-halflings-regular.eot" />

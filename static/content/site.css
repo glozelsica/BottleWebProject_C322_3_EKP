@@ -305,3 +305,42 @@ th {
     background-color: #EDE7F6;
     color: #9B2226;
 }
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .card h3 {
+        color: #9B2226;
+        margin-bottom: 1rem;
+    }
+
+    .card button {
+        background: #9B2226;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 1rem;
+    }
+
+        .card button:hover {
+            background: #6d181b;
+        }
