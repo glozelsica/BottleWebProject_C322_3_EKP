@@ -1,4 +1,4 @@
-﻿% rebase('base', content_template='contact_content')
+﻿% rebase('layout.tpl', title=title, year=year)
 
 <h1>📞 Контакты</h1>
 

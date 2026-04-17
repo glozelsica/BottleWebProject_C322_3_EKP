@@ -34,9 +34,6 @@
     <Compile Include="controllers\assignment.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="controllers\transport.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="routes.py" />
     <Compile Include="tests\test_assignment.py">
       <SubType>Code</SubType>
@@ -54,12 +51,6 @@
     <Folder Include="views\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="data\theory_assignment.json">
-      <SubType>Code</SubType>
-    </Content>
-    <Content Include="data\theory_transport.json">
-      <SubType>Code</SubType>
-    </Content>
     <Content Include="requirements.txt" />
     <Content Include="static\content\bootstrap.css" />
     <Content Include="static\content\bootstrap.min.css" />
