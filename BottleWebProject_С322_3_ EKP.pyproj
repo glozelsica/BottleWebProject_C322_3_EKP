@@ -35,6 +35,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="routes.py" />
+    <Compile Include="static\utils\excel_exporter.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="static\utils\json_loader.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="static\utils\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="controllers\" />
@@ -42,6 +51,9 @@
     <Folder Include="static\content\" />
     <Folder Include="static\fonts\" />
     <Folder Include="static\css\" />
+    <Folder Include="static\images\" />
+    <Folder Include="static\data\" />
+    <Folder Include="static\utils\" />
     <Folder Include="static\scripts\" />
     <Folder Include="views\" />
   </ItemGroup>
@@ -51,6 +63,9 @@
     <Content Include="static\content\bootstrap.min.css" />
     <Content Include="static\content\site.css" />
     <Content Include="static\css\style.css">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="static\data\theory_direct.json">
       <SubType>Code</SubType>
     </Content>
     <Content Include="static\fonts\glyphicons-halflings-regular.eot" />
