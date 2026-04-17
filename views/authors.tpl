@@ -1,25 +1,175 @@
-% rebase('base', content_template='authors_content')
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Об авторах</title>
+    <link rel="stylesheet" href="/static/content/site.css">
+    <style>
+        .authors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .author-card {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 0.3s;
+            text-align: center;
+        }
+        .author-card:hover {
+            transform: translateY(-10px);
+        }
+        .author-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 1.5rem auto;
+            background: linear-gradient(135deg, #9B2226, #6d181b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #EDE7F6;
+        }
+        .author-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #9B2226;
+            margin: 0.5rem 0;
+        }
+        .author-role {
+            color: #6d181b;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .author-bio {
+            padding: 0 1.5rem 1.5rem;
+            text-align: left;
+            line-height: 1.6;
+        }
+        .college-section {
+            background: linear-gradient(135deg, #9B2226, #6d181b);
+            color: #EDE7F6;
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .college-section h2 {
+            color: #EDE7F6;
+            border-bottom-color: #EDE7F6;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #9B2226, #EDE7F6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <header style="background: linear-gradient(135deg, #EDE7F6, #d9cfe8); color: #9B2226;">
+        <div class="logo" style="color: #9B2226;">📊 Математическое моделирование</div>
+        <nav>
+            <a href="/" style="color: #9B2226;">Главная</a>
+            <a href="/direct_lp" style="color: #9B2226;">Прямая ЗЛП</a>
+            <a href="/transport" style="color: #9B2226;">Транспортная</a>
+            <a href="/assignment" style="color: #9B2226;">Назначения</a>
+            <a href="/video" style="color: #9B2226;">Видео</a>
+            <a href="/authors" style="color: #9B2226;">Об авторах</a>
+            <a href="/contact" style="color: #9B2226;">Контакты</a>
+        </nav>
+    </header>
 
-<h1>👥 Об авторах</h1>
-
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 2rem;">
-    % for author in authors:
-    <div style="text-align: center; background: #f8f9fa; border-radius: 12px; padding: 1.5rem;">
-        <div style="width: 150px; height: 150px; background: #9B2226; border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
-            👤
+    <div class="main-container">
+        <div class="content">
+            <h1>👥 Об авторах проекта</h1>
+            
+            <!-- Информация о колледже -->
+            <div class="college-section">
+                <h2>🏛️ Санкт-Петербургский государственный университет аэрокосмического приборостроения (ГУАП)</h2>
+                <h3>Факультет среднего профессионального образования №12</h3>
+                <p>ГУАП — один из ведущих технических вузов России, основанный в 1941 году. Факультет СПО готовит высококвалифицированных специалистов в области информационных систем и программирования. Наш проект — результат усердной работы в рамках учебной практики по профессиональному модулю «Осуществление интеграции программных модулей».</p>
+                <p style="margin-top: 1rem;"><strong>Специальность:</strong> 09.02.07 «Информационные системы и программирование»</p>
+                <p><strong>Группа:</strong> C322</p>
+            </div>
+            
+            <!-- Карточки авторов -->
+            <div class="authors-grid">
+                <!-- Егармина -->
+                <div class="author-card">
+                    <div class="author-photo">👩‍💻</div>
+                    <div class="author-name">Егармина В.А.</div>
+                    <div class="author-role">Ответственная за прямую ЗЛП и архитектуру</div>
+                    <div class="author-bio">
+                        <p>В рамках проекта разработала симплекс-метод для решения задач линейного программирования. Также отвечала за создание общей архитектуры веб-приложения, построение UML-диаграмм, разработку главной страницы и координацию командной работы. Проявила высокий уровень самостоятельности и лидерские качества.</p>
+                        <p><strong>Вклад:</strong> Симплекс-метод, routes.py, app.py, главная страница, UML.</p>
+                    </div>
+                </div>
+                
+                <!-- Потылицына -->
+                <div class="author-card">
+                    <div class="author-photo">👩‍🎓</div>
+                    <div class="author-name">Потылицына З.С.</div>
+                    <div class="author-role">Ответственная за транспортную задачу</div>
+                    <div class="author-bio">
+                        <p>Реализовала полный алгоритм решения транспортной задачи: методы северо-западного угла, минимального элемента и метод потенциалов. Занималась стилевым оформлением сайта (лавандовые и бордовые тона, градиенты), разработала страницу теории и визуализацию результатов. Продемонстрировала глубокое понимание математических алгоритмов и навыки фронтенд-разработки.</p>
+                        <p><strong>Вклад:</strong> Транспортная задача, CSS-дизайн, теория, страница видео.</p>
+                    </div>
+                </div>
+                
+                <!-- Корнилов -->
+                <div class="author-card">
+                    <div class="author-photo">👨‍💻</div>
+                    <div class="author-name">Корнилов Л.О.</div>
+                    <div class="author-role">Ответственный за задачу о назначениях</div>
+                    <div class="author-bio">
+                        <p>Разработал венгерский алгоритм для задачи о назначениях с возможностью минимизации и максимизации. Отвечал за создание страницы контактов, интеграцию формы обратной связи и написание юнит-тестов для всех модулей проекта. Проявил системный подход к тестированию и отличные навыки документирования кода.</p>
+                        <p><strong>Вклад:</strong> Венгерский алгоритм, контакты, тестирование, документация.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="theory-block" style="text-align: center;">
+                <h3>🏆 Наши достижения</h3>
+                <p>За время учебной практики (13-25 апреля 2026) нами был разработан полноценный веб-сервис для решения трёх классов оптимизационных задач. Проект включает в себя:</p>
+                <ul style="text-align: left; display: inline-block;">
+                    <li>✅ Полностью рабочий симплекс-метод для ЗЛП</li>
+                    <li>✅ Транспортную задачу с методами северо-западного угла, минимального элемента и потенциалов</li>
+                    <li>✅ Венгерский алгоритм для задачи о назначениях</li>
+                    <li>✅ Интуитивно понятный веб-интерфейс с лавандово-бордовой цветовой гаммой</li>
+                    <li>✅ Видео-инструкции по каждому методу</li>
+                    <li>✅ Систему логирования и юнит-тесты</li>
+                </ul>
+                <p style="margin-top: 1rem;">Проект выполнен на высоком уровне и может быть использован в образовательных целях студентами и преподавателями.</p>
+            </div>
         </div>
-        <h3>{{author['name']}}</h3>
-        <p style="color: #9B2226; font-weight: bold;">{{author['role']}}</p>
-        <p>Студент(ка) группы C322</p>
+        
+        <div class="sidebar">
+            <h3>📌 Навигация</h3>
+            <ul>
+                <li>• <a href="/">Главная</a></li>
+                <li>• <a href="/transport">Транспортная задача</a></li>
+                <li>• <a href="/direct_lp">Прямая ЗЛП</a></li>
+                <li>• <a href="/assignment">Задача о назначениях</a></li>
+                <li>• <a href="/video">Видео-инструкции</a></li>
+                <li>• <a href="/contact">Контакты</a></li>
+            </ul>
+            <div class="tip-box">
+                <strong>📞 Связь с нами</strong>
+                <p>По всем вопросам обращайтесь через форму на странице контактов.</p>
+                <a href="/contact" class="btn btn-primary" style="display:block; margin-top:10px;">Написать</a>
+            </div>
+        </div>
     </div>
-    % end
-</div>
 
-<div style="margin-top: 2rem; padding: 1rem; background: #EDE7F6; border-radius: 12px;">
-    <h3>📌 Распределение обязанностей</h3>
-    <ul>
-        <li><strong>Егармина В.А.</strong> — архитектура проекта, прямая ЗЛП (симплекс-метод), главная страница, UML-диаграммы</li>
-        <li><strong>Потылицына З.С.</strong> — транспортная задача (метод потенциалов), стилевое оформление CSS, страница об авторах</li>
-        <li><strong>Корнилов Л.О.</strong> — задача о назначениях (венгерский метод), страница контактов, юнит-тесты</li>
-    </ul>
-</div>
+    <footer>
+        <p>BottleWebProject_C322_3_EKP | Команда №3 | Егармина, Корнилов, Потылицына | {{year}}</p>
+        <a href="/contact" class="question-btn">📩 Задать вопрос</a>
+    </footer>
+</body>
+</html>
