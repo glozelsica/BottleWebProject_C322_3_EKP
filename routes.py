@@ -1,5 +1,3 @@
-from bottle import static_file, template
-
 from bottle import route, view, request, template, static_file, redirect
 from datetime import datetime
 import json
@@ -10,7 +8,7 @@ import os
 @route('/static/<filepath:path>')
 def serve_static(filepath):
     """Serve static files (CSS, images, etc.)"""
-    return static_file(filepath, root='static/content')
+    return static_file(filepath, root='static')
 
 
 # ==================== ОСНОВНЫЕ СТРАНИЦЫ ====================
@@ -73,7 +71,7 @@ def video():
     return dict(
         title='Видео-инструкция',
         year=datetime.now().year,
-        video_url='https://www.youtube.com/embed/dQw4w9WgXcQ'  # замените на реальную ссылку
+        video_url='https://www.youtube.com/embed/dQw4w9WgXcQ'
     )
 
 
@@ -91,8 +89,8 @@ def transport():
 @route('/direct_lp', method=['GET', 'POST'])
 def direct_lp():
     """Direct linear programming problem page."""
-    # Здесь будет код Егарминой
-    return template('direct_lp', title='Прямая ЗЛП', year=datetime.now().year)
+    from controllers.direct_lp import solve_direct_lp
+    return solve_direct_lp()
 
 
 # ==================== ЗАДАЧА О НАЗНАЧЕНИЯХ (Корнилов) ====================
@@ -100,8 +98,8 @@ def direct_lp():
 @route('/assignment', method=['GET', 'POST'])
 def assignment():
     """Assignment problem page."""
-    # Здесь будет код Льва
-    return template('assignment', title='Задача о назначениях', year=datetime.now().year)
+    from controllers.assignment import solve_assignment
+    return solve_assignment()
 
 
 # ==================== ОБРАБОТЧИК ВОПРОСОВ ====================
@@ -112,14 +110,12 @@ def send_question():
     question = request.forms.get('question', '')
     name = request.forms.get('name', 'Аноним')
     
-    # Сохраняем вопрос в файл
     os.makedirs('data', exist_ok=True)
     with open('data/questions.txt', 'a', encoding='utf-8') as f:
         f.write(f"[{datetime.now()}] От: {name}\n")
         f.write(f"Вопрос: {question}\n")
         f.write("-" * 50 + "\n")
     
-    # Перенаправляем обратно на страницу контактов с сообщением
     return template('contact', 
         title='Контакты',
         message='Ваш вопрос отправлен! Мы ответим в ближайшее время.',
@@ -148,6 +144,7 @@ def test():
     """Test route to verify everything works."""
     return "✅ Сервер работает! Все маршруты загружены."
 
+
 # ==================== НАСТРОЙКА МАРШРУТОВ ДЛЯ APP.PY ====================
 
 def setup_routes(app):
@@ -155,7 +152,7 @@ def setup_routes(app):
     
     @app.route('/static/<filepath:path>')
     def serve_static(filepath):
-        return static_file(filepath, root='static/content')
+        return static_file(filepath, root='static')
     
     @app.route('/')
     @app.route('/home')
