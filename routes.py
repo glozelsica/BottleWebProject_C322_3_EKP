@@ -22,7 +22,11 @@ def setup_routes(app):
     @app.route('/static/content/<filepath:path>')
     def serve_static_content(filepath):
         """Обслуживание статических файлов из папки content"""
-        return static_file(filepath, root='static/content')
+        return static_file(filepath, root='static/')
+
+    @route('/static/images/<filename:path>')
+    def serve_images(filename):
+        return static_file(filename, root='static/images')
     
     # ==================== ОСНОВНЫЕ СТРАНИЦЫ ====================
     
