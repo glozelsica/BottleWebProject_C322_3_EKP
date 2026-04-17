@@ -1,6 +1,4 @@
-"""
-Routes and views for the bottle application.
-"""
+from bottle import static_file, template
 
 from bottle import route, view, request, template, static_file, redirect
 from datetime import datetime

@@ -1,4 +1,4 @@
-#!D:\колледж\practica\project\BottleWebProject_C322_3_EKP\env\Scripts\python.exe
+#!C:\Users\Valer\source\repos\BottleWebProject_С322_3_ EKP\env\Scripts\python.exe
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 """
