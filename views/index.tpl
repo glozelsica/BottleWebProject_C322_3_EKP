@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Задачи линейного программирования</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <title>Математическое моделирование</title>
+    <link rel="stylesheet" href="/static/content/site.css">
 </head>
 <body>
     <header>
-        <div class="logo">Математическое моделирование</div>
+        <div class="logo">📊 Математическое моделирование</div>
         <nav>
             <a href="/">Главная</a>
             <a href="/direct_lp">Прямая ЗЛП</a>
-            <a href="/transport">Транспортная задача</a>
-            <a href="/assignment">Задача о назначениях</a>
-            <a href="/video">Видео</a>
+            <a href="/transport">Транспортная</a>
+            <a href="/assignment">Назначения</a>
             <a href="/authors">Об авторах</a>
             <a href="/contact">Контакты</a>
         </nav>
@@ -27,44 +26,59 @@
 
             <div class="cards">
                 <div class="card">
+                    <div style="font-size: 3rem;">📐</div>
                     <h3>Прямая ЗЛП</h3>
                     <p>Симплекс-метод для нахождения максимума или минимума линейной функции при системе ограничений.</p>
-                    <button onclick="location.href='/direct_lp'">Перейти</button>
+                    <details>
+                        <summary>📖 Теория</summary>
+                        <p>Линейное программирование — раздел математического моделирования. Симплекс-метод последовательно улучшает решение, переходя от одной вершины допустимого множества к другой.</p>
+                    </details>
+                    <button onclick="location.href='/direct_lp'">Перейти →</button>
                 </div>
                 
                 <div class="card">
+                    <div style="font-size: 3rem;">🚚</div>
                     <h3>Транспортная задача</h3>
-                    <p>Минимизация стоимости перевозок от поставщиков к потребителям.</p>
-                    <button onclick="location.href='/transport'">Перейти</button>
+                    <p>Минимизация стоимости перевозок от поставщиков к потребителям. Методы: северо-западного угла, минимального элемента, потенциалов.</p>
+                    <details>
+                        <summary>📖 Теория</summary>
+                        <p>Транспортная задача — частный случай ЗЛП. Оптимальный план перевозок находится методом потенциалов с итерационным улучшением.</p>
+                    </details>
+                    <button onclick="location.href='/transport'">Перейти →</button>
                 </div>
                 
                 <div class="card">
+                    <div style="font-size: 3rem;">👥</div>
                     <h3>Задача о назначениях</h3>
-                    <p>Оптимальное распределение работ между исполнителями.</p>
-                    <button onclick="location.href='/assignment'">Перейти</button>
+                    <p>Оптимальное распределение работ между исполнителями. Реализован венгерский алгоритм.</p>
+                    <details>
+                        <summary>📖 Теория</summary>
+                        <p>Задача о назначениях — минимизация суммарной стоимости выполнения работ. Венгерский алгоритм находит оптимальное назначение за полиномиальное время.</p>
+                    </details>
+                    <button onclick="location.href='/assignment'">Перейти →</button>
                 </div>
             </div>
         </div>
-
-        <aside class="sidebar">
-            <h3>Полезные советы</h3>
+        
+        <div class="sidebar">
+            <h3>💡 Полезные советы</h3>
             <ul>
-                <li>Для перехода между ячейками матрицы используйте стрелки на клавиатуре</li>
-                <li>Для быстрого перехода по полям используйте клавишу Tab</li>
-                <li>Результат можно сохранить в Excel или CSV</li>
-                <li>Если задача не имеет решения - система сообщит об этом</li>
-                <li>Ввод данных сохраняется при перезагрузке страницы</li>
+                <li>• Для перехода между ячейками матрицы используйте <kbd>Tab</kbd></li>
+                <li>• Результат можно сохранить в Excel/CSV</li>
+                <li>• При несбалансированности добавляются фиктивные участники</li>
+                <li>• Все данные сохраняются в истории решений</li>
             </ul>
             <div class="tip-box">
-                <h4>Нужна помощь?</h4>
-                <p>Посмотрите <a href="/video">видео-инструкцию</a></p>
+                <strong>📹 Нужна помощь?</strong>
+                <p>Посмотрите видео-инструкцию</p>
+                <a href="/video" class="btn btn-info" style="display:block;">Смотреть урок</a>
             </div>
-        </aside>
+        </div>
     </div>
 
     <footer>
-        <p>2026 - Задачи линейного программирования</p>
-        <a href="/contact" class="question-btn">Задать вопрос</a>
+        <p>BottleWebProject_C322_3_EKP | Команда №3 | Егармина, Корнилов, Потылицына | {{year}}</p>
+        <a href="/contact" class="question-btn">📩 Задать вопрос</a>
     </footer>
 </body>
 </html>
