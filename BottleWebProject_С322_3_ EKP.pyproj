@@ -31,9 +31,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
+    <Compile Include="controllers\assignment.py" />
     <Compile Include="controllers\direct_lp.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="controllers\transport.py" />
     <Compile Include="routes.py" />
     <Compile Include="static\utils\excel_exporter.py">
       <SubType>Code</SubType>
