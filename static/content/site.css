@@ -344,3 +344,60 @@ th {
         .card button:hover {
             background: #6d181b;
         }
+
+
+/* Логотип */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    background: linear-gradient(135deg, #9B2226, #6d181b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.logo-img {
+    height: 40px;
+    width: auto;
+}
+
+/* Подвал */
+footer {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: #EDE7F6;
+    padding: 2rem 2rem 1rem;
+    margin-top: 3rem;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.footer-section h4 {
+    color: #EDE7F6;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.footer-section p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid rgba(237,231,246,0.2);
+    font-size: 0.8rem;
+    opacity: 0.7;
+}

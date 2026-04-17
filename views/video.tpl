@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Видео-инструкции</title>
     <link rel="stylesheet" href="/static/content/site.css">
+    <link rel="icon" href="/static/images/logo.png" type="image/png">
     <style>
         .video-grid {
             display: grid;
@@ -14,14 +15,18 @@
         }
         .video-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 0.3s;
+        }
+        .video-card:hover {
+            transform: translateY(-5px);
         }
         .video-card h3 {
             padding: 1rem;
             margin: 0;
-            background: #9B2226;
+            background: linear-gradient(135deg, #9B2226, #6d181b);
             color: #EDE7F6;
         }
         .video-container {
@@ -44,7 +49,10 @@
 </head>
 <body>
     <header>
-        <div class="logo">📊 Математическое моделирование</div>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Логотип" class="logo-img"> 
+            Математическое моделирование
+        </div>
         <nav>
             <a href="/">Главная</a>
             <a href="/direct_lp">Прямая ЗЛП</a>
@@ -66,8 +74,9 @@
                 <div class="video-card">
                     <h3>🚚 Транспортная задача</h3>
                     <div class="video-container">
-                        <iframe src="https://yandex.ru/video/preview/7431028144357076644" 
+                        <iframe src="https://www.youtube.com/embed/1R7fZ3YqX9M?si=example1" 
                                 frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen>
                         </iframe>
                     </div>
@@ -81,8 +90,9 @@
                 <div class="video-card">
                     <h3>📐 Симплекс-метод (прямая ЗЛП)</h3>
                     <div class="video-container">
-                        <iframe src="https://yandex.ru/video/preview/12298833828775174075" 
+                        <iframe src="https://www.youtube.com/embed/1R7fZ3YqX9M?si=example2" 
                                 frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen>
                         </iframe>
                     </div>
@@ -96,8 +106,9 @@
                 <div class="video-card">
                     <h3>👥 Венгерский алгоритм (задача о назначениях)</h3>
                     <div class="video-container">
-                        <iframe src="https://yandex.ru/video/preview/11543836018974159408" 
+                        <iframe src="https://www.youtube.com/embed/1R7fZ3YqX9M?si=example3" 
                                 frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen>
                         </iframe>
                     </div>
@@ -130,8 +141,25 @@
     </div>
 
     <footer>
-        <p>BottleWebProject_C322_3_EKP | Команда №3 | Егармина, Корнилов, Потылицына | {{year}}</p>
-        <a href="/contact" class="question-btn">📩 Задать вопрос</a>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>BottleWebProject_C322_3_EKP</h4>
+                <p>Команда №3 | Егармина, Корнилов, Потылицына</p>
+                <p>Группа C322 | ГУАП ФСПО №12</p>
+            </div>
+            <div class="footer-section">
+                <h4>📅 2026</h4>
+                <p>Учебная практика УП02</p>
+                <p>ПМ02 «Осуществление интеграции программных модулей»</p>
+            </div>
+            <div class="footer-section">
+                <h4>📞 Связь</h4>
+                <a href="/contact" class="question-btn">📩 Задать вопрос</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Математическое моделирование. Все права защищены.</p>
+        </div>
     </footer>
 </body>
 </html>
