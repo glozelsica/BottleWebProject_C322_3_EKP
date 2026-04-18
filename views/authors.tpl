@@ -4,19 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Об авторах</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/content/site.css">
 </head>
 <body>
-    <header style="background: linear-gradient(135deg, #EDE7F6, #d9cfe8); color: #9B2226;">
-        <div class="logo" style="color: #9B2226;">📊 Математическое моделирование</div>
+     <header>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Логотип" class="logo-img" onerror="this.style.display='none'">
+            Математическое моделирование
+        </div>
         <nav>
-            <a href="/" style="color: #9B2226;">Главная</a>
-            <a href="/direct_lp" style="color: #9B2226;">Прямая ЗЛП</a>
-            <a href="/transport" style="color: #9B2226;">Транспортная</a>
-            <a href="/assignment" style="color: #9B2226;">Назначения</a>
-            <a href="/video" style="color: #9B2226;">Видео</a>
-            <a href="/authors" style="color: #9B2226;">Об авторах</a>
-            <a href="/contact" style="color: #9B2226;">Контакты</a>
+            <a href="/">Главная</a>
+            <a href="/direct_lp">Прямая ЗЛП</a>
+            <a href="/transport">Транспортная</a>
+            <a href="/assignment">Назначения</a>
+            <a href="/contact">Контакты</a>
         </nav>
     </header>
 
@@ -101,9 +102,22 @@
         </div>
     </div>
 
-    <footer>
-        <p>BottleWebProject_C322_3_EKP | Команда №3 | Егармина, Корнилов, Потылицына | {{year}}</p>
-        <a href="/contact" class="question-btn">📩 Задать вопрос</a>
-    </footer>
+  <footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>О проекте</h4>
+            <p>Решение задач линейного программирования</p>
+            <p>Симплекс-метод, транспортная задача, задача о назначениях</p>
+        </div>
+        <div class="footer-section">
+            <h4>Контакты</h4>
+            <p>Email: team3@mathmodel.ru</p>
+            <p>Телефон: +7 (921) 266-61-17</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        2026 - Математическое моделирование. Все права защищены.
+    </div>
+</footer>
 </body>
 </html>

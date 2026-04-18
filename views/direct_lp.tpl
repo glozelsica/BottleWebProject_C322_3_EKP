@@ -14,7 +14,10 @@
             Математическое моделирование
         </div>
         <nav>
-            <a href="/">Главная</a>
+           <a href="/">Главная</a>
+            <a href="/transport">Транспортная</a>
+            <a href="/assignment">Назначения</a>
+            <a href="/video">Видео</a>
             <a href="/authors">Об авторах</a>
             <a href="/contact">Контакты</a>
         </nav>

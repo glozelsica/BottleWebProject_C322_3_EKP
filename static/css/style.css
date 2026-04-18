@@ -575,3 +575,100 @@ th {
         width: 100%;
     }
 }
+
+/* ==================== СТРАНИЦА КОНТАКТОВ ==================== */
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.contact-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s;
+    border: 1px solid #dee2e6;
+}
+
+    .contact-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+.contact-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.contact-card h3 {
+    color: #9B2226;
+    margin-bottom: 0.8rem;
+}
+
+.contact-card p {
+    margin: 0;
+}
+
+.contact-card a {
+    color: #6d181b;
+    text-decoration: none;
+}
+
+    .contact-card a:hover {
+        text-decoration: underline;
+    }
+
+/* Стили для формы на странице контактов */
+.form-section {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+}
+
+    .form-section h3 {
+        margin-top: 0;
+        color: #9B2226;
+    }
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #4a1a1a;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+    }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #9B2226;
+            box-shadow: 0 0 5px rgba(155,34,38,0.3);
+        }
+
+.theory-block {
+    background: #EDE7F6;
+    padding: 1.2rem;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+}
+
+    .theory-block h3 {
+        margin-top: 0;
+        color: #9B2226;
+    }

@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Математическое моделирование</title>
+    <link rel="icon" href="/static/images/logo.png" type="image/png">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <header>
-        <div class="logo">📊 Математическое моделирование</div>
+         <div class="logo">
+            <img src="/static/images/logo.png" alt="Логотип" style="height: 35px; width: 35px; object-fit: contain;" onerror="this.style.display='none'">
+            <span>Математическое моделирование</span>
+        </div>
         <nav>
             <a href="/">Главная</a>
             <a href="/direct_lp">Прямая ЗЛП</a>
@@ -77,7 +81,7 @@
     </div>
 
     <footer>
-        <p>BottleWebProject_C322_3_EKP | Команда №3 | Егармина, Корнилов, Потылицына | {{year}}</p>
+        <p>2026 - Математическое моделирование {{year}}</p>
         <a href="/contact" class="question-btn">📩 Задать вопрос</a>
     </footer>
 </body>

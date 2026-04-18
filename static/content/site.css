@@ -1,4 +1,4 @@
-* {
+﻿* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -386,4 +386,99 @@ th {
 
     .question-btn:hover {
         background: #d9cfe8;
+    }
+
+/* ==================== СТРАНИЦА ОБ АВТОРАХ ==================== */
+.college-section {
+    background: linear-gradient(135deg, #9B2226, #6d181b);
+    color: #EDE7F6;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+    .college-section h2,
+    .college-section h3 {
+        color: #EDE7F6;
+        margin-bottom: 0.5rem;
+    }
+
+    .college-section p {
+        margin: 0.5rem 0;
+        line-height: 1.6;
+    }
+
+.authors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.author-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: transform 0.3s;
+    border: 1px solid #dee2e6;
+}
+
+    .author-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+.author-photo {
+    font-size: 4rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.author-name {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #9B2226;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.author-role {
+    font-size: 0.9rem;
+    color: #6d181b;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+.author-bio {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #4a1a1a;
+}
+
+    .author-bio p {
+        margin-bottom: 0.5rem;
+    }
+
+    .author-bio strong {
+        color: #9B2226;
+    }
+
+/* Стили для списка достижений */
+.theory-block ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.theory-block li {
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+    .theory-block li:before {
+        content: "✅";
+        position: absolute;
+        left: 0;
     }

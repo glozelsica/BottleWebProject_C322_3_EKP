@@ -16,7 +16,6 @@
         <nav>
             <a href="/">Главная</a>
             <a href="/direct_lp">Прямая ЗЛП</a>
-            <a href="/transport">Транспортная</a>
             <a href="/assignment">Назначения</a>
             <a href="/video">Видео</a>
             <a href="/authors">Об авторах</a>
