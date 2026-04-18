@@ -7,17 +7,25 @@
     <link rel="stylesheet" href="/static/content/site.css">
 </head>
 <body>
-    <header>
-        <div class="logo">Задача о назначениях</div>
-        <nav>
-            <a href="/">Главная</a>
-            <a href="/direct_lp">Прямая ЗЛП</a>
-            <a href="/transport">Транспортная</a>
-            <a href="/video">Видео</a>
-            <a href="/authors">Об авторах</a>
-            <a href="/contact">Контакты</a>
-        </nav>
+    <header style="position: relative; overflow: hidden; background: #9B2226;">
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('/static/images/texture3.png'); background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.4; pointer-events: none;"></div>
+        
+        <div style="position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem;">
+            <div class="logo" style="display: flex; align-items: center; gap: 0.5rem;">
+                <img src="/static/images/logo.png" alt="Логотип" style="height: 35px; width: auto;">
+                <span style="color: white; font-weight: bold;">Задача о назначениях</span>
+            </div>
+            <nav style="display: flex; gap: 1.5rem;">
+                <a href="/" style="color: white; text-decoration: none;">Главная</a>
+                <a href="/direct_lp" style="color: white; text-decoration: none;">Прямая ЗЛП</a>
+                <a href="/transport" style="color: white; text-decoration: none;">Транспортная</a>
+                <a href="/video" style="color: white; text-decoration: none;">Видео</a>
+                <a href="/authors" style="color: white; text-decoration: none;">Об авторах</a>
+                <a href="/contact" style="color: white; text-decoration: none;">Контакты</a>
+            </nav>
+        </div>
     </header>
+
 
     <div class="main-container">
         
