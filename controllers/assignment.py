@@ -14,26 +14,21 @@ def solve_assignment():
     Обработчик GET/POST запросов для страницы /assignment.
     Возвращает отрендеренный HTML-шаблон.
     """
-    # Инициализация переменных
     result = None
     error = None
     matrix_value = ''
     
-    # Обработка POST-запроса (форма отправлена)
     if request.method == 'POST':
         try:
-            # Получение и очистка данных из формы
             matrix_str = request.forms.get('matrix', '').strip()
-            matrix_value = matrix_str  # Сохраняем для отображения в форме
+            matrix_value = matrix_str  
             
             if not matrix_str:
                 raise ValueError("Поле ввода матрицы пустое.")
             
-            # Парсинг матрицы из текста
             rows = [line.strip().split() for line in matrix_str.split('\n') if line.strip()]
             matrix = [[float(v) for v in row] for row in rows]
             
-            # Валидация: квадратная матрица
             n = len(matrix)
             if n == 0:
                 raise ValueError("Матрица не должна быть пустой.")
@@ -42,13 +37,10 @@ def solve_assignment():
             if n > 6:
                 raise ValueError(f"Размер матрицы не должен превышать 6×6. Получено: {n}×{n}")
             
-            # Вызов алгоритма решения
             assignment, cost = _hungarian_algorithm(matrix)
             
-            # Логирование успешного выполнения
             _log_result(matrix, assignment, cost, "SUCCESS")
             
-            # Подготовка данных для шаблона результата
             result = {
                 'assignment': assignment,
                 'cost': cost,
@@ -60,17 +52,15 @@ def solve_assignment():
             _log_result(request.forms.get('matrix', ''), None, None, f"ERROR: {error_msg}")
             error = error_msg
     
-    # === Загрузка теории из JSON (ОБЯЗАТЕЛЬНО) ===
     theory_data = _load_theory_json()
     
-    # Возврат отрендеренного шаблона
     return template('assignment',
         title='Задача о назначениях',
         message='Венгерский алгоритм: оптимальное распределение исполнителей по работам',
         result=result,
         error=error,
         matrix_value=matrix_value,
-        theory=theory_data,  # ← Передаём теорию в шаблон
+        theory=theory_data,  
         year=datetime.now().year
     )
 
@@ -122,7 +112,6 @@ def _log_result(input_data, assignment, cost, status):
 
 
 def _load_theory_json():
-    # Правильный путь к файлу теории
     json_path = os.path.join('static', 'data', 'theory_assigment.json')
     with open(json_path, 'r', encoding='utf-8') as f:
         return json.load(f)

@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
-    <!-- Подключаем основной файл стилей проекта -->
     <link rel="stylesheet" href="/static/content/style.css">
 </head>
 <body>
-    <!-- ==================== ШАПКА ==================== -->
     <header>
         <div class="logo">Задача о назначениях</div>
         <nav>
@@ -21,14 +19,11 @@
         </nav>
     </header>
 
-    <!-- ==================== ОСНОВНОЙ МАКЕТ ==================== -->
     <div class="main-container">
         
-        <!-- ЛЕВАЯ КОЛОНКА: Контент -->
         <div class="content">
             <h1>Венгерский алгоритм решения задачи о назначениях</h1>
             
-            <!-- Блок ввода данных -->
             <div class="form-section">
                 <h2>Решение задачи</h2>
                 <form method="POST" action="/assignment">
@@ -57,7 +52,6 @@
                 </form>
             </div>
 
-            <!-- Блок успешного результата -->
             % if result is not None:
             <div class="result-success">
                 <h3>✅ {{ result['status'] }}</h3>
@@ -86,7 +80,6 @@
             </div>
             % end
 
-            <!-- Блок ошибки -->
             % if error is not None:
             <div class="result-error">
                 <h3>❌ Ошибка ввода</h3>
@@ -94,7 +87,6 @@
             </div>
             % end
 
-            <!-- Блок теории -->
             <div class="theory-section">
                 <h2>Теоретические основы</h2>
                 % if theory is not None:
@@ -133,7 +125,6 @@
             </div>
         </div>
 
-        <!-- ПРАВАЯ КОЛОНКА: Сайдбар -->
         <div class="sidebar">
             <h3>Полезные советы</h3>
             <ul>
@@ -162,7 +153,6 @@
 
     </div>
 
-    <!-- ==================== ПОДВАЛ ==================== -->
     <footer>
         <p>&copy; {{year}} BottleWebProject_C322_3_EKP. Все права защищены.</p>
     </footer>
