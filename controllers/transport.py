@@ -6,19 +6,87 @@ import os
 def load_theory():
     """Загрузка теоретических данных из JSON файла"""
     try:
+        # Сначала пробуем новый файл
+        json_path = os.path.join('data', 'theory_transport_new.json')
+        if os.path.exists(json_path):
+            with open(json_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                print(f"✅ Теория загружена из: {json_path}")
+                return data
+        
+        # Если нет, пробуем старый
         json_path = os.path.join('data', 'theory_transport.json')
-        with open(json_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
+        if os.path.exists(json_path):
+            with open(json_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                print(f"✅ Теория загружена из: {json_path}")
+                # Удаляем images если они есть (чтобы не было ошибок)
+                if 'example' in data and 'images' in data['example']:
+                    del data['example']['images']
+                return data
+        
+        # Если файлов нет, возвращаем встроенную теорию
+        print("❌ Файлы с теорией не найдены, использую встроенную теорию")
+        return get_builtin_theory()
+        
     except Exception as e:
-        print(f"Ошибка загрузки теории: {e}")
-        return None
+        print(f"❌ Ошибка загрузки теории: {e}")
+        return get_builtin_theory()
+
+def get_builtin_theory():
+    """Встроенная теория на случай отсутствия JSON файла"""
+    return {
+        "title": "Транспортная задача линейного программирования",
+        "sections": [
+            {
+                "id": "section1",
+                "title": "1. Постановка транспортной задачи. Закрытая модель",
+                "content": "Транспортная задача является одним из наиболее важных частных случаев общей задачи линейного программирования.\n\nПусть в пунктах А₁, А₂, ..., Аₘ производится некоторый продукт, причем объем производства в п. Аᵢ составляет aᵢ единиц. Произведенный продукт должен быть доставлен в пункты потребления В₁, В₂, ..., Вₙ, причем объем потребления в п. Вⱼ составляет bⱼ единиц.\n\nЦелевая функция: F = ΣᵢΣⱼ cᵢⱼ · xᵢⱼ → min\n\nОграничения по запасам: Σⱼ xᵢⱼ = aᵢ\nОграничения по потребностям: Σᵢ xᵢⱼ = bⱼ\n\nОПРЕДЕЛЕНИЕ: Если общая потребность равна общему запасу, т.е. Σaᵢ = Σbⱼ, то модель называется закрытой.",
+                "formulas_text": [
+                    "F = ΣᵢΣⱼ cᵢⱼ · xᵢⱼ → min",
+                    "Σⱼ xᵢⱼ = aᵢ",
+                    "Σᵢ xᵢⱼ = bⱼ",
+                    "Σaᵢ = Σbⱼ",
+                    "N = m + n - 1"
+                ]
+            },
+            {
+                "id": "section2",
+                "title": "2. Метод потенциалов",
+                "content": "Метод потенциалов используется для проверки оптимальности опорного плана и его улучшения.\n\nАлгоритм:\n1. Строят опорный план (северо-западным углом или минимальным элементом)\n2. Находят потенциалы uᵢ и vⱼ из системы uᵢ + vⱼ = cᵢⱼ для базисных клеток\n3. Вычисляют оценки Δᵢⱼ = uᵢ + vⱼ - cᵢⱼ\n4. Если все Δᵢⱼ ≤ 0, план оптимален\n5. Если есть Δᵢⱼ > 0, строят цикл пересчёта и улучшают план",
+                "formulas_text": [
+                    "uᵢ + vⱼ = cᵢⱼ (для базисных клеток)",
+                    "Δᵢⱼ = uᵢ + vⱼ - cᵢⱼ",
+                    "θ = min{xᵢⱼ} по клеткам со знаком «-»"
+                ]
+            },
+            {
+                "id": "section3",
+                "title": "3. Дополнительные ограничения",
+                "content": "1. Запрещенные маршруты: тариф = M\n2. Обязательные поставки: корректируют запасы и потребности\n3. Открытая модель: вводят фиктивного поставщика или потребителя"
+            }
+        ],
+        "example": {
+            "title": "Пример решения",
+            "description": "Задача с 3 поставщиками и 3 потребителями",
+            "supply": [70, 100, 110],
+            "demand": [80, 50, 150],
+            "total_supply": 280,
+            "total_demand": 280,
+            "explanation": "Сначала проверяем баланс: сумма запасов = сумме потребностей = 280. Затем строим опорный план методом минимального элемента, после чего применяем метод потенциалов."
+        },
+        "literature": [
+            "Ваулин А.Е. Методы цифровой обработки данных. — СПб.: ВИККИ, 1993.",
+            "Таха Х.А. Введение в исследование операций. — М.: Вильямс, 2005."
+        ]
+    }
+
 
 def solve_transport():
     result = None
     error = None
     theory = load_theory()
     
-    # Сохраняем введенные данные для отображения после POST
     form_data = {
         'suppliers': 3,
         'consumers': 3,
@@ -61,18 +129,16 @@ def solve_transport():
             balanced = abs(total_supply - total_demand) < 0.0001
             
             # Северо-западный угол
-            plan_nw, cost_nw, steps_nw, table_nw = northwest_corner_full(supply[:], demand[:], costs)
+            plan_nw, cost_nw, steps_nw, nw_degenerate = northwest_corner_full(supply[:], demand[:], costs)
             
             # Минимальный элемент
-            plan_me, cost_me, steps_me, table_me = min_element_full(supply[:], demand[:], costs)
+            plan_me, cost_me, steps_me, me_degenerate = min_element_full(supply[:], demand[:], costs)
             
-            # Метод потенциалов для северо-западного плана
-            plan_opt_nw, cost_opt_nw, iterations_nw = potential_method_full(costs, plan_nw, "северо-западного угла")
+            # Метод потенциалов для обоих планов
+            plan_opt_nw, cost_opt_nw, iterations_nw = potential_method_full(costs, plan_nw)
+            plan_opt_me, cost_opt_me, iterations_me = potential_method_full(costs, plan_me)
             
-            # Метод потенциалов для плана минимального элемента
-            plan_opt_me, cost_opt_me, iterations_me = potential_method_full(costs, plan_me, "минимального элемента")
-            
-            # Выбираем лучший результат
+            # Выбор лучшего
             if cost_opt_me <= cost_opt_nw:
                 best_plan = plan_opt_me
                 best_cost = cost_opt_me
@@ -88,17 +154,11 @@ def solve_transport():
                 'northwest_plan': plan_nw,
                 'northwest_cost': round(cost_nw, 2),
                 'northwest_steps': steps_nw,
-                'northwest_table': table_nw,
+                'northwest_degenerate': nw_degenerate,
                 'mincost_plan': plan_me,
                 'mincost_cost': round(cost_me, 2),
                 'mincost_steps': steps_me,
-                'mincost_table': table_me,
-                'optimal_plan_nw': plan_opt_nw,
-                'optimal_cost_nw': round(cost_opt_nw, 2),
-                'optimal_iterations_nw': iterations_nw,
-                'optimal_plan_me': plan_opt_me,
-                'optimal_cost_me': round(cost_opt_me, 2),
-                'optimal_iterations_me': iterations_me,
+                'mincost_degenerate': me_degenerate,
                 'best_plan': best_plan,
                 'best_cost': round(best_cost, 2),
                 'best_method': best_method,
@@ -153,31 +213,19 @@ def northwest_corner_full(supply, demand, costs):
     expected_basic = n + m - 1
     is_degenerate = basic_cells < expected_basic
     
-    cost_calc = []
+    degenerate_info = {
+        'is_degenerate': is_degenerate,
+        'basic_cells': basic_cells,
+        'expected_basic': expected_basic,
+        'message': f"⚠️ План вырожденный! Базисных клеток {basic_cells} вместо {expected_basic}" if is_degenerate else f"✅ План невырожденный (базисных клеток: {basic_cells} из {expected_basic})"
+    }
+    
     total_cost = 0
     for i in range(n):
         for j in range(m):
-            if plan[i][j] > 0:
-                c = plan[i][j] * costs[i][j]
-                total_cost += c
-                cost_calc.append(f"{plan[i][j]} × {costs[i][j]} = {c}")
+            total_cost += plan[i][j] * costs[i][j]
     
-    # Создаем таблицу для отображения
-    table = []
-    for i in range(n):
-        row = []
-        for j in range(m):
-            row.append({'value': plan[i][j], 'cost': costs[i][j]})
-        table.append(row)
-    
-    return plan, total_cost, {
-        'steps': steps,
-        'basic_cells': basic_cells,
-        'expected_basic': expected_basic,
-        'is_degenerate': is_degenerate,
-        'cost_calculation': cost_calc,
-        'degenerate_warning': f"⚠️ План вырожденный! Базисных клеток {basic_cells} вместо {expected_basic}" if is_degenerate else "✅ План невырожденный"
-    }, table
+    return plan, total_cost, steps, degenerate_info
 
 
 def min_element_full(supply, demand, costs):
@@ -211,34 +259,23 @@ def min_element_full(supply, demand, costs):
     expected_basic = n + m - 1
     is_degenerate = basic_cells < expected_basic
     
-    cost_calc = []
+    degenerate_info = {
+        'is_degenerate': is_degenerate,
+        'basic_cells': basic_cells,
+        'expected_basic': expected_basic,
+        'message': f"⚠️ План вырожденный! Базисных клеток {basic_cells} вместо {expected_basic}" if is_degenerate else f"✅ План невырожденный (базисных клеток: {basic_cells} из {expected_basic})"
+    }
+    
     total_cost = 0
     for i in range(n):
         for j in range(m):
-            if plan[i][j] > 0:
-                c = plan[i][j] * costs[i][j]
-                total_cost += c
-                cost_calc.append(f"{plan[i][j]} × {costs[i][j]} = {c}")
+            total_cost += plan[i][j] * costs[i][j]
     
-    table = []
-    for i in range(n):
-        row = []
-        for j in range(m):
-            row.append({'value': plan[i][j], 'cost': costs[i][j]})
-        table.append(row)
-    
-    return plan, total_cost, {
-        'steps': steps,
-        'basic_cells': basic_cells,
-        'expected_basic': expected_basic,
-        'is_degenerate': is_degenerate,
-        'cost_calculation': cost_calc,
-        'degenerate_warning': f"⚠️ План вырожденный! Базисных клеток {basic_cells} вместо {expected_basic}" if is_degenerate else "✅ План невырожденный"
-    }, table
+    return plan, total_cost, steps, degenerate_info
 
 
-def find_cycle_full(basis, start_i, start_j, n, m):
-    """Полный поиск цикла пересчёта"""
+def find_cycle(basis, start_i, start_j, n, m):
+    """Поиск цикла пересчёта с помощью DFS"""
     temp_basis = basis.copy()
     temp_basis.add((start_i, start_j))
     
@@ -296,7 +333,7 @@ def find_cycle_full(basis, start_i, start_j, n, m):
     return None
 
 
-def potential_method_full(costs, initial_plan, method_name):
+def potential_method_full(costs, initial_plan):
     n = len(costs)
     m = len(costs[0])
     plan = [row[:] for row in initial_plan]
@@ -309,7 +346,6 @@ def potential_method_full(costs, initial_plan, method_name):
                 if plan[i][j] > 0:
                     basis.add((i, j))
         
-        # Расчет потенциалов
         u = [None] * n
         v = [None] * m
         u[0] = 0
@@ -332,7 +368,6 @@ def potential_method_full(costs, initial_plan, method_name):
             if v[j] is None:
                 v[j] = 0
         
-        # Расчет оценок
         deltas = []
         enter_i, enter_j = -1, -1
         max_delta = 0
@@ -341,15 +376,13 @@ def potential_method_full(costs, initial_plan, method_name):
             for j in range(m):
                 if plan[i][j] == 0:
                     delta = u[i] + v[j] - costs[i][j]
-                    explanation = f"Δ{chr(8321+i)}{chr(8321+j)} = u{i+1} + v{j+1} - c{i+1}{j+1} = {round(u[i],2)} + {round(v[j],2)} - {costs[i][j]} = {round(delta,2)}"
                     deltas.append({
                         'cell': f"({i+1}, {j+1})",
                         'ui': round(u[i], 2),
                         'vj': round(v[j], 2),
                         'cij': costs[i][j],
                         'delta': round(delta, 2),
-                        'formula': f"{round(u[i],2)} + {round(v[j],2)} - {costs[i][j]} = {round(delta,2)}",
-                        'explanation': explanation
+                        'formula': f"{round(u[i],2)} + {round(v[j],2)} - {costs[i][j]} = {round(delta,2)}"
                     })
                     if delta > max_delta:
                         max_delta = delta
@@ -359,12 +392,12 @@ def potential_method_full(costs, initial_plan, method_name):
             'iteration': iteration_num,
             'potentials_u': [round(x, 2) for x in u],
             'potentials_v': [round(x, 2) for x in v],
-            'potentials_explanation': f"Потенциалы найдены из системы: uᵢ + vⱼ = cᵢⱼ для базисных клеток. Приняли u₁ = 0, затем последовательно нашли остальные.",
+            'potentials_explanation': "Потенциалы найдены из системы uᵢ + vⱼ = cᵢⱼ для базисных клеток. Приняли u₁ = 0.",
             'deltas': deltas,
             'max_delta': round(max_delta, 2),
             'enter_cell': f"({enter_i+1}, {enter_j+1})" if enter_i != -1 else "нет",
-            'enter_explanation': f"Выбрана клетка ({enter_i+1}, {enter_j+1}) с максимальной положительной оценкой Δ = {round(max_delta,2)}. Это означает, что перевозка по этому маршруту позволит уменьшить общую стоимость.",
-            'check_optimal': "✅ Все оценки Δᵢⱼ ≤ 0, следовательно план оптимален!" if max_delta <= 0 else "⚠️ Есть положительные оценки, план не оптимален, требуется улучшение."
+            'enter_explanation': f"Выбрана клетка ({enter_i+1}, {enter_j+1}) с Δ = {round(max_delta,2)}",
+            'check_optimal': "✅ План оптимален!" if max_delta <= 0 else "⚠️ Требуется улучшение."
         }
         
         if max_delta <= 0:
@@ -372,25 +405,18 @@ def potential_method_full(costs, initial_plan, method_name):
             iterations.append(iteration)
             break
         
-        # Построение цикла
-        cycle = find_cycle_full(basis, enter_i, enter_j, n, m)
+        cycle = find_cycle(basis, enter_i, enter_j, n, m)
         
         if cycle:
-            cycle_description = "Цикл пересчёта строится следующим образом: из выбранной свободной клетки двигаемся по строке или столбцу до базисной клетки, затем поворачиваем под прямым углом, продолжая движение только по базисным клеткам, пока не вернёмся в исходную клетку."
+            cycle_description = "Цикл строится из свободной клетки по базисным."
             
-            # Находим минимальное значение в клетках со знаком минус
             min_val = float('inf')
-            min_cells = []
             for (i, j, sign) in cycle:
                 if sign == -1:
                     if plan[i][j] < min_val:
                         min_val = plan[i][j]
-                        min_cells = [(i, j)]
-                    elif plan[i][j] == min_val:
-                        min_cells.append((i, j))
             
             if min_val != float('inf') and min_val > 0:
-                # Перераспределение
                 for (i, j, sign) in cycle:
                     if sign == 1:
                         plan[i][j] += min_val
@@ -399,26 +425,20 @@ def potential_method_full(costs, initial_plan, method_name):
                         if plan[i][j] < 0:
                             plan[i][j] = 0
                 
-                # Визуализация цикла
                 cycle_visual = []
                 for idx, (i, j, sign) in enumerate(cycle):
                     cycle_visual.append({
                         'cell': f"({i+1},{j+1})",
-                        'sign': '+' if sign == 1 else '-',
-                        'value': plan[i][j] if sign == 1 else plan[i][j] + min_val if sign == -1 else 0
+                        'sign': '+' if sign == 1 else '-'
                     })
                 
                 iteration['cycle'] = {
                     'cells': cycle_visual,
                     'theta': min_val,
-                    'theta_explanation': f"θ = min{{xᵢⱼ в клетках со знаком «-»}} = {min_val}",
+                    'theta_explanation': f"θ = {min_val}",
                     'description': cycle_description,
-                    'redistribution': f"Перераспределение: к клеткам со знаком «+» прибавляем θ={min_val}, из клеток со знаком «-» вычитаем θ={min_val}"
+                    'redistribution': f"Перераспределено {min_val} единиц"
                 }
-        else:
-            iteration['error'] = "Не удалось построить цикл пересчёта"
-            iterations.append(iteration)
-            break
         
         iterations.append(iteration)
     

@@ -18,7 +18,8 @@
     <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
     <Name>BottleWebProject_С322_3_ EKP</Name>
     <RootNamespace>BottleWebProject_С322_3_ EKP</RootNamespace>
-    <InterpreterId>MSBuild|env1|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>MSBuild|zlatik_env|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>MSBuild|zlatik_env|$(MSBuildProjectFullPath)</InterpreterId>
     <TestFramework>Pytest</TestFramework>
     <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
     <WebBrowserPort>8080</WebBrowserPort>
@@ -78,6 +79,9 @@
     <Content Include="static\data\theory_transport.json">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="static\data\theory_transport_new.json">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="static\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="static\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="static\fonts\glyphicons-halflings-regular.ttf" />
@@ -88,12 +92,12 @@
     <Content Include="static\images\simplex_flowchart.png" />
     <Content Include="static\images\simplex_geometry.png" />
     <Content Include="static\images\simplex_tableau.png" />
-    <Content Include="static\images\texture1.png" />
     <Content Include="static\images\texture2.png" />
     <Content Include="static\images\texture3.png" />
     <Content Include="static\images\texture4.png" />
     <Content Include="static\images\texture5.png" />
     <Content Include="static\images\texture6.png" />
+    <Content Include="static\images\texture7.png" />
     <Content Include="static\images\two_phase_method.png" />
     <Content Include="static\images\formula_balance.png" />
     <Content Include="static\images\cycle_example.png" />
@@ -161,6 +165,15 @@
       <Id>kl</Id>
       <Version>3.9</Version>
       <Description>kl (Python 3.9 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+    <Interpreter Include="zlatik_env\">
+      <Id>zlatik_env</Id>
+      <Version>3.13</Version>
+      <Description>zlatik_env (Python 3.13 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>

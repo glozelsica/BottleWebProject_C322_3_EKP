@@ -45,35 +45,43 @@
             padding: 1rem;
             background: #f8f9fa;
         }
+        .video-desc p {
+            margin: 0.5rem 0;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <img src="/static/images/logo.png" alt="Логотип" class="logo-img"> 
-            Математическое моделирование
+    <!-- ШАПКА С ТЕКСТУРОЙ -->
+    <header style="position: relative; overflow: hidden; background: linear-gradient(135deg, #9B2226, #6d181b);">
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('/static/images/texture3.png'); background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.15; pointer-events: none;"></div>
+        <div style="position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; flex-wrap: wrap;">
+            <div class="logo" style="display: flex; align-items: center; gap: 10px;">
+                <img src="/static/images/logo.png" alt="Логотип" class="logo-img" style="height: 35px; width: auto;">
+                <span style="color: #EDE7F6; font-weight: bold;">Математическое моделирование</span>
+            </div>
+            <nav style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                <a href="/" style="color: #EDE7F6; text-decoration: none;">Главная</a>
+                <a href="/direct_lp" style="color: #EDE7F6; text-decoration: none;">Прямая ЗЛП</a>
+                <a href="/transport" style="color: #EDE7F6; text-decoration: none;">Транспортная</a>
+                <a href="/assignment" style="color: #EDE7F6; text-decoration: none;">Назначения</a>
+                <a href="/video" style="color: #EDE7F6; text-decoration: none;">Видео</a>
+                <a href="/authors" style="color: #EDE7F6; text-decoration: none;">Об авторах</a>
+                <a href="/contact" style="color: #EDE7F6; text-decoration: none;">Контакты</a>
+            </nav>
         </div>
-        <nav>
-            <a href="/">Главная</a>
-            <a href="/direct_lp">Прямая ЗЛП</a>
-            <a href="/transport">Транспортная</a>
-            <a href="/assignment">Назначения</a>
-            <a href="/authors">Об авторах</a>
-            <a href="/contact">Контакты</a>
-        </nav>
     </header>
 
     <div class="main-container">
         <div class="content">
-            <h1>📹 Видео-инструкции</h1>
+            <h1>Видео-инструкции</h1>
             <p>Подробные видеоуроки по всем трём методам решения задач линейного программирования.</p>
             
             <div class="video-grid">
                 <!-- Транспортная задача -->
                 <div class="video-card">
-                    <h3>🚚 Транспортная задача</h3>
+                    <h3>Транспортная задача</h3>
                     <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/1R7fZ3YqX9M?si=example1" 
+                        <iframe src="https://www.youtube.com/embed/1R7fZ3YqX9M" 
                                 frameborder="0" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen>
@@ -87,9 +95,9 @@
                 
                 <!-- Симплекс-метод -->
                 <div class="video-card">
-                    <h3>📐 Симплекс-метод (прямая ЗЛП)</h3>
+                    <h3>Симплекс-метод (прямая ЗЛП)</h3>
                     <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/1R7fZ3YqX9M?si=example2" 
+                        <iframe src="https://www.youtube.com/embed/1R7fZ3YqX9M" 
                                 frameborder="0" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen>
@@ -103,9 +111,9 @@
                 
                 <!-- Венгерский алгоритм -->
                 <div class="video-card">
-                    <h3>👥 Венгерский алгоритм (задача о назначениях)</h3>
+                    <h3>Венгерский алгоритм (задача о назначениях)</h3>
                     <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/1R7fZ3YqX9M?si=example3" 
+                        <iframe src="https://www.youtube.com/embed/1R7fZ3YqX9M" 
                                 frameborder="0" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen>
@@ -119,29 +127,49 @@
             </div>
             
             <div class="tip-box" style="margin-top: 2rem;">
-                <strong>💡 Совет:</strong> Используйте паузу на каждом шаге алгоритма, чтобы разобраться в деталях. Для закрепления материала попробуйте решить задачу самостоятельно, а затем сравните с результатом программы.
+                <strong>Совет:</strong> Используйте паузу на каждом шаге алгоритма, чтобы разобраться в деталях. Для закрепления материала попробуйте решить задачу самостоятельно, а затем сравните с результатом программы.
             </div>
         </div>
         
         <div class="sidebar">
-            <h3>📌 Полезные ссылки</h3>
+            <h3>Полезные ссылки</h3>
             <ul>
-                <li>• <a href="/transport">Транспортная задача</a></li>
-                <li>• <a href="/direct_lp">Прямая ЗЛП</a></li>
-                <li>• <a href="/assignment">Задача о назначениях</a></li>
-                <li>• <a href="/authors">Об авторах</a></li>
+                <li><a href="/transport">Транспортная задача</a></li>
+                <li><a href="/direct_lp">Прямая ЗЛП</a></li>
+                <li><a href="/assignment">Задача о назначениях</a></li>
+                <li><a href="/authors">Об авторах</a></li>
             </ul>
             <div class="tip-box">
-                <strong>❓ Нужна помощь?</strong>
+                <strong>Нужна помощь?</strong>
                 <p>Задайте вопрос на странице контактов</p>
                 <a href="/contact" class="btn btn-primary" style="display:block; margin-top:10px;">Задать вопрос</a>
             </div>
         </div>
     </div>
 
-    <footer>
-        <div class="footer-bottom">
-            <p>© 2026 Математическое моделирование. Все права защищены.</p>
+    <!-- ПОДВАЛ С ТЕКСТУРОЙ -->
+    <footer style="position: relative; overflow: hidden; background: linear-gradient(135deg, #9B2226, #6d181b); margin-top: 2rem;">
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('/static/images/texture3.png'); background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.15; pointer-events: none;"></div>
+        <div style="position: relative; z-index: 1; padding: 2rem 2rem 1rem;">
+            <div class="footer-content" style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2rem; max-width: 1400px; margin: 0 auto;">
+                <div class="footer-section">
+                    <h4>BottleWebProject_C322_3_EKP</h4>
+                    <p>Команда №3 | Егармина, Корнилов, Потылицына</p>
+                    <p>Группа C322 | ГУАП ФСПО №12</p>
+                </div>
+                <div class="footer-section">
+                    <h4>2026</h4>
+                    <p>Учебная практика УП02</p>
+                    <p>ПМ02 «Интеграция программных модулей»</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Связь</h4>
+                    <a href="/contact" class="question-btn">Задать вопрос</a>
+                </div>
+            </div>
+            <div class="footer-bottom" style="text-align: center; padding-top: 1.5rem; margin-top: 1.5rem; border-top: 1px solid rgba(237,231,246,0.2); font-size: 0.8rem;">
+                <p>© 2026 Математическое моделирование. Все права защищены.</p>
+            </div>
         </div>
     </footer>
 </body>
