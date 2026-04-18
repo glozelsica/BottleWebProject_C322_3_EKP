@@ -208,63 +208,71 @@ input[type="number"] {
         margin-right: 20px;
     }
 
+
+
 /* ==================== КНОПКИ ==================== */
-.step-controls {
+/* ==================== КНОПКИ ДЛЯ СТРАНИЦЫ ЗЛП ==================== */
+.button-group {
+    margin: 1.5rem 0;
     display: flex;
-    gap: 15px;
-    margin: 20px 0;
+    gap: 1rem;
     flex-wrap: wrap;
 }
 
-.btn-solve {
-    background: #28a745;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-    transition: 0.3s;
-}
-
-    .btn-solve:hover {
-        background: #218838;
-    }
-
-.btn-step {
-    background: #6c757d;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-    transition: 0.3s;
-}
-
-    .btn-step:hover {
-        background: #5a6268;
-    }
-
-.btn-info {
-    background: #17a2b8;
-    color: white;
+.btn {
     padding: 8px 16px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.95rem;
+    font-weight: 500;
     transition: 0.3s;
-    margin-bottom: 15px;
+    display: inline-block;
+    text-align: center;
+}
+
+/* Кнопка Решить - зеленая */
+.btn-primary {
+    background: #28a745;
+    color: white;
+}
+
+    .btn-primary:hover {
+        background: #218838;
+    }
+
+/* Кнопка Очистить - серая как btn-secondary */
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+
+/* Кнопка Загрузить пример - синяя как btn-info */
+.btn-info {
+    background: #17a2b8;
+    color: white;
 }
 
     .btn-info:hover {
         background: #138496;
     }
 
-button[type="button"] {
+/* Кнопка Сохранить результат - зеленая но темнее */
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+    .btn-success:hover {
+        background: #1e7e34;
+    }
+
+/* Для кнопки Обновить матрицу */
+button[type="button"]:not(.btn):not(.btn-primary):not(.btn-secondary):not(.btn-info):not(.btn-success) {
     background: #17a2b8;
     color: white;
     padding: 8px 16px;
@@ -275,7 +283,7 @@ button[type="button"] {
     transition: 0.3s;
 }
 
-    button[type="button"]:hover {
+    button[type="button"]:not(.btn):not(.btn-primary):not(.btn-secondary):not(.btn-info):not(.btn-success):hover {
         background: #138496;
     }
 

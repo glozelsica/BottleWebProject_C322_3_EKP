@@ -96,42 +96,34 @@ nav a {
     border-left: 4px solid #9B2226;
 }
 
+/* ==================== FOOTER ==================== */
 footer {
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    background: linear-gradient(135deg, #9B2226, #6d181b);
     color: #EDE7F6;
-    padding: 2rem 2rem 1rem;
-    margin-top: 3rem;
-}
-
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-.footer-section h4 {
-    color: #EDE7F6;
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-}
-
-.footer-section p {
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
-    opacity: 0.8;
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
 }
 
 .footer-bottom {
     text-align: center;
-    padding-top: 1.5rem;
-    margin-top: 1.5rem;
-    border-top: 1px solid rgba(237,231,246,0.2);
-    font-size: 0.8rem;
-    opacity: 0.7;
+    font-size: 0.9rem;
 }
+
+.question-btn {
+    display: inline-block;
+    margin-top: 0.5rem;
+    background: #EDE7F6;
+    color: #9B2226;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+    .question-btn:hover {
+        background: #d9cfe8;
+    }
 
 h1 {
     color: #9B2226;
