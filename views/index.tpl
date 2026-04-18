@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Математическое моделирование</title>
-    <link rel="icon" href="/static/images/logo.png" type="image/png">
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="icon" href="/static/images/logo.png" type="image/png">
 </head>
 <body>
     <header>
-         <div class="logo">
-            <img src="/static/images/logo.png" alt="Логотип" style="height: 35px; width: 35px; object-fit: contain;" onerror="this.style.display='none'">
-            <span>Математическое моделирование</span>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Логотип" style="height: 35px; width: auto; margin-right: 10px;">
+            Математическое моделирование
         </div>
         <nav>
             <a href="/">Главная</a>
@@ -92,8 +91,9 @@
     </div>
 
     <footer>
-        <p>2026 - Математическое моделирование{{year}}</p>
-        <a href="/contact" class="question-btn">📩 Задать вопрос</a>
+        <div class="footer-bottom">
+            <p>© 2026 Математическое моделирование. Все права защищены.</p>
+        </div>
     </footer>
 </body>
 </html>
