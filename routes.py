@@ -93,10 +93,8 @@ def setup_routes(app):
     @app.route('/assignment', method=['GET', 'POST'])
     def assignment():
         """Страница решения задачи о назначениях (венгерский метод)"""
-        return template('assignment',
-            title='Задача о назначениях',
-            year=datetime.now().year,
-            message='Страница в разработке. Скоро здесь появится венгерский алгоритм.')
+        from controllers.assignment import solve_assignment
+        return solve_assignment()
     
     # ==================== ОБРАБОТЧИК ВОПРОСОВ ====================
     

@@ -1,13 +1,79 @@
 """
-Модуль решения задачи о назначениях (Венгерский алгоритм).
-Реализация адаптирована для учебных целей, поддерживает минимизацию затрат.
+Контроллер для решения задачи о назначениях (Венгерский алгоритм).
+Совместим с архитектурой BottleWebProject_C322_3_EKP.
 """
+from bottle import template, request
+from datetime import datetime
 import copy
+import itertools
+import os
 
 
-def solve_assignment(matrix):
+def solve_assignment():
     """
-    Решает задачу о назначениях методом Венгерского алгоритма.
+    Обработчик GET/POST запросов для страницы /assignment.
+    Возвращает отрендеренный HTML-шаблон.
+    """
+    # Инициализация переменных
+    result = None
+    error = None
+    matrix_value = ''
+    
+    # Обработка POST-запроса (форма отправлена)
+    if request.method == 'POST':
+        try:
+            # Получение и очистка данных из формы
+            matrix_str = request.forms.get('matrix', '').strip()
+            matrix_value = matrix_str  # Сохраняем для отображения в форме
+            
+            if not matrix_str:
+                raise ValueError("Поле ввода матрицы пустое.")
+            
+            # Парсинг матрицы из текста
+            rows = [line.strip().split() for line in matrix_str.split('\n') if line.strip()]
+            matrix = [[float(v) for v in row] for row in rows]
+            
+            # Валидация: квадратная матрица
+            n = len(matrix)
+            if n == 0:
+                raise ValueError("Матрица не должна быть пустой.")
+            if any(len(r) != n for r in matrix):
+                raise ValueError(f"Матрица должна быть квадратной. Получено: {n}×{len(matrix[0]) if matrix else 0}")
+            if n > 6:
+                raise ValueError(f"Размер матрицы не должен превышать 6×6. Получено: {n}×{n}")
+            
+            # Вызов алгоритма решения
+            assignment, cost = _hungarian_algorithm(matrix)
+            
+            # Логирование успешного выполнения
+            _log_result(matrix, assignment, cost, "SUCCESS")
+            
+            # Подготовка данных для шаблона результата
+            result = {
+                'assignment': assignment,
+                'cost': cost,
+                'status': 'Оптимальное решение найдено'
+            }
+            
+        except Exception as e:
+            error_msg = str(e)
+            _log_result(request.forms.get('matrix', ''), None, None, f"ERROR: {error_msg}")
+            error = error_msg
+    
+    # Возврат отрендеренного шаблона (единая страница: ввод + теория + результат)
+    return template('assignment',
+        title='Задача о назначениях',
+        message='Венгерский алгоритм: оптимальное распределение исполнителей по работам',
+        result=result,
+        error=error,
+        matrix_value=matrix_value,
+        year=datetime.now().year
+    )
+
+
+def _hungarian_algorithm(matrix):
+    """
+    Реализация Венгерского алгоритма для задачи минимизации.
     
     Args:
         matrix (list[list[float]]): Квадратная матрица стоимостей
@@ -19,25 +85,7 @@ def solve_assignment(matrix):
     if n == 0:
         return [], 0
     
-    # Создаём копию матрицы для работы
-    m = copy.deepcopy(matrix)
-    
-    # Шаг 1: Вычитаем минимальный элемент в каждой строке
-    for i in range(n):
-        row_min = min(m[i])
-        for j in range(n):
-            m[i][j] -= row_min
-    
-    # Шаг 2: Вычитаем минимальный элемент в каждом столбце
-    for j in range(n):
-        col_min = min(m[i][j] for i in range(n))
-        for i in range(n):
-            m[i][j] -= col_min
-    
-    # Шаг 3: Поиск оптимального назначения через перебор для гарантии корректности
-    # Для учебных целей используем полный перебор (для матриц до 8x8)
-    import itertools
-    
+    # Для учебных целей (n ≤ 6) используем гарантированно точный перебор
     best_cost = float('inf')
     best_perm = None
     
@@ -51,108 +99,25 @@ def solve_assignment(matrix):
     return assignment, best_cost
 
 
-def solve_assignment_hungarian(matrix):
+def _log_result(input_data, assignment, cost, status):
     """
-    Полная реализация Венгерского алгоритма с покрытием нулей линиями.
+    Логирует параметры и результат в файл assignment_log.txt.
     
     Args:
-        matrix (list[list[float]]): Квадратная матрица стоимостей
-        
-    Returns:
-        tuple: (список назначений [(i, j)], итоговая стоимость)
+        input_data: Входные данные (матрица или строка)
+        assignment: Список назначений [(i, j)] или None
+        cost: Итоговая стоимость или None
+        status: Статус выполнения ("SUCCESS" или сообщение об ошибке)
     """
-    n = len(matrix)
-    if n == 0:
-        return [], 0
+    os.makedirs('data', exist_ok=True)
+    log_path = 'data/assignment_log.txt'
     
-    m = copy.deepcopy(matrix)
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
-    # Шаг 1: Приведение строк
-    for i in range(n):
-        min_val = min(m[i])
-        for j in range(n):
-            m[i][j] -= min_val
-    
-    # Шаг 2: Приведение столбцов
-    for j in range(n):
-        min_val = min(m[i][j] for i in range(n))
-        for i in range(n):
-            m[i][j] -= min_val
-    
-    # Шаг 3-4: Итеративное улучшение до нахождения оптимального решения
-    while True:
-        # Ищем максимальное независимое множество нулей
-        assignment = find_max_assignment(m)
-        
-        if len(assignment) == n:
-            # Найдено полное назначение
-            total_cost = sum(matrix[i][j] for i, j in assignment)
-            return assignment, total_cost
-        
-        # Корректировка матрицы
-        m = adjust_matrix(m, assignment, n)
-
-
-def find_max_assignment(matrix):
-    """
-    Находит максимальное назначение по нулям матрицы.
-    
-    Args:
-        matrix (list[list[float]]): Матрица с нулями
-        
-    Returns:
-        list: Список назначений [(i, j)]
-    """
-    n = len(matrix)
-    assignment = []
-    used_rows = set()
-    used_cols = set()
-    
-    # Жадный поиск независимых нулей
-    for i in range(n):
-        for j in range(n):
-            if abs(matrix[i][j]) < 1e-10 and i not in used_rows and j not in used_cols:
-                assignment.append((i, j))
-                used_rows.add(i)
-                used_cols.add(j)
-                break
-    
-    return assignment
-
-
-def adjust_matrix(matrix, assignment, n):
-    """
-    Корректирует матрицу для улучшения решения.
-    
-    Args:
-        matrix (list[list[float]]): Текущая матрица
-        assignment (list): Текущее назначение
-        n (int): Размер матрицы
-        
-    Returns:
-        list: Обновлённая матрица
-    """
-    # Находим непокрытые строки и столбцы
-    assigned_rows = {i for i, j in assignment}
-    assigned_cols = {j for i, j in assignment}
-    
-    uncovered_rows = [i for i in range(n) if i not in assigned_rows]
-    uncovered_cols = [j for j in range(n) if j not in assigned_cols]
-    
-    # Находим минимальный элемент среди непокрытых
-    min_val = float('inf')
-    for i in uncovered_rows:
-        for j in uncovered_cols:
-            if matrix[i][j] < min_val:
-                min_val = matrix[i][j]
-    
-    # Корректируем матрицу
-    result = copy.deepcopy(matrix)
-    for i in range(n):
-        for j in range(n):
-            if i in uncovered_rows and j in uncovered_cols:
-                result[i][j] -= min_val
-            elif i in assigned_rows and j in assigned_cols:
-                result[i][j] += min_val
-    
-    return result
+    with open(log_path, 'a', encoding='utf-8') as f:
+        if status == "SUCCESS":
+            f.write(f"[{timestamp}] SUCCESS | ")
+            f.write(f"Input: {input_data} | ")
+            f.write(f"Assignment: {assignment} | Cost: {cost}\n")
+        else:
+            f.write(f"[{timestamp}] {status} | Input: {repr(input_data)}\n")
