@@ -1130,3 +1130,97 @@ nav {
         grid-template-columns: 1fr;
     }
 }
+
+/* ==================== СТИЛИ ДЛЯ ТРАНСПОРТНОЙ ЗАДАЧИ ==================== */
+
+/* Огромный светящийся ответ */
+.giant-answer {
+    text-align: center;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(155, 89, 182, 0.8), 0 0 60px rgba(155, 89, 182, 0.5);
+    animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 20px rgba(155, 89, 182, 0.6), 0 0 40px rgba(155, 89, 182, 0.4);
+    }
+
+    to {
+        box-shadow: 0 0 40px rgba(155, 89, 182, 1), 0 0 80px rgba(155, 89, 182, 0.7);
+    }
+}
+
+.giant-answer h2 {
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+    border-bottom: none;
+}
+
+.giant-answer .cost-value {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #f9f9f9;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.giant-answer .cost-label {
+    font-size: 1rem;
+    color: #f0e6ff;
+    margin-top: 0.3rem;
+}
+
+/* Подсветка минимальной стоимости в результатах */
+.min-cost-highlight {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: bold;
+    margin: 1rem 0;
+    box-shadow: 0 0 15px rgba(155, 89, 182, 0.5);
+}
+
+    .min-cost-highlight span {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+
+/* Картинки в теории */
+.theory-img {
+    max-width: 100%;
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Убираем лампочки из полезных советов */
+.sidebar ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.sidebar li {
+    margin-bottom: 0.8rem;
+    font-size: 0.9rem;
+    padding-left: 0;
+}
+
+    .sidebar li:before {
+        content: none;
+    }
+
+/* Уменьшаем отступы */
+.form-section, .theory-block, .result-box {
+    margin-bottom: 1rem;
+}
+
+h2 {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}

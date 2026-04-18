@@ -6,24 +6,25 @@
     <title>Транспортная задача</title>
     <link rel="icon" href="/static/images/logo.png" type="image/png">
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/transport.css">
 </head>
 <body>
-    <!-- КРАСИВАЯ ШАПКА С ТЕКСТУРОЙ -->
-    <header class="header-with-texture">
-        <div class="header-texture"></div>
-        <div class="header-content">
-            <div class="logo">
-                <img src="/static/images/logo.png" alt="Логотип" class="logo-img" onerror="this.style.display='none'"> 
-                <span>Математическое моделирование</span>
+    <!-- ШАПКА -->
+    <header style="position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('/static/images/texture3.png'); background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.4; pointer-events: none;"></div>
+        <div style="position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; flex-wrap: wrap;">
+            <div class="logo" style="display: flex; align-items: center; gap: 0.5rem;">
+                <img src="/static/images/logo.png" alt="Логотип" style="height: 35px; width: 35px; object-fit: contain;" onerror="this.style.display='none'"> 
+                <span style="color: white;">Математическое моделирование</span>
             </div>
-            <nav>
-                <a href="/">Главная</a>
-                <a href="/transport">Транспортная</a>
-                <a href="/direct_lp">Прямая ЗЛП</a>
-                <a href="/assignment">Назначения</a>
-                <a href="/video">Видео</a>
-                <a href="/authors">Об авторах</a>
-                <a href="/contact">Контакты</a>
+            <nav style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                <a href="/" style="color: white; text-decoration: none;">Главная</a>
+                <a href="/transport" style="color: white; text-decoration: none;">Транспортная</a>
+                <a href="/direct_lp" style="color: white; text-decoration: none;">Прямая ЗЛП</a>
+                <a href="/assignment" style="color: white; text-decoration: none;">Назначения</a>
+                <a href="/video" style="color: white; text-decoration: none;">Видео</a>
+                <a href="/authors" style="color: white; text-decoration: none;">Об авторах</a>
+                <a href="/contact" style="color: white; text-decoration: none;">Контакты</a>
             </nav>
         </div>
     </header>
@@ -32,6 +33,7 @@
         <div class="content">
             <h1>Транспортная задача</h1>
             
+            <!-- ФОРМА ВВОДА -->
             <form method="post" action="/transport" id="transportForm">
                 <div class="form-section">
                     <h3>Ввод исходных данных</h3>
@@ -39,35 +41,40 @@
                     <div class="dimension-controls">
                         <div class="form-group">
                             <label>Количество поставщиков:</label>
-                            <input type="number" name="suppliers" id="suppliers" min="1" max="5" value="{{form_data.get('suppliers', 3)}}">
+                            <input type="number" name="suppliers" id="suppliers" min="1" max="5" value="3">
                         </div>
                         <div class="form-group">
                             <label>Количество потребителей:</label>
-                            <input type="number" name="consumers" id="consumers" min="1" max="5" value="{{form_data.get('consumers', 3)}}">
+                            <input type="number" name="consumers" id="consumers" min="1" max="5" value="3">
                         </div>
-                        <button type="button" class="btn btn-secondary" onclick="updateMatrix()">Обновить таблицу</button>
+                        <button type="button" class="btn btn-update" onclick="updateMatrix()">Обновить таблицу</button>
                     </div>
                     
                     <div id="matrixContainer"></div>
                     
                     <div class="button-group">
                         <button type="submit" class="btn btn-primary">Решить задачу</button>
-                        <button type="button" class="btn btn-secondary" onclick="clearForm()">Очистить</button>
+                        <button type="button" class="btn btn-clear" onclick="clearForm()">Очистить</button>
                         <button type="button" class="btn btn-info" onclick="loadExample()">Загрузить пример</button>
                     </div>
                 </div>
             </form>
             
             % if error:
-            <div class="error-box">
-                <strong>Ошибка:</strong> {{error}}
-            </div>
+            <div class="error-box"><strong>Ошибка:</strong> {{error}}</div>
             % end
             
             % if result:
+            <!-- ОТВЕТ -->
+            <div class="giant-answer">
+                <h2>✨ ОПТИМАЛЬНОЕ РЕШЕНИЕ ✨</h2>
+                <div class="cost-value">{{result['best_cost']}} ден. ед.</div>
+                <div class="cost-label">Минимальная стоимость перевозок</div>
+            </div>
+            
             <h2>Результаты решения</h2>
             
-            <!-- Проверка баланса -->
+            <!-- Баланс -->
             <div class="theory-block">
                 <h3>Проверка сбалансированности</h3>
                 <p>Сумма запасов: Σaᵢ = {{result['total_supply']}}</p>
@@ -75,108 +82,74 @@
                 % if result['balanced']:
                 <p style="color:green;">✅ Задача сбалансирована (закрытая модель)</p>
                 % else:
-                <p style="color:orange;">⚠️ Задача несбалансирована, требуется введение фиктивного участника</p>
+                <p style="color:orange;">⚠️ Задача несбалансирована, добавлены фиктивные участники</p>
                 % end
             </div>
             
-            <!-- Метод северо-западного угла -->
+            <!-- Северо-западный угол -->
             <div class="result-box">
                 <h3>Метод северо-западного угла</h3>
-                <p><strong>Пошаговое построение опорного плана:</strong></p>
                 % for step in result['northwest_steps']:
                 <div class="formula-detail">
                     <strong>Шаг {{step['step']}}:</strong> Клетка {{step['cell']}} → {{step['formula']}} единиц
                 </div>
                 % end
-                
-                <p><strong>Полученный опорный план:</strong></p>
                 <table class="result-table">
                     <thead>
                         <tr><th></th>
-                        % for j in range(result['consumers']):
-                        <th>B{{j+1}}</th>
+                        % for col in range(result['consumers']):
+                        <th>B{{col+1}}</th>
                         % end
                         <th>Запасы</th>
                     </tr>
                     </thead>
                     <tbody>
-                    % for i in range(result['suppliers']):
+                    % for row in range(result['suppliers']):
                     <tr>
-                        <th>A{{i+1}}</th>
-                        % for j in range(result['consumers']):
-                        <td style="background-color: {{'#e8f5e9' if result['northwest_plan'][i][j] > 0 else 'white'}}">
-                            <strong>{{ result['northwest_plan'][i][j] if result['northwest_plan'][i][j] > 0 else '-' }}</strong>
-                            <br><small>(c={{result['costs'][i][j]}})</small>
-                        </td>
+                        <th>A{{row+1}}</th>
+                        % for col in range(result['consumers']):
+                        <td><strong>{{ result['northwest_plan'][row][col] if result['northwest_plan'][row][col] > 0 else '-' }}</strong><br><small>(c={{result['costs'][row][col]}})</small></td>
                         % end
-                        <td>{{ result['supply'][i] }}</td>
+                        <td>{{ result['supply'][row] }}</td>
                     </tr>
                     % end
-                    <tr>
-                        <th>Потребности</th>
-                        % for j in range(result['consumers']):
-                        <td>{{ result['demand'][j] }}</td>
-                        % end
-                        <td>\n                </td>
                     </tbody>
                 </table>
-                
                 <p>{{result['northwest_degenerate']['message']}}</p>
-                
-                <p><strong>Расчет стоимости перевозок:</strong></p>
-                <div class="formula-detail">
-                    <strong>F = {{result['northwest_cost']}} ден. ед.</strong>
-                </div>
+                <div class="formula-detail"><strong>F = {{result['northwest_cost']}} ден. ед.</strong></div>
             </div>
             
-            <!-- Метод минимального элемента -->
+            <!-- Минимальный элемент -->
             <div class="result-box">
                 <h3>Метод минимального элемента</h3>
-                <p><strong>Пошаговое построение опорного плана:</strong></p>
                 % for step in result['mincost_steps']:
                 <div class="formula-detail">
                     <strong>Шаг {{step['step']}}:</strong> Клетка {{step['cell']}} (тариф={{step['cost']}}) → {{step['formula']}} единиц
                 </div>
                 % end
-                
-                <p><strong>Полученный опорный план:</strong></p>
                 <table class="result-table">
                     <thead>
                         <tr><th></th>
-                        % for j in range(result['consumers']):
-                        <th>B{{j+1}}</th>
+                        % for col in range(result['consumers']):
+                        <th>B{{col+1}}</th>
                         % end
                         <th>Запасы</th>
-                    <tr>
+                    </tr>
                     </thead>
                     <tbody>
-                    % for i in range(result['suppliers']):
+                    % for row in range(result['suppliers']):
                     <tr>
-                        <th>A{{i+1}}</th>
-                        % for j in range(result['consumers']):
-                        <td style="background-color: {{'#e8f5e9' if result['mincost_plan'][i][j] > 0 else 'white'}}">
-                            <strong>{{ result['mincost_plan'][i][j] if result['mincost_plan'][i][j] > 0 else '-' }}</strong>
-                            <br><small>(c={{result['costs'][i][j]}})</small>
-                        </td>
+                        <th>A{{row+1}}</th>
+                        % for col in range(result['consumers']):
+                        <td><strong>{{ result['mincost_plan'][row][col] if result['mincost_plan'][row][col] > 0 else '-' }}</strong><br><small>(c={{result['costs'][row][col]}})</small></td>
                         % end
-                        <td>{{ result['supply'][i] }}</td>
+                        <td>{{ result['supply'][row] }}</td>
                     </tr>
                     % end
-                    <tr>
-                        <th>Потребности</th>
-                        % for j in range(result['consumers']):
-                        <td>{{ result['demand'][j] }}</td>
-                        % end
-                        <td>\n                </tr>
                     </tbody>
                 </table>
-                
                 <p>{{result['mincost_degenerate']['message']}}</p>
-                
-                <p><strong>Расчет стоимости перевозок:</strong></p>
-                <div class="formula-detail">
-                    <strong>F = {{result['mincost_cost']}} ден. ед.</strong>
-                </div>
+                <div class="formula-detail"><strong>F = {{result['mincost_cost']}} ден. ед.</strong></div>
             </div>
             
             <!-- Метод потенциалов -->
@@ -187,18 +160,15 @@
                 % for iter_data in result['best_iterations']:
                 <div class="iteration-block">
                     <h4>Итерация {{iter_data['iteration']}}</h4>
-                    <p><strong>Потенциалы поставщиков uᵢ:</strong> {{iter_data['potentials_u']}}</p>
-                    <p><strong>Потенциалы потребителей vⱼ:</strong> {{iter_data['potentials_v']}}</p>
-                    <p><em>{{iter_data.get('potentials_explanation', '')}}</em></p>
+                    <p><strong>Потенциалы uᵢ:</strong> {{iter_data['potentials_u']}}</p>
+                    <p><strong>Потенциалы vⱼ:</strong> {{iter_data['potentials_v']}}</p>
                     
-                    <p><strong>Оценки свободных клеток Δᵢⱼ = uᵢ + vⱼ - cᵢⱼ:</strong></p>
+                    <p><strong>Оценки свободных клеток:</strong></p>
                     <table class="result-table">
-                        <thead>
-                            <tr><th>Клетка</th><th>Формула</th><th>Оценка Δ</th></tr>
-                        </thead>
+                        <thead><tr><th>Клетка</th><th>Формула</th><th>Оценка Δ</th></tr></thead>
                         <tbody>
                         % for d in iter_data['deltas']:
-                        <tr style="background-color: {{'#ffeb3b' if d['delta'] > 0 else 'white'}}">
+                        <tr style="background-color: {{'#ffeb3b' if d['is_positive'] else 'white'}}">
                             <td>{{d['cell']}}</td>
                             <td>{{d['formula']}}</td>
                             <td class="delta-positive">{{d['delta']}}</td>
@@ -207,19 +177,24 @@
                         </tbody>
                     </table>
                     
-                    <p><strong>{{iter_data['enter_explanation']}}</strong></p>
-                    <p>{{iter_data['check_optimal']}}</p>
+                    <p>{{iter_data['enter_explanation']}}</p>
+                    <p><strong>{{iter_data['check_optimal']}}</strong></p>
                     
-                    % if 'cycle' in iter_data:
-                    <p><strong>Построение цикла пересчёта:</strong></p>
-                    <p><em>{{iter_data['cycle']['description']}}</em></p>
-                    <p><strong>Цикл:</strong> 
-                        % for cell in iter_data['cycle']['cells']:
-                            {{cell['cell']}}<sup>{{cell['sign']}}</sup> → 
+                    % if iter_data.get('cycle') and iter_data['cycle'].get('cells'):
+                    <div style="margin-top: 15px; padding: 10px; background: #e8e8e8; border-radius: 8px;">
+                        <p><strong>🔄 Построение цикла пересчёта:</strong></p>
+                        <p><em>{{iter_data['cycle']['description']}}</em></p>
+                        <p><strong>Цикл:</strong> 
+                        % for idx, cell in enumerate(iter_data['cycle']['cells']):
+                            {{cell['cell']}}<sup>{{cell['sign']}}</sup> {% if idx < len(iter_data['cycle']['cells']) - 1 %} → {% endif %}
                         % end
-                    </p>
-                    <p><strong>{{iter_data['cycle']['theta_explanation']}}</strong></p>
-                    <p><strong>{{iter_data['cycle']['redistribution']}}</strong></p>
+                        </p>
+                        <p><strong>{{iter_data['cycle']['theta_explanation']}}</strong></p>
+                        <p><strong>{{iter_data['cycle']['redistribution']}}</strong></p>
+                        % if 'new_cost' in iter_data:
+                        <p class="cost-decrease">💰 Новая стоимость: {{iter_data['new_cost']}} ден. ед.</p>
+                        % end
+                    </div>
                     % end
                 </div>
                 % end
@@ -228,115 +203,98 @@
                 <table class="result-table">
                     <thead>
                         <tr><th></th>
-                        % for j in range(result['consumers']):
-                        <th>B{{j+1}}</th>
+                        % for col in range(result['consumers']):
+                        <th>B{{col+1}}</th>
                         % end
                         <th>Запасы</th>
                     </tr>
                     </thead>
                     <tbody>
-                    % for i in range(result['suppliers']):
+                    % for row in range(result['suppliers']):
                     <tr>
-                        <th>A{{i+1}}</th>
-                        % for j in range(result['consumers']):
-                        <td><strong>{{ result['best_plan'][i][j] if result['best_plan'][i][j] > 0 else '-' }}</strong></td>
+                        <th>A{{row+1}}</th>
+                        % for col in range(result['consumers']):
+                        <td><strong>{{ result['best_plan'][row][col] if result['best_plan'][row][col] > 0 else '-' }}</strong></td>
                         % end
-                        <td>{{ result['supply'][i] }}</td>
+                        <td>{{ result['supply'][row] }}</td>
                     </tr>
                     % end
                     </tbody>
                 </table>
-                <div class="formula-detail">
-                    <strong>Минимальная стоимость: F_min = {{result['best_cost']}} ден. ед.</strong>
+                
+                <div class="min-cost-highlight">
+                    🚚 Минимальная стоимость перевозок: <span>{{result['best_cost']}} ден. ед.</span> 🚚
                 </div>
             </div>
             % end
             
-            <!-- ТЕОРИЯ (МИНИМАЛЬНЫЙ ТЕКСТ ПРЯМО В TPL) -->
+            <!-- ТЕОРИЯ -->
             <h2>📖 Теоретические основы</h2>
             
             <div class="theory-block">
-                <h3>1. Постановка транспортной задачи. Закрытая модель</h3>
+                <h3>1. Постановка транспортной задачи</h3>
                 <div class="theory-text">
-                    Транспортная задача является одним из наиболее важных частных случаев общей задачи линейного программирования.
-                    <br><br>
-                    <strong>Целевая функция (минимизация стоимости перевозок):</strong> F = ΣᵢΣⱼ cᵢⱼ · xᵢⱼ → min
-                    <br><br>
-                    <strong>Ограничения по запасам поставщиков:</strong> Σⱼ xᵢⱼ = aᵢ, i = 1..m
-                    <br>
-                    <strong>Ограничения по потребностям потребителей:</strong> Σᵢ xᵢⱼ = bⱼ, j = 1..n
-                    <br>
-                    <strong>Условие неотрицательности переменных:</strong> xᵢⱼ ≥ 0
-                    <br><br>
-                    <strong>ОПРЕДЕЛЕНИЕ:</strong> Если общая потребность в продукте в пунктах потребления равна общему запасу продукта в пунктах производства, т.е. Σaᵢ = Σbⱼ, то модель транспортной задачи называется <strong>закрытой</strong>.
-                    <br><br>
-                    <strong>ТЕОРЕМА:</strong> Для разрешимости транспортной задачи необходимо и достаточно, чтобы выполнялось равенство Σaᵢ = Σbⱼ.
-                    <br><br>
-                    <strong>Число базисных клеток в невырожденном плане:</strong> N = m + n - 1
+                    <p><strong>Целевая функция:</strong> F = ΣᵢΣⱼ cᵢⱼ · xᵢⱼ → min</p>
+                    <p><strong>Ограничения по запасам:</strong> Σⱼ xᵢⱼ = aᵢ</p>
+                    <p><strong>Ограничения по потребностям:</strong> Σᵢ xᵢⱼ = bⱼ</p>
+                    <p><strong>Условие неотрицательности:</strong> xᵢⱼ ≥ 0</p>
+                    <p><strong>Закрытая модель:</strong> Σaᵢ = Σbⱼ</p>
+                    <p><strong>Число базисных клеток:</strong> N = m + n - 1</p>
                 </div>
-                <div class="formula-text">
-                    <strong>Основные формулы:</strong><br>
-                    F = ΣᵢΣⱼ cᵢⱼ · xᵢⱼ → min<br>
-                    Σⱼ xᵢⱼ = aᵢ, i = 1..m<br>
-                    Σᵢ xᵢⱼ = bⱼ, j = 1..n<br>
-                    Σaᵢ = Σbⱼ (закрытая модель)<br>
-                    N = m + n - 1
+                <div style="text-align: center;">
+                    <img src="/static/images/formula_objective.png" class="formula-img" onerror="this.style.display='none'">
+                    <img src="/static/images/formula_supply.png" class="formula-img" onerror="this.style.display='none'">
+                    <img src="/static/images/formula_demand.png" class="formula-img" onerror="this.style.display='none'">
+                    <img src="/static/images/formula_balance.png" class="formula-img" onerror="this.style.display='none'">
                 </div>
             </div>
             
             <div class="theory-block">
-                <h3>2. Метод потенциалов</h3>
+                <h3>2. Методы построения опорного плана</h3>
                 <div class="theory-text">
-                    Метод потенциалов используется для проверки оптимальности опорного плана и его улучшения.
-                    <br><br>
-                    <strong>Методы построения опорного плана:</strong>
-                    <br>
-                    а) <strong>Метод северо-западного угла</strong> - заполнение начинается с левой верхней клетки.
-                    <br>
-                    б) <strong>Метод минимального элемента</strong> - выбирается клетка с минимальным тарифом.
-                    <br><br>
-                    <strong>Схема решения методом потенциалов:</strong>
-                    <br>
-                    1. Строят опорный план одним из методов.
-                    <br>
-                    2. Находят потенциалы поставщиков (αᵢ) и потребителей (βⱼ).
-                    <br>
-                    3. Вычисляют оценки свободных клеток Δᵢⱼ = αᵢ + βⱼ - cᵢⱼ.
-                    <br>
-                    4. Если все Δᵢⱼ ≤ 0, план оптимален.
-                    <br>
-                    5. Если есть Δᵢⱼ > 0, строят цикл пересчёта и улучшают план.
-                    <br><br>
-                    <strong>Алгоритм улучшения плана:</strong>
-                    <br>
-                    1) Среди всех Δᵢⱼ > 0 выбирают максимальное.
-                    <br>
-                    2) Для соответствующей клетки строят цикл пересчета.
-                    <br>
-                    3) Помечают вершины цикла знаками «+» и «-», начиная с «+».
-                    <br>
-                    4) Среди чисел в клетках со знаком «-» определяют минимальное (θ).
-                    <br>
-                    5) К «+»-клеткам прибавляют θ, из «-»-клеток вычитают θ.
-                    <br><br>
-                    <strong>ОПРЕДЕЛЕНИЕ:</strong> Циклом пересчета называется ломаная линия, вершины которой расположены в занятых клетках, а звенья — вдоль строк и столбцов.
+                    <p><strong>Метод северо-западного угла</strong> — заполнение с левой верхней клетки.</p>
+                    <p><strong>Метод минимального элемента</strong> — выбор клетки с минимальным тарифом.</p>
                 </div>
-                <div class="formula-text">
-                    <strong>Основные формулы:</strong><br>
-                    αᵢ + βⱼ = cᵢⱼ (для базисных клеток)<br>
-                    Δᵢⱼ = αᵢ + βⱼ - cᵢⱼ<br>
-                    θ = min{xᵢⱼ} по клеткам со знаком «-»
+                <img src="/static/images/northwest_method.png" class="theory-img" onerror="this.style.display='none'">
+                <img src="/static/images/mincost_method.png" class="theory-img" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="theory-block">
+                <h3>3. Метод потенциалов</h3>
+                <div class="theory-text">
+                    <p><strong>Теорема:</strong> Если для базисных клеток βⱼ — αᵢ = cᵢⱼ, а для свободных βⱼ — αᵢ ≤ cᵢⱼ, то план оптимален.</p>
+                    <p><strong>Оценка свободной клетки:</strong> Δᵢⱼ = αᵢ + βⱼ — cᵢⱼ</p>
+                    <p><strong>Величина перераспределения:</strong> θ = min{xᵢⱼ} по клеткам со знаком «-»</p>
+                    <p><strong>Цикл пересчёта</strong> — ломаная линия по базисным клеткам с чередованием знаков «+» и «-».</p>
+                </div>
+                <div style="text-align: center;">
+                    <img src="/static/images/formula_basic_condition.png" class="formula-img" onerror="this.style.display='none'">
+                    <img src="/static/images/formula_delta.png" class="formula-img" onerror="this.style.display='none'">
+                    <img src="/static/images/formula_theta.png" class="formula-img" onerror="this.style.display='none'">
+                </div>
+                <img src="/static/images/cycle_example.png" class="theory-img" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="theory-block">
+                <h3>4. Дополнительные ограничения</h3>
+                <div class="theory-text">
+                    <p><strong>Запрещённые маршруты:</strong> тариф = M</p>
+                    <p><strong>Обязательные поставки:</strong> корректировка запасов</p>
+                    <p><strong>Открытая модель:</strong> ввод фиктивного участника</p>
                 </div>
             </div>
             
             <div class="theory-block">
-                <h3>3. Дополнительные ограничения транспортной задачи</h3>
+                <h3>5. Пример решения</h3>
                 <div class="theory-text">
-                    <strong>1. Запрещенные маршруты.</strong> Если по каким-либо причинам невозможно поставлять продукцию из п. Аᵢ в п. Вⱼ, тариф принимают равным большому числу М.
-                    <br><br>
-                    <strong>2. Обязательные поставки.</strong> Если необходимо перевезти определенное количество продукции, соответствующую клетку заполняют сразу, а запасы и потребности уменьшают.
-                    <br><br>
-                    <strong>3. Открытая модель.</strong> При несбалансированности (Σaᵢ ≠ Σbⱼ) вводят фиктивного поставщика или потребителя с нулевыми тарифами.
+                    <p>Запасы: [80, 60, 30, 60], Потребности: [10, 30, 40, 50, 70, 30]</p>
+                    <p>Сумма запасов = 230, сумма потребностей = 230 — задача сбалансирована.</p>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">
+                    <img src="/static/images/example_iteration_1.png" class="theory-img" style="max-width: 200px;" onerror="this.style.display='none'">
+                    <img src="/static/images/example_iteration2.png" class="theory-img" style="max-width: 200px;" onerror="this.style.display='none'">
+                    <img src="/static/images/example_iteration3.png" class="theory-img" style="max-width: 200px;" onerror="this.style.display='none'">
+                    <img src="/static/images/example_iteration4.png" class="theory-img" style="max-width: 200px;" onerror="this.style.display='none'">
                 </div>
             </div>
             
@@ -344,56 +302,57 @@
                 <h3>📚 Литература</h3>
                 <ul>
                     <li>Ваулин А.Е. Методы цифровой обработки данных. — СПб.: ВИККИ, 1993.</li>
-                    <li>Таха Х.А. Введение в исследование операций. 7-е изд. — М.: Вильямс, 2005.</li>
+                    <li>Таха Х.А. Введение в исследование операций. — М.: Вильямс, 2005.</li>
                     <li>Корбут А.А., Финкельштейн Ю.Ю. Дискретное программирование. — М.: Наука, 1969.</li>
                 </ul>
             </div>
         </div>
         
-        <!-- ПОЛЕЗНЫЕ СОВЕТЫ (СПРАВА) -->
+        <!-- ПОЛЕЗНЫЕ СОВЕТЫ -->
         <div class="sidebar">
-            <h3>💡 Полезные советы</h3>
+            <h3>Полезные советы</h3>
             <ul>
                 <li>Для перехода между ячейками используйте Tab</li>
-                <li>Положительная оценка Δᵢⱼ означает, что стоимость можно уменьшить</li>
-                <li>Цикл пересчёта строится только по базисным клеткам</li>
+                <li>Положительная оценка Δᵢⱼ → стоимость можно уменьшить</li>
+                <li>Цикл пересчёта строится по базисным клеткам</li>
                 <li>Количество базисных клеток = m + n - 1</li>
                 <li>При несбалансированности добавляются фиктивные участники</li>
-                <li>Метод минимального элемента обычно даёт лучший начальный план</li>
-                <li>Потенциалы находятся из системы uᵢ + vⱼ = cᵢⱼ для базисных клеток</li>
+                <li>Метод минимального элемента даёт лучший начальный план</li>
             </ul>
             <div class="tip-box">
-                <strong>🎥 Видео-инструкция</strong>
-                <p style="margin-top: 10px;">Подробное объяснение метода потенциалов</p>
-                <a href="/video" class="btn btn-info" style="display:block; margin-top:10px;">Смотреть урок</a>
+                <strong>Видео-инструкция</strong>
+                <a href="/video" class="btn-video">Смотреть урок</a>
             </div>
             <div class="tip-box" style="margin-top: 15px;">
-                <strong>📖 Тестовый пример</strong>
-                <p style="margin-top: 10px;">Нажмите "Загрузить пример" для быстрого тестирования</p>
+                <strong>Тестовый пример</strong>
+                <p>Нажмите "Загрузить пример"</p>
             </div>
         </div>
     </div>
 
-    <!-- КРАСИВЫЙ ПОДВАЛ (ВНИЗУ) -->
-    <footer class="footer-main">
+    <!-- ПОДВАЛ -->
+    <footer class="footer-with-texture">
+        <div class="footer-texture"></div>
         <div class="footer-content">
-            <div class="footer-section">
-                <h4>BottleWebProject_C322_3_EKP</h4>
-                <p>Команда №3 | Егармина, Корнилов, Потылицына</p>
-                <p>Группа C322 | ГУАП ФСПО №12</p>
+            <div class="footer-inner">
+                <div class="footer-section">
+                    <h4>Главные разработчики</h4>
+                    <p>Группа C322 | ГУАП ФСПО №12</p>
+                    <p>Егармина, Корнилов, Потылицына</p>
+                </div>
+                <div class="footer-section">
+                    <h4>2026</h4>
+                    <p>Учебная практика УП02</p>
+                    <p>ПМ02 «Интеграция программных модулей»</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Связь</h4>
+                    <a href="/contact" class="question-btn">Задать вопрос</a>
+                </div>
             </div>
-            <div class="footer-section">
-                <h4>{{year if 'year' in locals() else '2026'}}</h4>
-                <p>Учебная практика УП02</p>
-                <p>ПМ02 «Интеграция программных модулей»</p>
+            <div class="footer-bottom">
+                <p>© 2026 Математическое моделирование. Все права защищены.</p>
             </div>
-            <div class="footer-section">
-                <h4>Связь</h4>
-                <a href="/contact" class="question-btn">Задать вопрос</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© {{year if 'year' in locals() else '2026'}} Математическое моделирование. Все права защищены.</p>
         </div>
     </footer>
 
@@ -414,19 +373,16 @@
                 html += '<tr><th>Поставщик ' + i + '</th>';
                 for(var j = 1; j <= consumers; j++) {
                     var saved = localStorage.getItem('cost_' + (i-1) + '_' + (j-1));
-                    if(saved === null) saved = '0';
-                    html += '<td><input type="number" name="cost_' + (i-1) + '_' + (j-1) + '" step="any" value="' + saved + '" style="width:80px;"></td>';
+                    html += '<td><input type="number" name="cost_' + (i-1) + '_' + (j-1) + '" step="any" value="' + (saved || '0') + '" style="width:80px;"></td>';
                 }
                 var savedSupply = localStorage.getItem('supply_' + (i-1));
-                if(savedSupply === null) savedSupply = '0';
-                html += '<td><input type="number" name="supply_' + (i-1) + '" step="any" value="' + savedSupply + '" style="width:80px;"></td></tr>';
+                html += '<td><input type="number" name="supply_' + (i-1) + '" step="any" value="' + (savedSupply || '0') + '" style="width:80px;"></td></tr>';
             }
             
             html += '<tr><th>Потребности</th>';
             for(var j = 1; j <= consumers; j++) {
                 var savedDemand = localStorage.getItem('demand_' + (j-1));
-                if(savedDemand === null) savedDemand = '0';
-                html += '<td><input type="number" name="demand_' + (j-1) + '" step="any" value="' + savedDemand + '" style="width:80px;"></td>';
+                html += '<td><input type="number" name="demand_' + (j-1) + '" step="any" value="' + (savedDemand || '0') + '" style="width:80px;"><td>';
             }
             html += '<td>\n                <tr>\n            </tbody>\n        </table>\n    </div>';
             html += '<input type="hidden" name="suppliers" value="' + suppliers + '">';
@@ -455,7 +411,6 @@
             document.getElementById('suppliers').value = '3';
             document.getElementById('consumers').value = '3';
             updateMatrix();
-            
             setTimeout(function() {
                 var supplies = [70, 100, 110];
                 var demands = [80, 50, 150];
@@ -473,9 +428,7 @@
             }, 50);
         }
         
-        document.addEventListener('DOMContentLoaded', function() {
-            updateMatrix();
-        });
+        document.addEventListener('DOMContentLoaded', function() { updateMatrix(); });
     </script>
 </body>
 </html>

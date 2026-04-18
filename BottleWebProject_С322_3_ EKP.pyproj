@@ -68,6 +68,9 @@
     <Content Include="static\css\style.css">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="static\css\transport.css">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="static\data\theory_assigment.json">
       <SubType>Code</SubType>
     </Content>
@@ -81,6 +84,9 @@
     <Content Include="static\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="static\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="static\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="static\images\silver_texture4.png" />
+    <Content Include="static\images\silver_texture2.png" />
+    <Content Include="static\images\silver_texture.png" />
     <Content Include="static\images\icon_assig.png" />
     <Content Include="static\images\logo.png" />
     <Content Include="static\images\rectangle_rule.png" />
@@ -102,6 +108,7 @@
     <Content Include="static\images\example_iteration4.png" />
     <Content Include="static\images\icon_zlp.png" />
     <Content Include="static\images\icon_transport.png" />
+    <Content Include="static\images\silver_texture3.png" />
     <Content Include="static\scripts\bootstrap.js" />
     <Content Include="static\scripts\bootstrap.min.js" />
     <Content Include="static\scripts\jquery-1.10.2.intellisense.js" />

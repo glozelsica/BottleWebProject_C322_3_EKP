@@ -1,0 +1,433 @@
+/* ==================== ТРАНСПОРТНАЯ ЗАДАЧА — ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ==================== */
+
+/* Огромный светящийся ответ */
+.giant-answer {
+    text-align: center;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(155, 89, 182, 0.8), 0 0 60px rgba(155, 89, 182, 0.5);
+    animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 20px rgba(155, 89, 182, 0.6), 0 0 40px rgba(155, 89, 182, 0.4);
+    }
+
+    to {
+        box-shadow: 0 0 40px rgba(155, 89, 182, 1), 0 0 80px rgba(155, 89, 182, 0.7);
+    }
+}
+
+.giant-answer h2 {
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+    border-bottom: none;
+}
+
+.giant-answer .cost-value {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #f9f9f9;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.giant-answer .cost-label {
+    font-size: 1rem;
+    color: #f0e6ff;
+    margin-top: 0.3rem;
+}
+
+/* Подсветка минимальной стоимости */
+.min-cost-highlight {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    color: white;
+    padding: 0.8rem;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: bold;
+    margin: 1rem 0;
+    box-shadow: 0 0 15px rgba(155, 89, 182, 0.5);
+}
+
+    .min-cost-highlight span {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+
+/* Картинки в теории */
+.theory-img {
+    max-width: 100%;
+    margin: 15px 0;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Формулы картинками */
+.formula-img {
+    display: inline-block;
+    margin: 10px;
+    max-width: 200px;
+    background: #d9cfe8;
+    padding: 10px;
+    border-radius: 12px;
+}
+
+/* Серебряная текстура для полезных советов */
+.sidebar {
+    background: #d9cfe8;
+    position: relative;
+    overflow: hidden;
+}
+
+    .sidebar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('/static/images/silver_texture4.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0.15;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .sidebar > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Убираем лампочки из полезных советов */
+    .sidebar ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .sidebar li {
+        margin-bottom: 0.8rem;
+        font-size: 0.9rem;
+        padding-left: 0;
+    }
+
+        .sidebar li:before {
+            content: none;
+        }
+
+/* Уменьшаем отступы */
+.form-section, .theory-block, .result-box {
+    margin-bottom: 1rem;
+}
+
+h2 {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Таблицы результатов */
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+
+    .result-table th, .result-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .result-table th {
+        background: linear-gradient(135deg, #EDE7F6, #d9cfe8);
+        color: #9B2226;
+    }
+
+/* Блоки итераций */
+.iteration-block {
+    background: #f8f9fa;
+    border-left: 4px solid #9B2226;
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.delta-positive {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.formula-detail {
+    font-family: monospace;
+    background: #e9ecef;
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+}
+
+.theory-block {
+    background: #EDE7F6;
+    padding: 1rem;
+    border-radius: 12px;
+    margin: 1rem 0;
+}
+
+.theory-text {
+    line-height: 1.8;
+    white-space: pre-line;
+}
+
+/* ==================== НОВЫЕ СТИЛИ КНОПОК ==================== */
+
+/* Кнопка Обновить таблицу */
+.btn-update {
+    background: #FF9B73;
+    color: #4a1a1a;
+    border: none;
+    transition: all 0.3s ease;
+    animation: btn-glow 1.5s ease-in-out infinite;
+}
+
+    .btn-update:hover {
+        background: #F16D95;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(241, 109, 149, 0.8), 0 0 30px rgba(241, 109, 149, 0.4);
+    }
+
+/* Кнопка Очистить */
+.btn-clear {
+    background: #FF9B73;
+    color: #4a1a1a;
+    border: none;
+    transition: all 0.3s ease;
+    animation: btn-glow 1.5s ease-in-out infinite;
+}
+
+    .btn-clear:hover {
+        background: #F16D95;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(241, 109, 149, 0.8), 0 0 30px rgba(241, 109, 149, 0.4);
+    }
+
+/* Кнопка Решить задачу */
+.btn-primary {
+    background: #94002D;
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+    animation: btn-glow-red 1.5s ease-in-out infinite;
+}
+
+    .btn-primary:hover {
+        background: #439400;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(67, 148, 0, 0.8), 0 0 30px rgba(67, 148, 0, 0.4);
+    }
+
+/* Кнопка Загрузить пример */
+.btn-info {
+    background: #F16D95;
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+    animation: btn-glow-pink 1.5s ease-in-out infinite;
+}
+
+    .btn-info:hover {
+        background: #6C006C;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(108, 0, 108, 0.8), 0 0 30px rgba(108, 0, 108, 0.4);
+    }
+
+/* Кнопка Смотреть урок (видео) */
+.btn-video {
+    background: #F16D95;
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+    animation: btn-glow-pink 1.5s ease-in-out infinite;
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+    .btn-video:hover {
+        background: #6C006C;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(108, 0, 108, 0.8), 0 0 30px rgba(108, 0, 108, 0.4);
+    }
+
+/* Анимация свечения для кнопок */
+@keyframes btn-glow {
+    0% {
+        box-shadow: 0 0 5px rgba(255, 155, 115, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(255, 155, 115, 0.9), 0 0 10px rgba(241, 109, 149, 0.5);
+    }
+
+    100% {
+        box-shadow: 0 0 5px rgba(255, 155, 115, 0.5);
+    }
+}
+
+@keyframes btn-glow-red {
+    0% {
+        box-shadow: 0 0 5px rgba(148, 0, 45, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(148, 0, 45, 0.9), 0 0 10px rgba(148, 0, 45, 0.5);
+    }
+
+    100% {
+        box-shadow: 0 0 5px rgba(148, 0, 45, 0.5);
+    }
+}
+
+@keyframes btn-glow-pink {
+    0% {
+        box-shadow: 0 0 5px rgba(241, 109, 149, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(241, 109, 149, 0.9), 0 0 10px rgba(241, 109, 149, 0.5);
+    }
+
+    100% {
+        box-shadow: 0 0 5px rgba(241, 109, 149, 0.5);
+    }
+}
+
+/* Центрирование полей ввода */
+.dimension-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+    .dimension-controls .form-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .dimension-controls label {
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+/* Визуализация цикла */
+.cycle-table-wrapper {
+    overflow-x: auto;
+    margin: 15px 0;
+}
+
+.cycle-visual-table {
+    border-collapse: collapse;
+    margin: 0 auto;
+    background: white;
+}
+
+    .cycle-visual-table td, .cycle-visual-table th {
+        border: 2px solid #9B2226;
+        padding: 12px;
+        text-align: center;
+        min-width: 70px;
+        position: relative;
+    }
+
+.cycle-cell-plus {
+    background-color: #d4edda !important;
+    position: relative;
+}
+
+    .cycle-cell-plus::after {
+        content: "+";
+        position: absolute;
+        top: 2px;
+        right: 5px;
+        color: #28a745;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+.cycle-cell-minus {
+    background-color: #f8d7da !important;
+    position: relative;
+}
+
+    .cycle-cell-minus::after {
+        content: "-";
+        position: absolute;
+        top: 2px;
+        right: 5px;
+        color: #dc3545;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+.cycle-cell-enter {
+    background-color: #fff3cd !important;
+    position: relative;
+}
+
+    .cycle-cell-enter::before {
+        content: "★";
+        position: absolute;
+        top: 2px;
+        left: 5px;
+        color: #ffc107;
+        font-weight: bold;
+        font-size: 1rem;
+    }
+
+.cost-decrease {
+    color: #28a745;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Матрица ввода */
+.matrix-input {
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+    .matrix-input table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+    .matrix-input th, .matrix-input td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .matrix-input input {
+        width: 80px;
+        padding: 8px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
