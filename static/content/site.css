@@ -9,12 +9,8 @@ body {
     background-color: #EDE7F6;
     color: #4a1a1a;
     line-height: 1.6;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
 }
 
-/* ==================== HEADER ==================== */
 header {
     background: linear-gradient(135deg, #9B2226, #6d181b);
     color: #EDE7F6;
@@ -46,21 +42,18 @@ nav a {
     margin-left: 1.5rem;
     padding: 0.5rem 0;
     transition: 0.3s;
-    font-weight: 500;
 }
 
     nav a:hover {
         border-bottom: 2px solid #EDE7F6;
     }
 
-/* ==================== MAIN LAYOUT ==================== */
 .main-container {
     display: flex;
     max-width: 1400px;
     margin: 2rem auto;
     gap: 2rem;
     padding: 0 1rem;
-    flex: 1;
 }
 
 .content {
@@ -107,56 +100,31 @@ nav a {
 footer {
     background: linear-gradient(135deg, #9B2226, #6d181b);
     color: #EDE7F6;
-    padding: 2rem 2rem 1rem;
+    text-align: center;
+    padding: 1.5rem;
     margin-top: 2rem;
-}
-
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-.footer-section h4 {
-    color: #EDE7F6;
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-}
-
-.footer-section p {
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
-    opacity: 0.8;
 }
 
 .footer-bottom {
     text-align: center;
-    padding-top: 1.5rem;
-    margin-top: 1.5rem;
-    border-top: 1px solid rgba(237,231,246,0.2);
-    font-size: 0.8rem;
+    font-size: 0.9rem;
 }
 
 .question-btn {
     display: inline-block;
+    margin-top: 0.5rem;
     background: #EDE7F6;
     color: #9B2226;
     padding: 0.5rem 1.5rem;
     border-radius: 25px;
     text-decoration: none;
     font-weight: bold;
-    transition: 0.3s;
 }
 
     .question-btn:hover {
-        background: white;
-        transform: scale(1.05);
+        background: #d9cfe8;
     }
 
-/* ==================== ЗАГОЛОВКИ ==================== */
 h1 {
     color: #9B2226;
     margin-bottom: 1rem;
@@ -174,11 +142,10 @@ h3 {
     margin: 1rem 0 0.5rem 0;
 }
 
-/* ==================== ФОРМЫ И ВВОД ==================== */
 .form-section {
     background: #f8f9fa;
     padding: 1rem;
-    border-radius: 12px;
+    border-radius: 8px;
     margin-bottom: 1.5rem;
 }
 
@@ -196,15 +163,8 @@ input[type="text"],
 input[type="number"] {
     padding: 8px 12px;
     border: 1px solid #ccc;
-    border-radius: 8px;
+    border-radius: 4px;
     font-size: 14px;
-    transition: 0.3s;
-}
-
-input:focus {
-    outline: none;
-    border-color: #9B2226;
-    box-shadow: 0 0 5px rgba(155,34,38,0.3);
 }
 
 input[type="text"] {
@@ -223,9 +183,8 @@ input[type="number"] {
 
     .matrix-input table {
         border-collapse: collapse;
+        margin: 0;
         background: white;
-        border-radius: 12px;
-        overflow: hidden;
     }
 
     .matrix-input td, .matrix-input th {
@@ -238,18 +197,16 @@ input[type="number"] {
         padding: 8px;
         text-align: center;
         border: 1px solid #ccc;
-        border-radius: 6px;
+        border-radius: 4px;
+        font-size: 14px;
     }
 
-.dimension-controls {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-}
+        .matrix-input input:focus {
+            outline: none;
+            border-color: #9B2226;
+            box-shadow: 0 0 5px rgba(155,34,38,0.3);
+        }
 
-/* ==================== КНОПКИ ==================== */
 .button-group {
     margin: 1.5rem 0;
     display: flex;
@@ -260,21 +217,19 @@ input[type="number"] {
 .btn {
     padding: 10px 20px;
     border: none;
-    border-radius: 10px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 1rem;
     transition: 0.3s;
-    font-weight: bold;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #9B2226, #6d181b);
+    background: #9B2226;
     color: white;
 }
 
     .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(155,34,38,0.4);
+        background: #6d181b;
     }
 
 .btn-secondary {
@@ -284,7 +239,6 @@ input[type="number"] {
 
     .btn-secondary:hover {
         background: #5a6268;
-        transform: translateY(-2px);
     }
 
 .btn-info {
@@ -294,7 +248,6 @@ input[type="number"] {
 
     .btn-info:hover {
         background: #138496;
-        transform: translateY(-2px);
     }
 
 .btn-success {
@@ -304,14 +257,12 @@ input[type="number"] {
 
     .btn-success:hover {
         background: #218838;
-        transform: translateY(-2px);
     }
 
-/* ==================== РЕЗУЛЬТАТЫ ==================== */
 .result-box {
     background: #d4edda;
     border: 1px solid #c3e6cb;
-    border-radius: 12px;
+    border-radius: 8px;
     padding: 1rem;
     margin: 1.5rem 0;
 }
@@ -324,89 +275,57 @@ input[type="number"] {
 .error-box {
     background: #f8d7da;
     border: 1px solid #f5c6cb;
-    border-radius: 12px;
+    border-radius: 8px;
     padding: 1rem;
     margin: 1rem 0;
     color: #721c24;
 }
 
-.result-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 10px 0;
-}
-
-    .result-table th, .result-table td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: center;
-    }
-
-    .result-table th {
-        background: linear-gradient(135deg, #EDE7F6, #d9cfe8);
-        color: #9B2226;
-    }
-
-.optimal {
-    background: #d4edda;
-    border: 1px solid #c3e6cb;
-}
-
-.formula-detail {
-    font-family: monospace;
-    background: #e9ecef;
-    padding: 0.5rem;
-    border-radius: 4px;
-    margin: 0.5rem 0;
-}
-
-.iteration-block {
-    background: #f8f9fa;
-    border-left: 4px solid #9B2226;
-    margin: 1rem 0;
-    padding: 1rem;
-    border-radius: 8px;
-}
-
-.delta-positive {
-    color: #28a745;
-    font-weight: bold;
-}
-
-/* ==================== ТЕОРИЯ ==================== */
 .theory-block {
     background: #EDE7F6;
     padding: 1rem;
-    border-radius: 12px;
+    border-radius: 8px;
     margin: 1rem 0;
 }
 
-.theory-text {
-    line-height: 1.8;
-    white-space: pre-line;
+.theory-step {
+    background: #fff3cd;
+    padding: 1rem;
+    border-left: 4px solid #ffc107;
+    margin: 1rem 0;
 }
 
-.formula-text {
-    font-family: monospace;
-    background: #d9cfe8;
-    padding: 12px;
+.theory-image {
+    max-width: 100%;
+    height: auto;
+    margin: 1rem 0;
     border-radius: 8px;
-    margin: 12px 0;
-    text-align: left;
-    font-size: 1em;
-    overflow-x: auto;
 }
 
-.theory-block ul {
-    margin-left: 20px;
-    margin-top: 10px;
+.dimension-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
 }
 
-.theory-block li {
-    margin-bottom: 8px;
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-/* ==================== КАРТОЧКИ (главная страница) ==================== */
+th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #EDE7F6;
+    color: #9B2226;
+}
+
 .cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -420,7 +339,6 @@ input[type="number"] {
     padding: 1.5rem;
     text-align: center;
     transition: transform 0.3s;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
     .card:hover {
@@ -434,19 +352,33 @@ input[type="number"] {
     }
 
     .card button {
-        background: linear-gradient(135deg, #9B2226, #6d181b);
+        background: #9B2226;
         color: white;
         border: none;
         padding: 10px 20px;
         border-radius: 6px;
         cursor: pointer;
         margin-top: 1rem;
-        transition: 0.3s;
     }
 
         .card button:hover {
-            transform: translateY(-2px);
+            background: #6d181b;
         }
+
+.question-btn {
+    display: inline-block;
+    margin-top: 0.5rem;
+    background: #EDE7F6;
+    color: #9B2226;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+    .question-btn:hover {
+        background: #d9cfe8;
+    }
 
 /* ==================== СТРАНИЦА ОБ АВТОРАХ ==================== */
 .college-section {
@@ -462,6 +394,11 @@ input[type="number"] {
     .college-section h3 {
         color: #EDE7F6;
         margin-bottom: 0.5rem;
+    }
+
+    .college-section p {
+        margin: 0.5rem 0;
+        line-height: 1.6;
     }
 
 .authors-grid {
@@ -520,95 +457,21 @@ input[type="number"] {
         color: #9B2226;
     }
 
-/* ==================== СТРАНИЦА КОНТАКТОВ ==================== */
-.contact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin: 2rem 0;
+/* Стили для списка достижений */
+.theory-block ul {
+    list-style: none;
+    padding-left: 0;
 }
 
-.contact-card {
-    background: #f8f9fa;
-    border-radius: 12px;
-    padding: 1.5rem;
-    text-align: center;
-    transition: transform 0.3s;
-    border: 1px solid #dee2e6;
-}
-
-    .contact-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-
-.contact-icon {
-    font-size: 3rem;
+.theory-block li {
     margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
 }
 
-.contact-card h3 {
-    color: #9B2226;
-    margin-bottom: 0.8rem;
-}
-
-.contact-card a {
-    color: #6d181b;
-    text-decoration: none;
-}
-
-    .contact-card a:hover {
-        text-decoration: underline;
+    .theory-block li:before {
+        content: "✅";
+        position: absolute;
+        left: 0;
     }
 
-/* ==================== ТАБЛИЦЫ ==================== */
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 10px;
-    text-align: center;
-    border: 1px solid #ddd;
-}
-
-th {
-    background-color: #EDE7F6;
-    color: #9B2226;
-}
-
-/* ==================== АДАПТИВНОСТЬ ==================== */
-@media (max-width: 900px) {
-    .main-container {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        position: static;
-    }
-
-    header {
-        flex-direction: column;
-        text-align: center;
-        gap: 1rem;
-    }
-
-    nav a {
-        margin: 0 0.8rem;
-    }
-
-    .form-group label {
-        width: 100%;
-        margin-bottom: 5px;
-    }
-
-    input[type="text"] {
-        width: 100%;
-    }
-
-    .footer-content {
-        flex-direction: column;
-        text-align: center;
-    }
-}
