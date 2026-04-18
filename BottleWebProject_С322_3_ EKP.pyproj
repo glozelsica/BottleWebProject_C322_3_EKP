@@ -122,6 +122,12 @@
     <Content Include="views\direct_lp.tpl">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="views\footer.tpl">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="views\header.tpl">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="views\index.tpl" />
     <Content Include="views\layout.tpl" />
     <Content Include="views\transport.tpl">

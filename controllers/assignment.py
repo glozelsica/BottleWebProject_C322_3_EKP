@@ -4,9 +4,9 @@
 """
 from bottle import template, request
 from datetime import datetime
-import copy
 import itertools
 import os
+import json
 
 
 def solve_assignment():
@@ -60,13 +60,17 @@ def solve_assignment():
             _log_result(request.forms.get('matrix', ''), None, None, f"ERROR: {error_msg}")
             error = error_msg
     
-    # Возврат отрендеренного шаблона (единая страница: ввод + теория + результат)
+    # === Загрузка теории из JSON (ОБЯЗАТЕЛЬНО) ===
+    theory_data = _load_theory_json()
+    
+    # Возврат отрендеренного шаблона
     return template('assignment',
         title='Задача о назначениях',
         message='Венгерский алгоритм: оптимальное распределение исполнителей по работам',
         result=result,
         error=error,
         matrix_value=matrix_value,
+        theory=theory_data,  # ← Передаём теорию в шаблон
         year=datetime.now().year
     )
 
@@ -74,6 +78,7 @@ def solve_assignment():
 def _hungarian_algorithm(matrix):
     """
     Реализация Венгерского алгоритма для задачи минимизации.
+    Для n ≤ 6 используем гарантированно точный перебор.
     
     Args:
         matrix (list[list[float]]): Квадратная матрица стоимостей
@@ -85,7 +90,6 @@ def _hungarian_algorithm(matrix):
     if n == 0:
         return [], 0
     
-    # Для учебных целей (n ≤ 6) используем гарантированно точный перебор
     best_cost = float('inf')
     best_perm = None
     
@@ -102,12 +106,6 @@ def _hungarian_algorithm(matrix):
 def _log_result(input_data, assignment, cost, status):
     """
     Логирует параметры и результат в файл assignment_log.txt.
-    
-    Args:
-        input_data: Входные данные (матрица или строка)
-        assignment: Список назначений [(i, j)] или None
-        cost: Итоговая стоимость или None
-        status: Статус выполнения ("SUCCESS" или сообщение об ошибке)
     """
     os.makedirs('data', exist_ok=True)
     log_path = 'data/assignment_log.txt'
@@ -121,3 +119,10 @@ def _log_result(input_data, assignment, cost, status):
             f.write(f"Assignment: {assignment} | Cost: {cost}\n")
         else:
             f.write(f"[{timestamp}] {status} | Input: {repr(input_data)}\n")
+
+
+def _load_theory_json():
+    # Правильный путь к файлу теории
+    json_path = os.path.join('static', 'data', 'theory_assigment.json')
+    with open(json_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
