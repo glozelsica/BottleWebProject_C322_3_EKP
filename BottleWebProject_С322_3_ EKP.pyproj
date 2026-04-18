@@ -65,6 +65,9 @@
   <ItemGroup>
     <Content Include="requirements.txt" />
     <Content Include="static\content\site.css" />
+    <Content Include="static\css\authors.css">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="static\css\style.css">
       <SubType>Code</SubType>
     </Content>
