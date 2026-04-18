@@ -8,20 +8,26 @@
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <header>
-        <div class="logo">
+    <header style="position: relative; overflow: hidden;">
+    <!-- Текстурный слой (под контентом) -->
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('/static/images/texture3.png'); background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.4; pointer-events: none;"></div>
+    
+    <!-- Контент (поверх текстуры) -->
+    <div style="position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem;">
+        <div class="logo" style="display: flex; align-items: center; gap: 0.5rem;">
             <img src="/static/images/logo.png" alt="Логотип" style="height: 35px; width: 35px; object-fit: contain;" onerror="this.style.display='none'"> 
-            Математическое моделирование
+            <span style="color: white;">Математическое моделирование</span>
         </div>
-        <nav>
-           <a href="/">Главная</a>
-            <a href="/transport">Транспортная</a>
-            <a href="/assignment">Назначения</a>
-            <a href="/video">Видео</a>
-            <a href="/authors">Об авторах</a>
-            <a href="/contact">Контакты</a>
+        <nav style="display: flex; gap: 1.5rem;">
+            <a href="/" style="color: white; text-decoration: none;">Главная</a>
+            <a href="/transport" style="color: white; text-decoration: none;">Транспортная</a>
+            <a href="/assignment" style="color: white; text-decoration: none;">Назначения</a>
+            <a href="/video" style="color: white; text-decoration: none;">Видео</a>
+            <a href="/authors" style="color: white; text-decoration: none;">Об авторах</a>
+            <a href="/contact" style="color: white; text-decoration: none;">Контакты</a>
         </nav>
-    </header>
+    </div>
+</header>
 
     <div class="main-container">
         <div class="content">
