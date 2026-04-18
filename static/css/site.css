@@ -13,18 +13,40 @@ body {
 
 header {
     background: linear-gradient(135deg, #9B2226, #6d181b); /* бордовый */
-    color: #EDE7F6;
+    color: #ffffff;
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
 }
-
 .logo {
     font-size: 1.5rem;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
+
+    .logo span {
+        color: #EDE7F6 !important;
+    }
+
+    .logo-img {
+        height: 30px;
+        width: auto;
+        max-width: 30px;
+    }
+
+    /* Если картинка логотипа не загрузилась, скрываем её */
+    .logo-img[style*="display: none"] {
+        display: none !important;
+    }
+
+    /* Альтернатива — просто скрыть, если нет картинки */
+    .logo-img:not([src]), .logo-img[src=""] {
+        display: none;
+    }
 
 nav a {
     color: #EDE7F6;

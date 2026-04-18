@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Прямая ЗЛП - Симплекс-метод</title>
+    <link rel="icon" href="/static/images/logo.png" type="image/png">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <header>
-        <div class="logo">Математическое моделирование</div>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Логотип" style="height: 35px; width: 35px; object-fit: contain;" onerror="this.style.display='none'"> 
+            Математическое моделирование
+        </div>
         <nav>
             <a href="/">Главная</a>
-            <a href="/direct_lp">Прямая ЗЛП</a>
-            <a href="/transport">Транспортная задача</a>
-            <a href="/assignment">Задача о назначениях</a>
-            <a href="/video">Видео</a>
             <a href="/authors">Об авторах</a>
             <a href="/contact">Контакты</a>
         </nav>
@@ -246,7 +246,7 @@ min (или max) F = c₁x₁ + c₂x₂ + ... + cₙxₙ
     </div>
 
     <footer>
-        <p>2026 - Команда N3 (Егармина, Корнилов, Потылицына)</p>
+        <p>2026 - Математическое моделирование</p>
         <a href="/contact" class="question-btn">Задать вопрос</a>
     </footer>
 

@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Транспортная задача</title>
-    <link rel="stylesheet" href="/static/content/site.css">
     <link rel="icon" href="/static/images/logo.png" type="image/png">
+    <link rel="stylesheet" href="/static/content/site.css">
 </head>
 <body>
     <header>
         <div class="logo">
-            <img src="/static/images/logo.png" alt="Логотип" class="logo-img"> 
-            Математическое моделирование
+            <img src="/static/images/logo.png" alt="Логотип" style="height: 35px; width: 35px; object-fit: contain;" onerror="this.style.display='none'">
+            <span>Математическое моделирование</span>
         </div>
         <nav>
             <a href="/">Главная</a>
@@ -26,12 +26,12 @@
 
     <div class="main-container">
         <div class="content">
-            <h1>🚚 Транспортная задача</h1>
+            <h1>Транспортная задача</h1>
             
-            <!-- ===== ФОРМА ВВОДА ===== -->
-            <form method="post" action="/transport">
+            <!-- Форма ввода -->
+            <form method="post" action="/transport" id="transportForm">
                 <div class="form-section">
-                    <h3>📝 Ввод исходных данных</h3>
+                    <h3>Ввод исходных данных</h3>
                     
                     <div class="dimension-controls">
                         <div class="form-group">
@@ -48,232 +48,216 @@
                     <div id="matrixContainer"></div>
                     
                     <div class="button-group">
-                        <button type="submit" class="btn btn-primary">🚀 Решить задачу</button>
+                        <button type="submit" class="btn btn-primary">Решить задачу</button>
                         <button type="button" class="btn btn-secondary" onclick="clearForm()">Очистить</button>
-                        <button type="button" class="btn btn-info" onclick="loadExample()">📋 Загрузить пример</button>
+                        <button type="button" class="btn btn-info" onclick="loadExample()">Загрузить пример</button>
                     </div>
                 </div>
             </form>
             
             % if error:
-            <div class="error-box"><strong>❌ Ошибка:</strong> {{error}}</div>
+            <div class="error-box">
+                <strong>Ошибка:</strong> {{error}}
+            </div>
             % end
             
-            <!-- ===== РЕЗУЛЬТАТЫ РЕШЕНИЯ ===== -->
             % if result:
-            <h2>📊 Результаты решения</h2>
+            <h2>Результаты решения</h2>
+                        <!-- Баланс -->
+            <div class="theory-block">
+                <h3>Проверка сбалансированности</h3>
+                <p>Сумма запасов: Σaᵢ = {{result['total_supply']}}</p>
+                <p>Сумма потребностей: Σbⱼ = {{result['total_demand']}}</p>
+                % if result['balanced']:
+                <p style="color:green;">Задача сбалансирована (закрытая модель)</p>
+                % else:
+                <p style="color:orange;">Задача несбалансирована, добавлены фиктивные участники</p>
+                % end
+            </div>
             
-            <!-- Шаг 1 -->
+            <!-- Метод северо-западного угла -->
             <div class="result-box">
-                <h3>Шаг 1: Метод северо-западного угла</h3>
-                <p><strong>Стоимость:</strong> {{result.get('northwest_cost', 0)}}</p>
-                <table border="1" style="border-collapse:collapse;">
-                    <tr><th></th>
-                    % for j in range(result.get('consumers', 0)):
-                    <th>Потр {{j+1}}</th>
-                    % end
-                    <th>Запасы</th>
-                    </tr>
-                    % for i in range(result.get('suppliers', 0)):
+                <h3>Метод северо-западного угла</h3>
+                % for step in result['northwest_steps']['steps']:
+                <div class="formula-detail">
+                    <strong>Шаг {{step['step']}}:</strong> Клетка {{step['cell']}} → {{step['formula']}} единиц
+                </div>
+                % end
+                
+                <table class="result-table">
                     <tr>
-                        <th>Пост {{i+1}}</th>
-                        % for j in range(result.get('consumers', 0)):
-                        <td style="text-align:center">{{ result.get('northwest_plan', [[]])[i][j] if result.get('northwest_plan') else 0 }}</td>
+                        <th></th>
+                        % for j in range(result['consumers']):
+                        <th>B{{j+1}}</th>
                         % end
-                        <td style="text-align:center">{{ result.get('supply', [])[i] if result.get('supply') else 0 }}</td>
+                        <th>Запасы</th>
+                    </tr>
+                    % for i in range(result['suppliers']):
+                    <tr>
+                        <th>A{{i+1}}</th>
+                        % for j in range(result['consumers']):
+                        <td>{{ result['northwest_plan'][i][j] if result['northwest_plan'][i][j] > 0 else '-' }}</td>
+                        % end
+                        <td>{{ result['supply'][i] }}</td>
                     </tr>
                     % end
                 </table>
+                
+                <p>Базисных клеток: {{result['northwest_steps']['basic_cells']}} (требуется {{result['northwest_steps']['expected_basic']}})</p>
+                % if result['northwest_steps']['is_degenerate']:
+                <p style="color:orange;">План вырожденный</p>
+                % else:
+                <p style="color:green;">План невырожденный</p>
+                % end
+                
+                <div class="formula-detail">
+                    % for calc in result['northwest_steps']['cost_calculation']:
+                    {{calc}}<br>
+                    % end
+                    <strong>F = {{result['northwest_cost']}} ден. ед.</strong>
+                </div>
             </div>
             
-            <!-- Шаг 2 -->
+            <!-- Метод минимального элемента -->
             <div class="result-box">
-                <h3>Шаг 2: Метод минимального элемента</h3>
-                <p><strong>Стоимость:</strong> {{result.get('mincost_cost', 0)}}</p>
-                <table border="1" style="border-collapse:collapse;">
-                    <tr><th></th>
-                    % for j in range(result.get('consumers', 0)):
-                    <th>Потр {{j+1}}</th>
-                    % end
-                    <th>Запасы</th>
-                    </tr>
-                    % for i in range(result.get('suppliers', 0)):
+                <h3>Метод минимального элемента</h3>
+                % for step in result['mincost_steps']['steps']:
+                <div class="formula-detail">
+                    <strong>Шаг {{step['step']}}:</strong> Клетка {{step['cell']}} (тариф={{step['cost']}}) → {{step['formula']}} единиц
+                </div>
+                % end
+                
+                <table class="result-table">
                     <tr>
-                        <th>Пост {{i+1}}</th>
-                        % for j in range(result.get('consumers', 0)):
-                        <td style="text-align:center">{{ result.get('mincost_plan', [[]])[i][j] if result.get('mincost_plan') else 0 }}</td>
+                        <th></th>
+                        % for j in range(result['consumers']):
+                        <th>B{{j+1}}</th>
                         % end
-                        <td style="text-align:center">{{ result.get('supply', [])[i] if result.get('supply') else 0 }}</td>
+                        <th>Запасы</th>
+                    </tr>
+                    % for i in range(result['suppliers']):
+                    <tr>
+                        <th>A{{i+1}}</th>
+                        % for j in range(result['consumers']):
+                        <td>{{ result['mincost_plan'][i][j] if result['mincost_plan'][i][j] > 0 else '-' }}</td>
+                        % end
+                        <td>{{ result['supply'][i] }}</td>
                     </tr>
                     % end
                 </table>
+                
+                <p>Базисных клеток: {{result['mincost_steps']['basic_cells']}} (требуется {{result['mincost_steps']['expected_basic']}})</p>
+                % if result['mincost_steps']['is_degenerate']:
+                <p style="color:orange;">План вырожденный</p>
+                % else:
+                <p style="color:green;">План невырожденный</p>
+                % end
+                
+                <div class="formula-detail">
+                    % for calc in result['mincost_steps']['cost_calculation']:
+                    {{calc}}<br>
+                    % end
+                    <strong>F = {{result['mincost_cost']}} ден. ед.</strong>
+                </div>
             </div>
             
-            <!-- Итог -->
-            <div class="result-box" style="background:#d4edda;">
-                <h3>✅ Итоговое оптимальное решение (метод потенциалов)</h3>
-                <p><strong>Минимальная стоимость перевозок:</strong> {{result.get('optimal_cost', 0)}}</p>
-                <table border="1" style="border-collapse:collapse;">
-                    <tr><th></th>
-                    % for j in range(result.get('consumers', 0)):
-                    <th>Потр {{j+1}}</th>
-                    % end
-                    <th>Запасы</th>
-                    </tr>
-                    % for i in range(result.get('suppliers', 0)):
-                    <tr>
-                        <th>Пост {{i+1}}</th>
-                        % for j in range(result.get('consumers', 0)):
-                        <td style="text-align:center"><strong>{{ result.get('optimal_plan', [[]])[i][j] if result.get('optimal_plan') else 0 }}</strong></td>
+            <!-- Сравнение -->
+            <div class="theory-block">
+                <h3>Сравнение начальных планов</h3>
+                <p>Северо-западный угол: {{result['northwest_cost']}} ден. ед.</p>
+                <p>Минимальный элемент: {{result['mincost_cost']}} ден. ед.</p>
+                <p>Для оптимизации выбран план метода <strong>{{result['best_initial_name']}}</strong> (стоимость {{result['best_initial_cost']}} ден. ед.)</p>
+            </div>
+            
+            <!-- Метод потенциалов -->
+            <div class="result-box optimal">
+                <h3>Метод потенциалов</h3>
+                % for iter_data in result['optimal_iterations']:
+                <div class="iteration-block">
+                    <h4>Итерация {{iter_data['iteration']}}</h4>
+                    <p><strong>Потенциалы uᵢ:</strong> {{iter_data['potentials_u']}}</p>
+                    <p><strong>Потенциалы vⱼ:</strong> {{iter_data['potentials_v']}}</p>
+                    
+                    <table class="result-table">
+                        <tr>
+                            <th>Клетка</th>
+                            <th>Формула</th>
+                            <th>Оценка Δ</th>
+                        </tr>
+                        % for d in iter_data['deltas']:
+                        <tr>
+                            <td>{{d['cell']}}</td>
+                            <td>{{d['formula']}}</td>
+                            <td class="delta-positive">{{d['delta']}}</td>
+                        </tr>
                         % end
-                        <td style="text-align:center">{{ result.get('supply', [])[i] if result.get('supply') else 0 }}</td>
+                    </table>
+                    
+                    <p><strong>Максимальная Δ = {{iter_data['max_delta']}}</strong> в клетке {{iter_data['enter_cell']}}</p>
+                    <p>{{iter_data['explanation']}}</p>
+                    % if 'redistribution' in iter_data:
+                    <p><strong>Перераспределение:</strong> {{iter_data['redistribution']}}</p>
+                    <p><em>Цикл пересчёта — замкнутая ломаная линия по базисным клеткам, вершины чередуются со знаками «+» и «-».</em></p>
+                    % end
+                </div>
+                % end
+                
+                <h4>Оптимальный план</h4>
+                <table class="result-table">
+                    <tr>
+                        <th></th>
+                        % for j in range(result['consumers']):
+                        <th>B{{j+1}}</th>
+                        % end
+                        <th>Запасы</th>
+                    </tr>
+                    % for i in range(result['suppliers']):
+                    <tr>
+                        <th>A{{i+1}}</th>
+                        % for j in range(result['consumers']):
+                        <td><strong>{{ result['optimal_plan'][i][j] if result['optimal_plan'][i][j] > 0 else '-' }}</strong></td>
+                        % end
+                        <td>{{ result['supply'][i] }}</td>
                     </tr>
                     % end
                     <tr>
                         <th>Потребности</th>
-                        % for j in range(result.get('consumers', 0)):
-                        <td style="text-align:center">{{ result.get('demand', [])[j] if result.get('demand') else 0 }}</td>
+                        % for j in range(result['consumers']):
+                        <td>{{ result['demand'][j] }}</td>
                         % end
                         <td></td>
                     </tr>
                 </table>
-                % if not result.get('balanced', True):
-                <p><em>⚠️ Задача была несбалансирована, добавлены фиктивные участники с нулевыми тарифами.</em></p>
-                % end
-            </div>
-            % end
-            
-            <!-- ===== ТЕОРИЯ (только если есть theory и она не пустая) ===== -->
-            % if theory:
-            <h2>📖 Теоретические основы</h2>
-            
-            % if theory.get('section1'):
-            <div class="theory-block">
-                <h3>{{theory['section1'].get('title', '')}}</h3>
-                <p>{{theory['section1'].get('content', '')}}</p>
-                % for formula in theory['section1'].get('formulas', []):
-                <div class="formula-box">
-                    <p><em>{{formula.get('description', '')}}</em></p>
-                    <img src="{{formula.get('image', '')}}" alt="Формула" style="max-width:100%; margin:10px 0;">
+                
+                <div class="formula-detail">
+                    <strong>Минимальная стоимость: F_min = {{result['optimal_cost']}} ден. ед.</strong>
                 </div>
-                % end
             </div>
-            % end
             
-            % if theory.get('section2'):
-            <div class="theory-block">
-                <h3>{{theory['section2'].get('title', '')}}</h3>
-                <p>{{theory['section2'].get('content', '')}}</p>
-                <div class="theorem-box"><strong>📐 Теорема:</strong> {{theory['section2'].get('theorem', '')}}</div>
-                % for formula in theory['section2'].get('formulas', []):
-                <img src="{{formula.get('image', '')}}" alt="Формула" style="max-width:100%; margin:10px 0;">
-                % end
-                <ul>
-                % for remark in theory['section2'].get('remarks', []):
-                    <li>{{remark}}</li>
-                % end
-                </ul>
+            <div class="button-group">
+                <button class="btn btn-success" onclick="alert('Скопируйте таблицы в Excel')">Сохранить в Excel</button>
+                <button class="btn btn-info" onclick="alert('Скопируйте таблицы в CSV')">Сохранить в CSV</button>
             </div>
-            % end
-            
-            % if theory.get('section3'):
-            <div class="theory-block">
-                <h3>{{theory['section3'].get('title', '')}}</h3>
-                <p>{{theory['section3'].get('content', '')}}</p>
-                <img src="{{theory['section3'].get('formula_image', '')}}" alt="Формула" style="max-width:100%;">
-            </div>
-            % end
-            
-            % if theory.get('section4'):
-            <div class="theory-block">
-                <h3>{{theory['section4'].get('title', '')}}</h3>
-                <p>{{theory['section4'].get('content', '')}}</p>
-                % for method in theory['section4'].get('methods', []):
-                <div style="margin:15px 0;">
-                    <strong>{{method.get('name', '')}}:</strong>
-                    <p>{{method.get('description', '')}}</p>
-                    <img src="{{method.get('image', '')}}" alt="Метод" style="max-width:100%; border-radius:8px;">
-                </div>
-                % end
-            </div>
-            % end
-            
-            % if theory.get('section5'):
-            <div class="theory-block">
-                <h3>{{theory['section5'].get('title', '')}}</h3>
-                <p>{{theory['section5'].get('content', '')}}</p>
-                <div class="theorem-box"><strong>📐 Теорема:</strong> {{theory['section5'].get('theorem', '')}}</div>
-                % for formula in theory['section5'].get('formulas', []):
-                <img src="{{formula.get('image', '')}}" alt="Формула" style="max-width:100%; margin:10px 0;">
-                % end
-                <strong>Алгоритм:</strong>
-                <ol>
-                % for step in theory['section5'].get('algorithm', []):
-                    <li>{{step}}</li>
-                % end
-                </ol>
-            </div>
-            % end
-            
-            % if theory.get('section6'):
-            <div class="theory-block">
-                <h3>{{theory['section6'].get('title', '')}}</h3>
-                <p>{{theory['section6'].get('content', '')}}</p>
-                <ol>
-                % for step in theory['section6'].get('algorithm', []):
-                    <li>{{step}}</li>
-                % end
-                </ol>
-                <img src="{{theory['section6'].get('image', '')}}" alt="Цикл" style="max-width:100%; margin:10px 0;">
-            </div>
-            % end
-            
-            % if theory.get('section7'):
-            <div class="theory-block">
-                <h3>{{theory['section7'].get('title', '')}}</h3>
-                % for sub in theory['section7'].get('subsections', []):
-                <div style="margin:15px 0;">
-                    <strong>{{sub.get('title', '')}}:</strong>
-                    <p>{{sub.get('content', '')}}</p>
-                </div>
-                % end
-            </div>
-            % end
             % end
         </div>
         
         <div class="sidebar">
-            <h3>💡 Полезные советы</h3>
+            <h3>Полезные советы</h3>
             <ul>
-                <li>• Для перехода между ячейками используйте <kbd>Tab</kbd></li>
-                <li>• Результат можно сохранить в Excel/CSV</li>
-                <li>• При несбалансированности добавляются фиктивные участники</li>
-                <li>• Метод минимального элемента даёт план ближе к оптимальному</li>
+                <li>Для перехода между ячейками используйте Tab</li>
+                <li>Положительная оценка Δᵢⱼ означает, что стоимость можно уменьшить</li>
+                <li>Цикл пересчёта строится только по базисным клеткам</li>
+                <li>При несбалансированности добавляются фиктивные участники</li>
             </ul>
             <div class="tip-box">
-                <strong>📹 Видео-инструкция</strong>
+                <strong>Видео-инструкция</strong>
                 <a href="/video" class="btn btn-info" style="display:block; margin-top:10px;">Смотреть урок</a>
             </div>
         </div>
     </div>
 
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>BottleWebProject_C322_3_EKP</h4>
-                <p>Команда №3 | Егармина, Корнилов, Потылицына</p>
-                <p>Группа C322 | ГУАП ФСПО №12</p>
-            </div>
-            <div class="footer-section">
-                <h4>📅 2026</h4>
-                <p>Учебная практика УП02</p>
-                <p>ПМ02 «Осуществление интеграции программных модулей»</p>
-            </div>
-            <div class="footer-section">
-                <h4>📞 Связь</h4>
-                <a href="/contact" class="question-btn">📩 Задать вопрос</a>
-            </div>
-        </div>
+
         <div class="footer-bottom">
             <p>© 2026 Математическое моделирование. Все права защищены.</p>
         </div>
@@ -281,37 +265,58 @@
 
     <script>
         function updateMatrix() {
-            const suppliers = parseInt(document.getElementById('suppliers').value);
-            const consumers = parseInt(document.getElementById('consumers').value);
-            const container = document.getElementById('matrixContainer');
+            var suppliers = parseInt(document.getElementById('suppliers').value);
+            var consumers = parseInt(document.getElementById('consumers').value);
+            var container = document.getElementById('matrixContainer');
             
-            let html = '<div class="matrix-input"><h4>Матрица тарифов</h4><table border="1" style="border-collapse:collapse;">';
+            var html = '<div class="matrix-input"><h4>Матрица тарифов</h4><table>';
             html += '<tr><th></th>';
-            for(let j = 1; j <= consumers; j++) html += `<th>Потр ${j}</th>`;
+            for(var j = 1; j <= consumers; j++) {
+                html += '<th>Потребитель ' + j + '</th>';
+            }
             html += '<th>Запасы</th></tr>';
             
-            for(let i = 1; i <= suppliers; i++) {
-                html += `<tr><th>Пост ${i}</th>`;
-                for(let j = 1; j <= consumers; j++) {
-                    html += `<td><input type="number" name="cost_${i-1}_${j-1}" step="any" value="0" style="width:80px;"></td>`;
+            for(var i = 1; i <= suppliers; i++) {
+                html += '<tr><th>Поставщик ' + i + '</th>';
+                for(var j = 1; j <= consumers; j++) {
+                    var saved = localStorage.getItem('cost_' + (i-1) + '_' + (j-1));
+                    if(saved === null) saved = '0';
+                    html += '<td><input type="number" name="cost_' + (i-1) + '_' + (j-1) + '" step="any" value="' + saved + '" style="width:80px;"></td>';
                 }
-                html += `<td><input type="number" name="supply_${i-1}" step="any" value="0" style="width:80px;"></td></tr>`;
+                var savedSupply = localStorage.getItem('supply_' + (i-1));
+                if(savedSupply === null) savedSupply = '0';
+                html += '<td><input type="number" name="supply_' + (i-1) + '" step="any" value="' + savedSupply + '" style="width:80px;"></td></tr>';
             }
             
             html += '<tr><th>Потребности</th>';
-            for(let j = 1; j <= consumers; j++) {
-                html += `<td><input type="number" name="demand_${j-1}" step="any" value="0" style="width:80px;"></td>`;
+            for(var j = 1; j <= consumers; j++) {
+                var savedDemand = localStorage.getItem('demand_' + (j-1));
+                if(savedDemand === null) savedDemand = '0';
+                html += '<td><input type="number" name="demand_' + (j-1) + '" step="any" value="' + savedDemand + '" style="width:80px;"></td>';
             }
             html += '<td></td></tr>';
             html += '</table></div>';
-            html += `<input type="hidden" name="suppliers" value="${suppliers}">`;
-            html += `<input type="hidden" name="consumers" value="${consumers}">`;
+            html += '<input type="hidden" name="suppliers" value="' + suppliers + '">';
+            html += '<input type="hidden" name="consumers" value="' + consumers + '">';
             
             container.innerHTML = html;
+            
+            // Добавляем сохранение при изменении
+            var inputs = document.querySelectorAll('#matrixContainer input');
+            for(var k = 0; k < inputs.length; k++) {
+                inputs[k].addEventListener('change', function() {
+                    if(this.name) localStorage.setItem(this.name, this.value);
+                });
+            }
         }
         
         function clearForm() {
-            document.querySelectorAll('input[type="number"]').forEach(input => input.value = '0');
+            var inputs = document.querySelectorAll('input[type="number"]');
+            for(var i = 0; i < inputs.length; i++) {
+                inputs[i].value = '0';
+                if(inputs[i].name) localStorage.removeItem(inputs[i].name);
+            }
+            updateMatrix();
         }
         
         function loadExample() {
@@ -319,23 +324,27 @@
             document.getElementById('consumers').value = '3';
             updateMatrix();
             
-            const supplies = [70, 100, 110];
-            const demands = [80, 50, 150];
-            const costs = [[1,4,5],[3,5,2],[2,6,4]];
-            
-            for(let i = 0; i < 3; i++) {
-                const supplyInput = document.querySelector(`[name="supply_${i}"]`);
-                if(supplyInput) supplyInput.value = supplies[i];
-                const demandInput = document.querySelector(`[name="demand_${i}"]`);
-                if(demandInput) demandInput.value = demands[i];
-                for(let j = 0; j < 3; j++) {
-                    const costInput = document.querySelector(`[name="cost_${i}_${j}"]`);
-                    if(costInput) costInput.value = costs[i][j];
+            setTimeout(function() {
+                var supplies = [70, 100, 110];
+                var demands = [80, 50, 150];
+                var costs = [[1,4,5],[3,5,2],[2,6,4]];
+                for(var i = 0; i < 3; i++) {
+                    var si = document.querySelector('[name="supply_' + i + '"]');
+                    if(si) si.value = supplies[i];
+                    var di = document.querySelector('[name="demand_' + i + '"]');
+                    if(di) di.value = demands[i];
+                    for(var j = 0; j < 3; j++) {
+                        var ci = document.querySelector('[name="cost_' + i + '_' + j + '"]');
+                        if(ci) ci.value = costs[i][j];
+                    }
                 }
-            }
+            }, 50);
         }
         
-        document.addEventListener('DOMContentLoaded', updateMatrix);
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            updateMatrix();
+        });
     </script>
 </body>
 </html>

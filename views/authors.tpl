@@ -4,72 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Об авторах</title>
-    <link rel="stylesheet" href="/static/content/site.css">
-    <style>
-        .authors-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-        .author-card {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            transition: transform 0.3s;
-            text-align: center;
-        }
-        .author-card:hover {
-            transform: translateY(-10px);
-        }
-        .author-photo {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            margin: 1.5rem auto;
-            background: linear-gradient(135deg, #9B2226, #6d181b);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            color: #EDE7F6;
-        }
-        .author-name {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #9B2226;
-            margin: 0.5rem 0;
-        }
-        .author-role {
-            color: #6d181b;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-        .author-bio {
-            padding: 0 1.5rem 1.5rem;
-            text-align: left;
-            line-height: 1.6;
-        }
-        .college-section {
-            background: linear-gradient(135deg, #9B2226, #6d181b);
-            color: #EDE7F6;
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-            text-align: center;
-        }
-        .college-section h2 {
-            color: #EDE7F6;
-            border-bottom-color: #EDE7F6;
-        }
-        .gradient-text {
-            background: linear-gradient(135deg, #9B2226, #EDE7F6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <header style="background: linear-gradient(135deg, #EDE7F6, #d9cfe8); color: #9B2226;">

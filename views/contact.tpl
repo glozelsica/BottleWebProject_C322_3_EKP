@@ -4,33 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Контакты</title>
-    <link rel="stylesheet" href="/static/content/site.css">
-    <style>
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-        .contact-card {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-radius: 20px;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-        .contact-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        .contact-card a {
-            color: #9B2226;
-            text-decoration: none;
-        }
-        .contact-card a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/style.css">
+   
 </head>
 <body>
     <header style="background: linear-gradient(135deg, #EDE7F6, #d9cfe8); color: #9B2226;">

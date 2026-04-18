@@ -23,10 +23,19 @@ header {
 }
 
 .logo {
-    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.3rem;
     font-weight: bold;
+    color: #EDE7F6;
 }
 
+.logo-img {
+    height: 35px;
+    width: auto;
+    max-width: 35px;
+}
 nav a {
     color: #EDE7F6;
     text-decoration: none;
