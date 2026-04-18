@@ -84,12 +84,12 @@
     <Content Include="static\images\simplex_flowchart.png" />
     <Content Include="static\images\simplex_geometry.png" />
     <Content Include="static\images\simplex_tableau.png" />
-    <Content Include="static\images\texture1.png" />
     <Content Include="static\images\texture2.png" />
     <Content Include="static\images\texture3.png" />
     <Content Include="static\images\texture4.png" />
     <Content Include="static\images\texture5.png" />
     <Content Include="static\images\texture6.png" />
+    <Content Include="static\images\texture7.png" />
     <Content Include="static\images\two_phase_method.png" />
     <Content Include="static\images\formula_balance.png" />
     <Content Include="static\images\cycle_example.png" />
