@@ -681,28 +681,3 @@ th {
         color: #9B2226;
     }
 
-/* Стили для отображения теории */
-.theory-text {
-    line-height: 1.8;
-    white-space: pre-line;
-}
-
-.formula-text {
-    font-family: monospace;
-    background: #d9cfe8;
-    padding: 12px;
-    border-radius: 8px;
-    margin: 12px 0;
-    text-align: left;
-    font-size: 1em;
-    overflow-x: auto;
-}
-
-.theory-block ul {
-    margin-left: 20px;
-    margin-top: 10px;
-}
-
-.theory-block li {
-    margin-bottom: 8px;
-}
