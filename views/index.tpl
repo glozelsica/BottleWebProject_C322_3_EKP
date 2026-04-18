@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Математическое моделирование</title>
+    <link rel="icon" href="/static/images/logo.png" type="image/png">
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="icon" href="/static/images/logo.png" type="image/png">
 </head>
 <body>
     <header>
-        <div class="logo">
-            <img src="/static/images/logo.png" alt="Логотип" style="height: 35px; width: auto; margin-right: 10px;">
-            Математическое моделирование
+         <div class="logo">
+            <img src="/static/images/logo.png" alt="Логотип" style="height: 35px; width: 35px; object-fit: contain;" onerror="this.style.display='none'">
+            <span>Математическое моделирование</span>
         </div>
         <nav>
             <a href="/">Главная</a>
@@ -91,25 +92,8 @@
     </div>
 
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>BottleWebProject_C322_3_EKP</h4>
-                <p>Команда №3 | Егармина, Корнилов, Потылицына</p>
-                <p>Группа C322 | ГУАП ФСПО №12</p>
-            </div>
-            <div class="footer-section">
-                <h4>2026</h4>
-                <p>Учебная практика УП02</p>
-                <p>ПМ02 «Интеграция программных модулей»</p>
-            </div>
-            <div class="footer-section">
-                <h4>Связь</h4>
-                <a href="/contact" class="question-btn">Задать вопрос</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2026 Математическое моделирование. Все права защищены.</p>
-        </div>
+        <p>2026 - Математическое моделирование{{year}}</p>
+        <a href="/contact" class="question-btn">📩 Задать вопрос</a>
     </footer>
 </body>
 </html>
