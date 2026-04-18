@@ -4,20 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Математическое моделирование</title>
-    <link rel="icon" href="/static/images/logo.png" type="image/png">
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="/static/images/logo.png" type="image/png">
 </head>
 <body>
     <header>
-         <div class="logo">
-            <img src="/static/images/logo.png" alt="Логотип" style="height: 35px; width: 35px; object-fit: contain;" onerror="this.style.display='none'">
-            <span>Математическое моделирование</span>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Логотип" style="height: 35px; width: auto; margin-right: 10px;">
+            Математическое моделирование
         </div>
         <nav>
             <a href="/">Главная</a>
             <a href="/direct_lp">Прямая ЗЛП</a>
             <a href="/transport">Транспортная</a>
             <a href="/assignment">Назначения</a>
+            <a href="/video">Видео</a>
             <a href="/authors">Об авторах</a>
             <a href="/contact">Контакты</a>
         </nav>
@@ -29,8 +30,11 @@
             <p>Решение оптимизационных задач с помощью методов математического моделирования.</p>
 
             <div class="cards">
+                <!-- Карточка 1: Прямая ЗЛП -->
                 <div class="card">
-                    <div style="font-size: 3rem;">📐</div>
+                    <div style="font-size: 3rem; text-align: center;">
+                        <img src="/static/images/icon_zlp.png" alt="ЗЛП" style="width: 70px; height: 70px; object-fit: contain;">
+                    </div>
                     <h3>Прямая ЗЛП</h3>
                     <p>Симплекс-метод для нахождения максимума или минимума линейной функции при системе ограничений.</p>
                     <details>
@@ -40,8 +44,11 @@
                     <button onclick="location.href='/direct_lp'">Перейти →</button>
                 </div>
                 
+                <!-- Карточка 2: Транспортная задача -->
                 <div class="card">
-                    <div style="font-size: 3rem;">🚚</div>
+                    <div style="font-size: 3rem; text-align: center;">
+                        <img src="/static/images/icon_transport.png" alt="Транспортная задача" style="width: 70px; height: 70px; object-fit: contain;">
+                    </div>
                     <h3>Транспортная задача</h3>
                     <p>Минимизация стоимости перевозок от поставщиков к потребителям. Методы: северо-западного угла, минимального элемента, потенциалов.</p>
                     <details>
@@ -51,8 +58,11 @@
                     <button onclick="location.href='/transport'">Перейти →</button>
                 </div>
                 
+                <!-- Карточка 3: Задача о назначениях -->
                 <div class="card">
-                    <div style="font-size: 3rem;">👥</div>
+                    <div style="font-size: 3rem; text-align: center;">
+                        <img src="/static/images/icon_assig.png" alt="Задача о назначениях" style="width: 70px; height: 70px; object-fit: contain;">
+                    </div>
                     <h3>Задача о назначениях</h3>
                     <p>Оптимальное распределение работ между исполнителями. Реализован венгерский алгоритм.</p>
                     <details>
@@ -65,15 +75,15 @@
         </div>
         
         <div class="sidebar">
-            <h3>💡 Полезные советы</h3>
+            <h3>Полезные советы</h3>
             <ul>
-                <li>• Для перехода между ячейками матрицы используйте <kbd>Tab</kbd></li>
-                <li>• Результат можно сохранить в Excel/CSV</li>
-                <li>• При несбалансированности добавляются фиктивные участники</li>
-                <li>• Все данные сохраняются в истории решений</li>
+                <li>Для перехода между ячейками матрицы используйте <kbd>Tab</kbd></li>
+                <li>Результат можно сохранить в Excel/CSV</li>
+                <li>При несбалансированности добавляются фиктивные участники</li>
+                <li>Все данные сохраняются в истории решений</li>
             </ul>
             <div class="tip-box">
-                <strong>📹 Нужна помощь?</strong>
+                <strong>Нужна помощь?</strong>
                 <p>Посмотрите видео-инструкцию</p>
                 <a href="/video" class="btn btn-info" style="display:block;">Смотреть урок</a>
             </div>
@@ -81,8 +91,25 @@
     </div>
 
     <footer>
-        <p>2026 - Математическое моделирование {{year}}</p>
-        <a href="/contact" class="question-btn">📩 Задать вопрос</a>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>BottleWebProject_C322_3_EKP</h4>
+                <p>Команда №3 | Егармина, Корнилов, Потылицына</p>
+                <p>Группа C322 | ГУАП ФСПО №12</p>
+            </div>
+            <div class="footer-section">
+                <h4>2026</h4>
+                <p>Учебная практика УП02</p>
+                <p>ПМ02 «Интеграция программных модулей»</p>
+            </div>
+            <div class="footer-section">
+                <h4>Связь</h4>
+                <a href="/contact" class="question-btn">Задать вопрос</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Математическое моделирование. Все права защищены.</p>
+        </div>
     </footer>
 </body>
 </html>

@@ -18,7 +18,7 @@
     <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
     <Name>BottleWebProject_С322_3_ EKP</Name>
     <RootNamespace>BottleWebProject_С322_3_ EKP</RootNamespace>
-    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>MSBuild|zlata_env|$(MSBuildProjectFullPath)</InterpreterId>
     <TestFramework>Pytest</TestFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -53,8 +53,8 @@
     <Folder Include="static\content\" />
     <Folder Include="static\fonts\" />
     <Folder Include="static\css\" />
-    <Folder Include="static\images\" />
     <Folder Include="static\data\" />
+    <Folder Include="static\images\" />
     <Folder Include="static\utils\" />
     <Folder Include="static\scripts\" />
     <Folder Include="views\" />
@@ -78,6 +78,7 @@
     <Content Include="static\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="static\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="static\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="static\images\icon_assig.png" />
     <Content Include="static\images\logo.png" />
     <Content Include="static\images\rectangle_rule.png" />
     <Content Include="static\images\simplex_flowchart.png" />
@@ -90,6 +91,14 @@
     <Content Include="static\images\texture5.png" />
     <Content Include="static\images\texture6.png" />
     <Content Include="static\images\two_phase_method.png" />
+    <Content Include="static\images\formula_balance.png" />
+    <Content Include="static\images\cycle_example.png" />
+    <Content Include="static\images\example_iteration_1.png" />
+    <Content Include="static\images\example_iteration2.png" />
+    <Content Include="static\images\example_iteration3.png" />
+    <Content Include="static\images\example_iteration4.png" />
+    <Content Include="static\images\icon_zlp.png" />
+    <Content Include="static\images\icon_transport.png" />
     <Content Include="static\scripts\bootstrap.js" />
     <Content Include="static\scripts\bootstrap.min.js" />
     <Content Include="static\scripts\jquery-1.10.2.intellisense.js" />
