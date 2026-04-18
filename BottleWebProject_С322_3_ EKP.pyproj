@@ -112,6 +112,11 @@
     <Content Include="static\images\icon_zlp.png" />
     <Content Include="static\images\icon_transport.png" />
     <Content Include="static\images\silver_texture3.png" />
+    <Content Include="static\images\requirement.png" />
+    <Content Include="static\images\fixed_point.png" />
+    <Content Include="static\images\zero_costs.png" />
+    <Content Include="static\images\potential.png" />
+    <Content Include="static\images\theorem.png" />
     <Content Include="static\scripts\bootstrap.js" />
     <Content Include="static\scripts\bootstrap.min.js" />
     <Content Include="static\scripts\jquery-1.10.2.intellisense.js" />
