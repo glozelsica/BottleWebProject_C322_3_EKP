@@ -15,7 +15,6 @@
             <a href="/">Главная</a>
             <a href="/direct_lp">Прямая ЗЛП</a>
             <a href="/transport">Транспортная</a>
-            <a href="/assignment">Назначения</a>
             <a href="/video">Видео</a>
             <a href="/authors">Об авторах</a>
             <a href="/contact">Контакты</a>
@@ -35,7 +34,9 @@
                 <form method="POST" action="/assignment">
                     
                     <div class="form-group">
-                        <label for="matrix">Квадратная матрица стоимостей (числа через пробел, строки через Enter):</label>
+                        <label for="matrix" style="display: block; margin-bottom: 8px; font-weight: 500; white-space: nowrap;">
+                            Квадратная матрица стоимостей (числа через пробел, строки через Enter):
+                        </label>
                         <textarea 
                             id="matrix" 
                             name="matrix" 
@@ -46,17 +47,6 @@
                         <small style="color: #6c757d; display: block; margin-top: 5px;">
                             Размер матрицы: до 6×6. Пример: 3 исполнителя на 3 работы.
                         </small>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Направление оптимизации:</label>
-                        <div style="margin-top: 8px;">
-                            <input type="radio" id="dir_min" name="direction" value="min" checked>
-                            <label for="dir_min" style="width: auto; margin-right: 20px;">Минимизация</label>
-                            
-                            <input type="radio" id="dir_max" name="direction" value="max">
-                            <label for="dir_max" style="width: auto;">Максимизация</label>
-                        </div>
                     </div>
 
                     <div class="button-group">
