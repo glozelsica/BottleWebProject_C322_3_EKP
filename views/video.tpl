@@ -58,7 +58,6 @@
             <a href="/direct_lp">Прямая ЗЛП</a>
             <a href="/transport">Транспортная</a>
             <a href="/assignment">Назначения</a>
-            <a href="/video">Видео</a>
             <a href="/authors">Об авторах</a>
             <a href="/contact">Контакты</a>
         </nav>
@@ -141,22 +140,6 @@
     </div>
 
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>BottleWebProject_C322_3_EKP</h4>
-                <p>Команда №3 | Егармина, Корнилов, Потылицына</p>
-                <p>Группа C322 | ГУАП ФСПО №12</p>
-            </div>
-            <div class="footer-section">
-                <h4>📅 2026</h4>
-                <p>Учебная практика УП02</p>
-                <p>ПМ02 «Осуществление интеграции программных модулей»</p>
-            </div>
-            <div class="footer-section">
-                <h4>📞 Связь</h4>
-                <a href="/contact" class="question-btn">📩 Задать вопрос</a>
-            </div>
-        </div>
         <div class="footer-bottom">
             <p>© 2026 Математическое моделирование. Все права защищены.</p>
         </div>
