@@ -161,8 +161,11 @@
 
     </div>
 
-    <footer>
-        <p>&copy; {{year}} BottleWebProject_C322_3_EKP. Все права защищены.</p>
+    <footer style="position: relative; overflow: hidden; background: #9B2226;">
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('/static/images/texture3.png'); background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.4; pointer-events: none;"></div>
+        <div class="footer-bottom" style="position: relative; z-index: 1;">
+            <p>© 2026 Математическое моделирование. Все права защищены.</p>
+        </div>
     </footer>
 </body>
 </html>
