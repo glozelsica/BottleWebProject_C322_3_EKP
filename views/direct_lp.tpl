@@ -6,6 +6,7 @@
     <title>Прямая ЗЛП - Симплекс-метод</title>
     <link rel="icon" href="/static/images/logo.png" type="image/png">
     <link rel="stylesheet" href="/static/css/style.css">
+    
 </head>
 <body>
     <header style="position: relative; overflow: hidden;">
@@ -110,11 +111,15 @@
                 <div class="theory-text">
                     <p><strong>Симплекс-метод</strong> — это универсальный итерационный алгоритм решения задач линейного программирования.</p>
                     
-                    <h3>Основная идея</h3>
-                    <p>Геометрически метод представляет собой направленный перебор вершин многогранника допустимых решений. Алгебраически — последовательное улучшение допустимого базисного решения путём замены одной базисной переменной на свободную.</p>
-                    
-                    <!-- КАРТИНКА 1: Геометрическая интерпретация -->
-                    <img src="/static/images/simplex_geometry.png" alt="Геометрическая интерпретация симплекс-метода" style="max-width:100%; margin: 15px 0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" onerror="this.style.display='none'">
+                    <!-- БЛОК С КАРТИНКОЙ И ОБТЕКАНИЕМ ТЕКСТА -->
+                    <div class="clearfix">
+                        <!-- КАРТИНКА 1: Геометрическая интерпретация (слева, текст обтекает) -->
+                        <img src="/static/images/simplex_geometry.png" alt="Геометрическая интерпретация симплекс-метода" class="image-float-left" onerror="this.style.display='none'">
+                        
+                        <h3>Основная идея</h3>
+                        <p>Геометрически метод представляет собой направленный перебор вершин многогранника допустимых решений. Алгебраически — последовательное улучшение допустимого базисного решения путём замены одной базисной переменной на свободную.</p>
+                        <p>Каждой вершине многогранника соответствует определённый набор базисных переменных. Переход к соседней вершине осуществляется путём замены одной базисной переменной на свободную, что приводит к улучшению значения целевой функции.</p>
+                    </div>
                     
                     <h3>Этапы симплекс-метода</h3>
                     <ol>
@@ -194,7 +199,7 @@ min (или max) F = c₁x₁ + c₂x₂ + ... + cₙxₙ
                     </table>
                     
                     <!-- КАРТИНКА 2: Пример симплекс-таблицы -->
-                    <img src="/static/images/simplex_tableau.png" alt="Пример симплекс-таблицы" style="max-width:100%; margin: 15px 0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" onerror="this.style.display='none'">
+                    <img src="/static/images/simplex_table.png" alt="Пример симплекс-таблицы" style="max-width:100%; margin: 15px 0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" onerror="this.style.display='none'">
                     
                     <h3>Критерий оптимальности</h3>
                     <p>Для задачи на минимум: если все оценки Δⱼ ≥ 0, то решение оптимально.<br>
@@ -273,7 +278,7 @@ min (или max) F = c₁x₁ + c₂x₂ + ... + cₙxₙ
                 }
             }
 
-            let html = '</table>';
+            let html = '<table>';
             for(let i=0; i<rows; i++) {
                 html += '<tr>';
                 for(let j=0; j<cols; j++) {

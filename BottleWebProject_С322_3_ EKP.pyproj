@@ -87,6 +87,7 @@
     <Content Include="static\images\rectangle_rule.png" />
     <Content Include="static\images\simplex_flowchart.png" />
     <Content Include="static\images\simplex_geometry.png" />
+    <Content Include="static\images\simplex_table.png" />
     <Content Include="static\images\simplex_tableau.png" />
     <Content Include="static\images\texture2.png" />
     <Content Include="static\images\texture3.png" />
