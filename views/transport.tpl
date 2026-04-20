@@ -147,52 +147,29 @@
                 <div class="formula-detail"><strong>F = {{result['mincost_cost']}} ден. ед.</strong></div>
             </div>
             
+            <!-- Метод потенциалов -->
             <div class="result-box optimal">
                 <h3>Метод потенциалов (оптимизация)</h3>
-                <p><strong>Оптимальный план получен при оптимизации плана метода {{result['best_method']}}</strong></p>
-                
+                <p><strong>Оптимальный план получен при оптимизации плана метода {{result['best_initial_name']}}</strong></p>
+    
                 % for iter_data in result['best_iterations']:
-                <div class="iteration-block">
-                    <h4>Итерация {{iter_data['iteration']}}</h4>
-                    <p><strong>Потенциалы uᵢ:</strong> {{iter_data['potentials_u']}}</p>
-                    <p><strong>Потенциалы vⱼ:</strong> {{iter_data['potentials_v']}}</p>
-                    
-                    <p><strong>Оценки свободных клеток:</strong></p>
-                    <table class="result-table">
-                        <thead><tr><th>Клетка</th><th>Формула</th><th>Оценка Δ</th></tr></thead>
-                        <tbody>
-                        % for d in iter_data['deltas']:
-                        <tr style="background-color: {{'#ffeb3b' if d['is_positive'] else 'white'}}">
-                            <td>{{d['cell']}}</td>
-                            <td>{{d['formula']}}</td>
-                            <td class="delta-positive">{{d['delta']}}</td>
-                        </tr>
-                        % end
-                        </tbody>
-                    </table>
-                    
-                    <p>{{iter_data['enter_explanation']}}</p>
-                    <p><strong>{{iter_data['check_optimal']}}</strong></p>
-                    
-                    % if iter_data.get('cycle') and iter_data['cycle'].get('cells'):
-                    <div style="margin-top: 15px; padding: 10px; background: #e8e8e8; border-radius: 8px;">
-                        <p><strong>🔄 Построение цикла пересчёта:</strong></p>
-                        <p><em>{{iter_data['cycle']['description']}}</em></p>
-                        <p><strong>Цикл:</strong> 
-                        % for idx, cell in enumerate(iter_data['cycle']['cells']):
-                            {{cell['cell']}}<sup>{{cell['sign']}}</sup> {% if idx < len(iter_data['cycle']['cells']) - 1 %} → {% endif %}
-                        % end
-                        </p>
-                        <p><strong>{{iter_data['cycle']['theta_explanation']}}</strong></p>
-                        <p><strong>{{iter_data['cycle']['redistribution']}}</strong></p>
-                        % if 'new_cost' in iter_data:
-                        <p class="cost-decrease">💰 Новая стоимость: {{iter_data['new_cost']}} ден. ед.</p>
-                        % end
-                    </div>
+                    % if iter_data.get('type') == 'comparison':
+                        {{!iter_data.get('html', '')}}
+                    % elif iter_data.get('type') == 'iteration' or iter_data.get('iteration'):
+                        <div class="iteration-block" style="margin: 20px 0; padding: 15px; border-left: 4px solid #9B2226; background: #fafbfc;">
+                            <h4 style="color: #9B2226;">Итерация {{iter_data['iteration']}}</h4>
+                            {{!iter_data.get('html', '')}}
+                        </div>
+                    % elif iter_data.get('type') == 'optimal':
+                        <div class="iteration-block" style="margin: 20px 0; padding: 15px; border-left: 4px solid #28a745; background: #f0fff4;">
+                            <h4 style="color: #28a745;">✅ Завершение - Оптимальный план найден</h4>
+                            {{!iter_data.get('html', '')}}
+                        </div>
+                    % elif iter_data.get('type') == 'error':
+                        <div class="error-box">{{!iter_data.get('html', '')}}</div>
                     % end
-                </div>
                 % end
-                
+    
                 <h4>Оптимальный план перевозок</h4>
                 <table class="result-table">
                     <thead>
@@ -215,12 +192,11 @@
                     % end
                     </tbody>
                 </table>
-                
+    
                 <div class="min-cost-highlight">
-                    🚚 Минимальная стоимость перевозок: <span>{{result['best_cost']}} ден. ед.</span> 🚚
+                    Минимальная стоимость перевозок: <span>{{result['best_cost']}} ден. ед.</span>
                 </div>
             </div>
-            % end
             
             <!-- ТЕОРИЯ -->
             <h2>Теоретические основы</h2>
@@ -312,7 +288,7 @@
                     <img src="/static/images/cycle_example.png" class="theory-img" onerror="this.style.display='none'">
                 </div>
                 <div class="theory-text">
-                    <p>Запасы: [80, 60, 30, 60], Потребности: [10, 30, 40, 50, 70, 30]</p>
+                    <p>Запасы: 80, 60, 30, 60, Потребности: 10, 30, 40, 50, 70, 30</p>
                     <p>Сумма запасов = 230, сумма потребностей = 230 — задача сбалансирована.</p>
                 </div>
                 <p><strong>Решение.</strong></p>
