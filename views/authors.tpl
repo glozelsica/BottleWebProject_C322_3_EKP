@@ -133,7 +133,7 @@
     <footer class="footer-main">
         <div class="footer-content">
             <div class="footer-section">
-                <h4>BottleWebProject_C322_3_EKP</h4>
+                <h4>Главные разработчики</h4>
                 <p>Команда №3 | Егармина, Корнилов, Потылицына</p>
                 <p>Группа C322 | ГУАП ФСПО №12</p>
             </div>
