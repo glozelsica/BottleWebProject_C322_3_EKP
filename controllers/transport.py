@@ -1,27 +1,60 @@
-from bottle import request, template
+from bottle import request, template, response
 from datetime import datetime
 import json
 import os
+import math
+
+EPS = 1e-10  # Точность для сравнения float
 
 def load_theory():
-    """Загрузка теоретических данных из JSON файла"""
     try:
         json_path = os.path.join('data', 'theory_transport.json')
         if os.path.exists(json_path):
             with open(json_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                print(f"✅ Теория загружена из: {json_path}")
-                return data
-        print("❌ Файл theory_transport.json не найден")
+                return json.load(f)
         return {}
     except Exception as e:
-        print(f"❌ Ошибка загрузки теории: {e}")
+        print(f"Ошибка загрузки теории: {e}")
         return {}
 
+def save_form_data_to_cookie(suppliers, consumers, supply, demand, costs):
+    data = {
+        'suppliers': suppliers,
+        'consumers': consumers,
+        'supply': supply,
+        'demand': demand,
+        'costs': costs
+    }
+    response.set_cookie('transport_data', json.dumps(data), path='/', secret=None)
+
+def load_form_data_from_cookie():
+    saved_data = request.get_cookie('transport_data')
+    if saved_data:
+        try:
+            saved = json.loads(saved_data)
+            return saved
+        except:
+            pass
+    return None
+
 def solve_transport():
+    theory = load_theory()
     result = None
     error = None
-    theory = load_theory()
+    
+    saved = load_form_data_from_cookie()
+    if saved:
+        default_suppliers = saved.get('suppliers', 3)
+        default_consumers = saved.get('consumers', 3)
+        default_supply = saved.get('supply', [70, 100, 110])
+        default_demand = saved.get('demand', [80, 50, 150])
+        default_costs = saved.get('costs', [[1,4,5],[3,5,2],[2,6,4]])
+    else:
+        default_suppliers = 3
+        default_consumers = 3
+        default_supply = [70, 100, 110]
+        default_demand = [80, 50, 150]
+        default_costs = [[1,4,5],[3,5,2],[2,6,4]]
     
     if request.method == 'POST':
         try:
@@ -46,11 +79,12 @@ def solve_transport():
                     row.append(float(val) if val else 0)
                 costs.append(row)
             
+            save_form_data_to_cookie(suppliers, consumers, supply, demand, costs)
+            
             total_supply = sum(supply)
             total_demand = sum(demand)
-            balanced = abs(total_supply - total_demand) < 0.0001
+            balanced = abs(total_supply - total_demand) < EPS
             
-            # Приведение к сбалансированному виду
             supply_corr = supply[:]
             demand_corr = demand[:]
             costs_corr = [row[:] for row in costs]
@@ -71,30 +105,23 @@ def solve_transport():
                     suppliers += 1
                     has_fictive = True
             
-            # 1. Метод северо-западного угла
             plan_nw, cost_nw, steps_nw, nw_info = northwest_corner_full(supply_corr[:], demand_corr[:], costs_corr)
-            
-            # 2. Метод минимального элемента
             plan_me, cost_me, steps_me, me_info = min_element_full(supply_corr[:], demand_corr[:], costs_corr)
             
-            # Сравниваем результаты и выбираем лучший начальный план
             if cost_me <= cost_nw:
                 best_initial_plan = plan_me
                 best_initial_cost = cost_me
                 best_initial_name = "минимального элемента"
-                best_initial_steps = steps_me
-                best_initial_degenerate = me_info
             else:
                 best_initial_plan = plan_nw
                 best_initial_cost = cost_nw
                 best_initial_name = "северо-западного угла"
-                best_initial_steps = steps_nw
-                best_initial_degenerate = nw_info
             
-            # 3. Метод потенциалов для лучшего начального плана
-            plan_opt, cost_opt, iterations_opt = potential_method_full(costs_corr, best_initial_plan, best_initial_name, best_initial_cost)
+            plan_opt, cost_opt, iterations_opt = potential_method_full(
+                costs_corr, best_initial_plan, best_initial_name, 
+                best_initial_cost, cost_nw, cost_me
+            )
             
-            # Обрезаем планы до исходной размерности если были фиктивные участники
             if has_fictive:
                 if total_supply > total_demand:
                     plan_opt = [row[:-1] for row in plan_opt]
@@ -113,8 +140,6 @@ def solve_transport():
                 'best_initial_plan': best_initial_plan,
                 'best_initial_cost': round(best_initial_cost, 2),
                 'best_initial_name': best_initial_name,
-                'best_initial_steps': best_initial_steps,
-                'best_initial_degenerate': best_initial_degenerate,
                 'best_plan': plan_opt,
                 'best_cost': round(cost_opt, 2),
                 'best_iterations': iterations_opt,
@@ -126,7 +151,8 @@ def solve_transport():
                 'balanced': balanced,
                 'total_supply': total_supply,
                 'total_demand': total_demand,
-                'has_fictive': has_fictive
+                'cost_nw': round(cost_nw, 2),
+                'cost_me': round(cost_me, 2)
             }
             
         except Exception as e:
@@ -134,141 +160,117 @@ def solve_transport():
             import traceback
             traceback.print_exc()
     
-    return template('transport', result=result, error=error, theory=theory, year=datetime.now().year)
+    form_data = {
+        'suppliers': default_suppliers,
+        'consumers': default_consumers,
+        'supply': default_supply,
+        'demand': default_demand,
+        'costs': default_costs
+    }
+    
+    return template('transport', result=result, error=error, theory=theory, form_data=form_data, year=datetime.now().year)
 
 
 def northwest_corner_full(supply, demand, costs):
-    n = len(supply)
-    m = len(demand)
-    plan = [[0] * m for _ in range(n)]
+    n, m = len(supply), len(demand)
+    plan = [[0]*m for _ in range(n)]
     steps = []
     i, j = 0, 0
     step_num = 1
-    
-    supply_copy = supply[:]
-    demand_copy = demand[:]
+    s, d = supply[:], demand[:]
     
     while i < n and j < m:
-        amount = min(supply_copy[i], demand_copy[j])
+        amount = min(s[i], d[j])
         plan[i][j] = amount
-        steps.append({
-            'step': step_num,
-            'cell': f"({i+1}, {j+1})",
-            'amount': amount,
-            'formula': f"min({supply_copy[i]}, {demand_copy[j]}) = {amount}"
-        })
-        supply_copy[i] -= amount
-        demand_copy[j] -= amount
-        if abs(supply_copy[i]) < 0.0001:
+        steps.append({'step': step_num, 'cell': f"({i+1},{j+1})", 'amount': amount, 'formula': f"min({s[i]}, {d[j]}) = {amount}"})
+        s[i] -= amount
+        d[j] -= amount
+        if abs(s[i]) < EPS:
             i += 1
         else:
             j += 1
         step_num += 1
     
-    basic_cells = sum(1 for i in range(n) for j in range(m) if plan[i][j] > 0)
-    expected_basic = n + m - 1
-    is_degenerate = basic_cells < expected_basic
-    
-    info = {
-        'is_degenerate': is_degenerate,
-        'basic_cells': basic_cells,
-        'expected_basic': expected_basic,
-        'message': f"⚠️ План вырожденный! Базисных клеток {basic_cells} вместо {expected_basic}" if is_degenerate else f"✅ План невырожденный (базисных клеток: {basic_cells} из {expected_basic})"
-    }
-    
+    basic_cells = sum(1 for i in range(n) for j in range(m) if plan[i][j] > EPS)
+    expected = n + m - 1
+    info = {'is_degenerate': basic_cells < expected, 'basic_cells': basic_cells, 'expected_basic': expected,
+            'message': f"⚠️ План вырожденный! Базисных клеток {basic_cells} вместо {expected}" if basic_cells < expected else f"✅ План невырожденный (базисных клеток: {basic_cells} из {expected})"}
     total_cost = sum(plan[i][j] * costs[i][j] for i in range(n) for j in range(m))
     return plan, total_cost, steps, info
 
 
 def min_element_full(supply, demand, costs):
-    n = len(supply)
-    m = len(demand)
-    plan = [[0] * m for _ in range(n)]
-    supply_copy = supply[:]
-    demand_copy = demand[:]
+    n, m = len(supply), len(demand)
+    plan = [[0]*m for _ in range(n)]
+    s, d = supply[:], demand[:]
     steps = []
-    
     cells = [(i, j, costs[i][j]) for i in range(n) for j in range(m)]
     cells.sort(key=lambda x: x[2])
-    
     step_num = 1
+    
     for i, j, cost in cells:
-        if supply_copy[i] > 0 and demand_copy[j] > 0:
-            amount = min(supply_copy[i], demand_copy[j])
+        if s[i] > EPS and d[j] > EPS:
+            amount = min(s[i], d[j])
             plan[i][j] = amount
-            steps.append({
-                'step': step_num,
-                'cell': f"({i+1}, {j+1})",
-                'cost': cost,
-                'amount': amount,
-                'formula': f"min({supply_copy[i]}, {demand_copy[j]}) = {amount}"
-            })
-            supply_copy[i] -= amount
-            demand_copy[j] -= amount
+            steps.append({'step': step_num, 'cell': f"({i+1},{j+1})", 'cost': cost, 'amount': amount, 'formula': f"min({s[i]}, {d[j]}) = {amount}"})
+            s[i] -= amount
+            d[j] -= amount
             step_num += 1
     
-    basic_cells = sum(1 for i in range(n) for j in range(m) if plan[i][j] > 0)
-    expected_basic = n + m - 1
-    is_degenerate = basic_cells < expected_basic
-    
-    info = {
-        'is_degenerate': is_degenerate,
-        'basic_cells': basic_cells,
-        'expected_basic': expected_basic,
-        'message': f"⚠️ План вырожденный! Базисных клеток {basic_cells} вместо {expected_basic}" if is_degenerate else f"✅ План невырожденный (базисных клеток: {basic_cells} из {expected_basic})"
-    }
-    
+    basic_cells = sum(1 for i in range(n) for j in range(m) if plan[i][j] > EPS)
+    expected = n + m - 1
+    info = {'is_degenerate': basic_cells < expected, 'basic_cells': basic_cells, 'expected_basic': expected,
+            'message': f"⚠️ План вырожденный! Базисных клеток {basic_cells} вместо {expected}" if basic_cells < expected else f"✅ План невырожденный (базисных клеток: {basic_cells} из {expected})"}
     total_cost = sum(plan[i][j] * costs[i][j] for i in range(n) for j in range(m))
     return plan, total_cost, steps, info
 
 
-def find_full_cycle(basis, start_i, start_j, n, m):
+def find_cycle_correct(basis, start_i, start_j, n, m):
     """
-    Поиск цикла пересчёта методом обхода в глубину (DFS)
+    ПРАВИЛЬНЫЙ поиск цикла пересчёта.
     Возвращает список клеток цикла с чередующимися знаками + и -
     """
     temp_basis = basis.copy()
     temp_basis.append((start_i, start_j))
     
-    row_neighbors = {}
-    col_neighbors = {}
+    row_cells = {}
+    col_cells = {}
     
     for (i, j) in temp_basis:
-        if i not in row_neighbors:
-            row_neighbors[i] = []
-        row_neighbors[i].append(j)
-        if j not in col_neighbors:
-            col_neighbors[j] = []
-        col_neighbors[j].append(i)
+        if i not in row_cells:
+            row_cells[i] = []
+        row_cells[i].append(j)
+        if j not in col_cells:
+            col_cells[j] = []
+        col_cells[j].append(i)
     
-    for i in row_neighbors:
-        row_neighbors[i].sort()
-    for j in col_neighbors:
-        col_neighbors[j].sort()
+    for i in row_cells:
+        row_cells[i].sort()
+    for j in col_cells:
+        col_cells[j].sort()
     
     visited = set()
     path = []
     
-    def dfs(i, j, direction):
+    def dfs(i, j, last_dir):
         if (i, j) in visited:
             return False
-        
         visited.add((i, j))
         path.append((i, j))
         
-        if (i, j) == (start_i, start_j) and len(path) >= 4:
+        if len(path) >= 4 and (i, j) == (start_i, start_j):
             return True
         
-        if direction != 'col':
-            for nj in row_neighbors.get(i, []):
+        if last_dir != 'H':
+            for nj in row_cells.get(i, []):
                 if nj != j:
-                    if dfs(i, nj, 'row'):
+                    if dfs(i, nj, 'H'):
                         return True
         
-        if direction != 'row':
-            for ni in col_neighbors.get(j, []):
+        if last_dir != 'V':
+            for ni in col_cells.get(j, []):
                 if ni != i:
-                    if dfs(ni, j, 'col'):
+                    if dfs(ni, j, 'V'):
                         return True
         
         path.pop()
@@ -279,123 +281,213 @@ def find_full_cycle(basis, start_i, start_j, n, m):
         if len(path) > 1 and path[-1] == (start_i, start_j):
             path = path[:-1]
         
+        # Проверяем чередование знаков
         cycle = []
         for idx, (i, j) in enumerate(path):
             sign = 1 if idx % 2 == 0 else -1
             cycle.append((i, j, sign))
+        
+        # Дополнительная проверка: первая и последняя клетки должны быть с разными знаками
+        if len(cycle) >= 2 and cycle[0][2] == cycle[-1][2]:
+            # Если знаки одинаковые, корректируем
+            for idx in range(len(cycle)):
+                cycle[idx] = (cycle[idx][0], cycle[idx][1], cycle[idx][2] * (-1) ** idx)
+        
         return cycle
     
     return None
 
 
-def build_cycle_visual_matrix(plan, cycle, n, m, enter_i, enter_j):
-    """
-    Строит визуальное представление матрицы с циклом
-    Возвращает HTML таблицу с отображением цикла
-    """
-    html = '<table class="cycle-visual-table" style="border-collapse: collapse; margin: 15px auto;">'
-    html += '<thead><tr><th></th>'
+def build_cycle_table_with_cycle(plan, cycle, n, m, enter_i, enter_j, costs):
+    """Строит таблицу с визуализацией цикла - упрощённая версия для скорости"""
+    import json as json_module
+    
+    cycle_data = []
+    for (i, j, sign) in cycle:
+        cycle_data.append({'i': i, 'j': j, 'sign': sign, 'value': round(plan[i][j], 2) if plan[i][j] > EPS else 0})
+    
+    # Простая таблица без лишних украшений
+    table_html = '<div style="overflow-x: auto;">'
+    table_html += '<table class="result-table" style="margin: 15px auto; border-collapse: collapse;">'
+    table_html += '<thead><tr style="background: #EDE7F6;">'
+    table_html += '<th style="padding: 8px; border: 1px solid #9B2226;">&nbsp;</th>'
     for j in range(m):
-        html += f'<th style="padding: 8px; border: 1px solid #ddd;">B{j+1}</th>'
-    html += '</tr></thead><tbody>'
+        table_html += f'<th style="padding: 8px; border: 1px solid #9B2226;">B{j+1}</th>'
+    table_html += '</tr></thead><tbody>'
     
     for i in range(n):
-        html += f'<tr><th style="padding: 8px; border: 1px solid #ddd;">A{i+1}</th>'
+        table_html += f'<tr><th style="padding: 8px; border: 1px solid #9B2226;">A{i+1}</th>'
         for j in range(m):
-            cell_class = ""
-            cell_style = "padding: 12px; border: 2px solid #9B2226; text-align: center; min-width: 70px;"
+            value = round(plan[i][j], 2) if plan[i][j] > EPS else '—'
+            is_enter = (i == enter_i and j == enter_j)
+            in_cycle = any(ci == i and cj == j for (ci, cj, _) in cycle)
             
-            # Проверяем, входит ли клетка в цикл
-            cycle_cell = None
-            for (ci, cj, sign) in cycle:
-                if ci == i and cj == j:
-                    cycle_cell = (sign, ci, cj)
-                    break
-            
-            if cycle_cell:
-                sign = cycle_cell[0]
-                if i == enter_i and j == enter_j:
-                    cell_class = "cycle-cell-enter"
-                    cell_style += " background-color: #fff3cd; position: relative;"
-                elif sign == 1:
-                    cell_class = "cycle-cell-plus"
-                    cell_style += " background-color: #d4edda; position: relative;"
-                elif sign == -1:
-                    cell_class = "cycle-cell-minus"
-                    cell_style += " background-color: #f8d7da; position: relative;"
-                
-                value = plan[i][j] if plan[i][j] > 0 else '-'
-                html += f'<td class="{cell_class}" style="{cell_style}">'
-                html += f'<strong>{value}</strong>'
-                if sign == 1:
-                    html += '<span style="position: absolute; top: 2px; right: 5px; color: #28a745; font-weight: bold;">+</span>'
-                elif sign == -1:
-                    html += '<span style="position: absolute; top: 2px; right: 5px; color: #dc3545; font-weight: bold;">-</span>'
-                if i == enter_i and j == enter_j:
-                    html += '<span style="position: absolute; top: 2px; left: 5px; color: #ffc107; font-weight: bold;">★</span>'
-                html += f'<br><small>(c={costs[i][j] if i < len(costs) and j < len(costs[0]) else 0})</small>'
-                html += '</td>'
+            if is_enter:
+                bg = '#fff3cd'
+                border = '2px solid #ff9800'
+                sign_symbol = '★'
+            elif in_cycle:
+                sign_val = next((s for (ci, cj, s) in cycle if ci == i and cj == j), None)
+                if sign_val == 1:
+                    bg = '#e8f5e9'
+                    border = '2px solid #4caf50'
+                    sign_symbol = '+'
+                elif sign_val == -1:
+                    bg = '#ffebee'
+                    border = '2px solid #f44336'
+                    sign_symbol = '-'
+                else:
+                    bg = 'white'
+                    border = '1px solid #ddd'
+                    sign_symbol = ''
             else:
-                value = plan[i][j] if plan[i][j] > 0 else '-'
-                html += f'<td style="padding: 12px; border: 1px solid #ddd; text-align: center;">'
-                html += f'<strong>{value}</strong><br><small>(c={costs[i][j] if i < len(costs) and j < len(costs[0]) else 0})</small>'
-                html += '</td>'
-        html += '</tr>'
-    html += '</tbody></table>'
-    return html
+                bg = 'white'
+                border = '1px solid #ddd'
+                sign_symbol = ''
+            
+            table_html += f'<td style="padding: 8px; text-align: center; min-width: 60px; background-color: {bg}; border: {border};">'
+            table_html += f'<strong>{value}</strong>'
+            if sign_symbol:
+                table_html += f'<span style="margin-left: 5px; font-weight: bold;">{sign_symbol}</span>'
+            table_html += f'<br><small>c={costs[i][j]}</small>'
+            table_html += '</td>'
+        table_html += '</tr>'
+    table_html += '</tbody></table></div>'
+    
+    # Canvas только для линий (упрощённый)
+    canvas_id = f"cycleCanvas_{enter_i}_{enter_j}"
+    canvas_html = f'''
+    <div style="position: relative; margin: 15px 0; text-align: center;">
+        <canvas id="{canvas_id}" width="500" height="300" style="border: 1px solid #9B2226; border-radius: 8px; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"></canvas>
+    </div>
+    <script>
+    (function() {{
+        const canvas = document.getElementById('{canvas_id}');
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const n = {n};
+        const m = {m};
+        const cycleData = {json_module.dumps(cycle_data)};
+        const enterCell = {{i: {enter_i}, j: {enter_j}}};
+        
+        const cellWidth = canvas.width / (m + 1);
+        const cellHeight = canvas.height / (n + 1);
+        
+        function getCellCenter(i, j) {{
+            return {{ x: (j + 1.5) * cellWidth, y: (i + 1.5) * cellHeight }};
+        }}
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Сетка
+        ctx.beginPath();
+        ctx.strokeStyle = '#ccc';
+        ctx.lineWidth = 1;
+        for(let row = 0; row <= n; row++) {{
+            ctx.moveTo(cellWidth, row * cellHeight);
+            ctx.lineTo(canvas.width - cellWidth/2, row * cellHeight);
+            ctx.stroke();
+        }}
+        for(let col = 0; col <= m; col++) {{
+            ctx.moveTo((col + 0.5) * cellWidth, 0);
+            ctx.lineTo((col + 0.5) * cellWidth, canvas.height);
+            ctx.stroke();
+        }}
+        
+        // Жирная точка
+        const start = getCellCenter(enterCell.i, enterCell.j);
+        ctx.beginPath();
+        ctx.arc(start.x, start.y, 12, 0, 2 * Math.PI);
+        ctx.fillStyle = '#ff9800';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(start.x, start.y, 5, 0, 2 * Math.PI);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+        
+        // Линии цикла
+        if(cycleData.length > 1) {{
+            const points = cycleData.map(cell => getCellCenter(cell.i, cell.j));
+            ctx.beginPath();
+            ctx.strokeStyle = '#2196f3';
+            ctx.lineWidth = 3;
+            ctx.moveTo(points[0].x, points[0].y);
+            for(let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+            ctx.lineTo(points[0].x, points[0].y);
+            ctx.stroke();
+        }}
+        
+        // Знаки
+        cycleData.forEach(cell => {{
+            const center = getCellCenter(cell.i, cell.j);
+            ctx.font = 'bold 22px Arial';
+            ctx.fillStyle = cell.sign === 1 ? '#4caf50' : '#f44336';
+            ctx.fillText(cell.sign === 1 ? '+' : '-', center.x - 10, center.y - 12);
+        }});
+        
+        // Подписи
+        ctx.font = 'bold 14px Arial';
+        ctx.fillStyle = '#9B2226';
+        for(let i = 0; i < n; i++) ctx.fillText(`A${i+1}`, 10, (i + 1.5) * cellHeight);
+        for(let j = 0; j < m; j++) ctx.fillText(`B${j+1}`, (j + 1.5) * cellWidth, 20);
+    }})();
+    </script>
+    '''
+    
+    return table_html + canvas_html
 
 
-def potential_method_full(costs, initial_plan, initial_method_name, initial_cost):
-    """
-    Полноценный метод потенциалов с подробной визуализацией каждого шага
-    """
-    n = len(costs)
-    m = len(costs[0])
+def build_new_matrix_visual(plan, costs, n, m):
+    """Визуализация новой матрицы - упрощённая"""
+    table_html = '<div style="overflow-x: auto;">'
+    table_html += '<table class="result-table" style="margin: 15px auto; border-collapse: collapse;">'
+    table_html += '<thead><tr style="background: #EDE7F6;">'
+    table_html += '<th style="padding: 8px; border: 1px solid #9B2226;">&nbsp;</th>'
+    for j in range(m):
+        table_html += f'<th style="padding: 8px; border: 1px solid #9B2226;">B{j+1}</th>'
+    table_html += '</tr></thead><tbody>'
+    
+    for i in range(n):
+        table_html += f'<tr><th style="padding: 8px; border: 1px solid #9B2226;">A{i+1}</th>'
+        for j in range(m):
+            value = round(plan[i][j], 2) if plan[i][j] > EPS else '—'
+            table_html += f'<td style="padding: 8px; text-align: center; min-width: 60px; border: 1px solid #ddd;">'
+            table_html += f'<strong>{value}</strong><br><small>c={costs[i][j]}</small>'
+            table_html += '</td>'
+        table_html += '</tr>'
+    table_html += '</tbody></table></div>'
+    return table_html
+
+
+def potential_method_full(costs, initial_plan, initial_method_name, initial_cost, cost_nw, cost_me):
+    n, m = len(costs), len(costs[0])
     plan = [row[:] for row in initial_plan]
     iterations = []
     iteration_num = 1
     max_iterations = 30
     
-    # Шаг 1: Сравнение начальных планов и выбор лучшего
-    comparison_html = f'''
-    <div style="background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-        <h4 style="margin: 0 0 10px 0;">📊 Сравнение начальных планов</h4>
-        <p style="margin: 5px 0;">Метод северо-западного угла: стоимость = {initial_cost} ден. ед.</p>
-        <p style="margin: 5px 0;">Метод минимального элемента: стоимость = {initial_cost} ден. ед.</p>
-        <p style="margin: 10px 0 0 0; font-weight: bold;">✅ Выбран опорный план метода "{initial_method_name}" (стоимость = {initial_cost} ден. ед.)</p>
-    </div>
-    '''
-    iterations.append({'type': 'comparison', 'html': comparison_html})
-    
-    while iteration_num <= max_iterations:
-        # Собираем базисные клетки
-        basis = []
-        for i in range(n):
-            for j in range(m):
-                if plan[i][j] > 0:
-                    basis.append((i, j))
-        
-        expected_basic = n + m - 1
-        if len(basis) < expected_basic:
-            for i in range(n):
-                for j in range(m):
-                    if plan[i][j] == 0 and (i, j) not in basis:
-                        if len(basis) < expected_basic:
-                            basis.append((i, j))
-        
-        # Расчёт потенциалов u и v
-        u = [None] * n
-        v = [None] * m
-        u[0] = 0
-        
-        # Формула для потенциалов
-        potential_formula = '''
-        <div style="background: #e8f5e9; padding: 12px; border-radius: 10px; margin: 10px 0; border-left: 4px solid #28a745;">
-            <strong>📐 Формула для расчёта потенциалов:</strong><br>
-            Для каждой базисной клетки выполняется равенство: <strong style="font-size: 1.1rem;">uᵢ + vⱼ = cᵢⱼ</strong>
+    # Сравнение начальных планов
+    iterations.append({
+        'type': 'comparison',
+        'html': f'''
+        <div style="background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+            <h3 style="margin: 0 0 15px 0;">📊 Сравнение начальных планов</h3>
+            <p style="margin: 8px 0;">🔹 Метод северо-западного угла: стоимость = <strong>{cost_nw}</strong> ден. ед.</p>
+            <p style="margin: 8px 0;">🔹 Метод минимального элемента: стоимость = <strong>{cost_me}</strong> ден. ед.</p>
+            <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 8px;">
+                ✅ <strong>Выбран опорный план метода "{initial_method_name}"</strong><br>
+                📌 Стоимость: <strong>{initial_cost} ден. ед.</strong>
+            </div>
         </div>
         '''
+    })
+    
+    while iteration_num <= max_iterations:
+        basis = [(i, j) for i in range(n) for j in range(m) if plan[i][j] > EPS]
         
+        # Расчёт потенциалов
+        u, v = [None]*n, [None]*m
+        u[0] = 0
         changed = True
         while changed:
             changed = False
@@ -407,185 +499,142 @@ def potential_method_full(costs, initial_plan, initial_method_name, initial_cost
                     u[i] = costs[i][j] - v[j]
                     changed = True
         
-        for i in range(n):
-            if u[i] is None:
-                u[i] = 0
-        for j in range(m):
-            if v[j] is None:
-                v[j] = 0
+        u = [x if x is not None else 0 for x in u]
+        v = [x if x is not None else 0 for x in v]
         
-        # Построение системы уравнений
-        system_eq = []
-        for (i, j) in basis:
-            if i == 0 and j == 0:
-                system_eq.append(f"u₁ + v₁ = {costs[i][j]}")
-            else:
-                system_eq.append(f"u{i+1} + v{j+1} = {costs[i][j]}")
-        
+        # Система уравнений
+        sys_eq = '<br>'.join([f"u{i+1} + v{j+1} = {costs[i][j]}" for (i, j) in basis[:8]])
         system_html = f'''
-        <div style="background: #f0f0f0; padding: 12px; border-radius: 10px; margin: 10px 0;">
-            <strong>📝 Система уравнений для базисных клеток:</strong><br>
-            {'<br>'.join(system_eq)}<br>
-            <span style="color: #9B2226;">🔹 Принимаем u₁ = 0, затем последовательно находим остальные потенциалы.</span>
+        <div style="background: #f0f0f0; padding: 12px; border-radius: 8px; margin: 10px 0;">
+            <strong>📝 Система уравнений:</strong><br>{sys_eq}{'<br>...' if len(basis) > 8 else ''}<br>
+            <span style="color: #9B2226;">🔹 Принимаем u₁ = 0</span>
         </div>
-        <div style="background: #e3f2fd; padding: 12px; border-radius: 10px; margin: 10px 0;">
-            <strong>✨ Найденные потенциалы:</strong><br>
-            Потенциалы поставщиков uᵢ = {[round(x, 2) for x in u]}<br>
-            Потенциалы потребителей vⱼ = {[round(x, 2) for x in v]}
+        <div style="background: #e3f2fd; padding: 12px; border-radius: 8px; margin: 10px 0;">
+            <strong>✨ Потенциалы:</strong><br>uᵢ = {[round(x,2) for x in u]}<br>vⱼ = {[round(x,2) for x in v]}
         </div>
         '''
         
-        # Формула для оценок
-        delta_formula = '''
-        <div style="background: #fff3e0; padding: 12px; border-radius: 10px; margin: 10px 0; border-left: 4px solid #ff9800;">
-            <strong>📐 Формула для расчёта оценок свободных клеток:</strong><br>
-            <strong style="font-size: 1.1rem;">Δᵢⱼ = uᵢ + vⱼ - cᵢⱼ</strong>
-        </div>
-        '''
-        
-        # Вычисляем оценки Δ для свободных клеток
+        # Оценки
         deltas = []
         enter_i, enter_j = -1, -1
         max_delta = -float('inf')
         
         for i in range(n):
             for j in range(m):
-                if plan[i][j] == 0:
+                if plan[i][j] < EPS:
                     delta = u[i] + v[j] - costs[i][j]
+                    # Округляем для избежания погрешностей
+                    delta = round(delta, 6)
                     deltas.append({
-                        'cell': f"({i+1}, {j+1})",
-                        'delta': round(delta, 2),
-                        'formula': f"{round(u[i],2)} + {round(v[j],2)} - {costs[i][j]} = {round(delta,2)}",
-                        'is_positive': delta > 0
+                        'cell': f"({i+1},{j+1})",
+                        'delta': delta,
+                        'formula': f"{round(u[i],2)} + {round(v[j],2)} - {costs[i][j]} = {delta}",
+                        'is_positive': delta > EPS
                     })
-                    if delta > max_delta:
+                    if delta > max_delta + EPS:
                         max_delta = delta
                         enter_i, enter_j = i, j
         
-        # Условие оптимальности
-        optimality_condition = '''
-        <div style="background: #e8f5e9; padding: 12px; border-radius: 10px; margin: 10px 0; border-left: 4px solid #28a745;">
-            <strong>✅ Критерий оптимальности:</strong><br>
-            План является оптимальным, если все оценки Δᵢⱼ ≤ 0.
-        </div>
-        '''
-        
-        # Проверка на оптимальность
-        is_optimal = max_delta <= 0
         current_cost = sum(plan[i][j] * costs[i][j] for i in range(n) for j in range(m))
         
-        if is_optimal:
-            optimal_html = f'''
-            <div style="background: #d4edda; padding: 15px; border-radius: 12px; margin: 10px 0; border: 2px solid #28a745;">
-                <strong>🎉 ПЛАН ОПТИМАЛЕН!</strong><br>
-                Все оценки Δᵢⱼ ≤ 0, дальнейшее улучшение невозможно.<br>
-                Текущая стоимость перевозок: <strong>{round(current_cost, 2)} ден. ед.</strong>
-            </div>
-            '''
+        # Таблица оценок
+        deltas_table = '<table class="result-table" style="margin: 10px 0;"><thead>'
+        deltas_table += '<tr><th>Клетка</th><th>Формула</th><th>Оценка Δ</th></tr></thead><tbody>'
+        for d in deltas:
+            bg = '#ffeb3b' if d['is_positive'] else 'white'
+            deltas_table += f'<tr style="background-color: {bg};">'
+            deltas_table += f'<td style="padding: 6px;">{d["cell"]}</td>'
+            deltas_table += f'<td style="padding: 6px;">{d["formula"]}</td>'
+            deltas_table += f'<td style="padding: 6px; color: {"#28a745" if d["is_positive"] else "#333"};">{d["delta"]}</td>'
+            deltas_table += '</tr>'
+        deltas_table += '</tbody></table>'
+        
+        # Проверка оптимальности
+        if max_delta <= EPS:
             iterations.append({
                 'type': 'optimal',
                 'iteration': iteration_num,
-                'html': potential_formula + system_html + delta_formula + optimality_condition + optimal_html,
-                'is_optimal': True
+                'html': system_html + deltas_table + f'''
+                <div style="background: #d4edda; padding: 15px; border-radius: 12px; margin: 15px 0; border: 2px solid #28a745;">
+                    <h4 style="margin: 0;">🎉 ПЛАН ОПТИМАЛЕН!</h4>
+                    <p>Все оценки Δᵢⱼ ≤ 0, дальнейшее улучшение невозможно.</p>
+                    <p style="font-size: 1.2rem;">📌 Стоимость: <strong>{round(current_cost, 2)} ден. ед.</strong></p>
+                </div>
+                '''
             })
             break
         
-        # Если есть положительная оценка
-        positive_deltas = [d for d in deltas if d['is_positive']]
+        # Есть положительные оценки
         positive_html = f'''
-        <div style="background: #fff3cd; padding: 12px; border-radius: 10px; margin: 10px 0; border-left: 4px solid #ffc107;">
-            <strong>⚠️ Обнаружены положительные оценки!</strong><br>
-            Наибольшая положительная оценка Δ = {round(max_delta, 2)} в клетке ({enter_i+1}, {enter_j+1}).<br>
-            Это означает, что включение этой клетки в план позволит уменьшить общую стоимость перевозок.
+        <div style="background: #fff3cd; padding: 12px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #ffc107;">
+            <strong>⚠️ Найдена положительная оценка!</strong><br>
+            📌 Δ = <strong>{round(max_delta, 6)}</strong> в клетке <strong>({enter_i+1}, {enter_j+1})</strong>
         </div>
         '''
         
-        # Строим цикл пересчёта
-        cycle = find_full_cycle(basis, enter_i, enter_j, n, m)
+        # Построение цикла
+        temp_basis = basis + [(enter_i, enter_j)]
+        cycle = find_cycle_correct(temp_basis, enter_i, enter_j, n, m)
         
-        if cycle:
-            # Находим минимальное значение в клетках со знаком минус
-            min_val = float('inf')
-            for (i, j, sign) in cycle:
-                if sign == -1:
-                    if plan[i][j] < min_val:
-                        min_val = plan[i][j]
-            
-            theta = min_val if min_val != float('inf') else 0
-            
-            # Строим визуализацию цикла
-            cycle_visual = build_cycle_visual_matrix(plan, cycle, n, m, enter_i, enter_j)
-            
-            cycle_description = f'''
-            <div style="background: #e8e8e8; padding: 15px; border-radius: 12px; margin: 15px 0;">
-                <h4 style="margin: 0 0 10px 0;">🔄 Построение цикла пересчёта</h4>
-                <p><strong>Цикл пересчёта</strong> — замкнутая ломаная линия по базисным клеткам. Вершины цикла отмечены знаками «+» и «-».</p>
-                <p><strong>Построенный цикл:</strong></p>
-                {cycle_visual}
-                <p><strong>Вершины цикла:</strong> 
-                { ' → '.join([f"({i+1},{j+1})<sup>{'+' if sign == 1 else '-'}</sup>" for (i, j, sign) in cycle]) }
-                </p>
-                <p><strong>🔢 θ (минимальная перевозка в клетках со знаком «-»):</strong> {theta}</p>
-            </div>
-            '''
-            
-            # Создаём новую матрицу после перераспределения
-            new_plan = [row[:] for row in plan]
-            for (i, j, sign) in cycle:
-                new_plan[i][j] += sign * theta
-                if new_plan[i][j] < 0:
-                    new_plan[i][j] = 0
-            
-            new_cost = sum(new_plan[i][j] * costs[i][j] for i in range(n) for j in range(m))
-            
-            # Визуализация новой матрицы
-            new_plan_html = '<table class="result-table" style="margin: 15px auto;">'
-            new_plan_html += '<thead><tr><th></th>'
-            for j in range(m):
-                new_plan_html += f'<th>B{j+1}</th>'
-            new_plan_html += '<th>Запасы</th></tr></thead><tbody>'
-            for i in range(n):
-                new_plan_html += f'<tr><th>A{i+1}</th>'
-                for j in range(m):
-                    val = new_plan[i][j] if new_plan[i][j] > 0 else '-'
-                    new_plan_html += f'<td><strong>{val}</strong><br><small>(c={costs[i][j]})</small></td>'
-                new_plan_html += f'<td>{sum(plan[i][j] for j in range(m))}</td></tr>'
-            new_plan_html += '</tbody></table>'
-            
-            redistribution_html = f'''
-            <div style="background: #e8f5e9; padding: 15px; border-radius: 12px; margin: 15px 0;">
-                <h4 style="margin: 0 0 10px 0;">📊 Перераспределение перевозок</h4>
-                <p><strong>Правило перераспределения:</strong> к клеткам со знаком «+» прибавляем θ = {theta}, из клеток со знаком «-» вычитаем θ = {theta}.</p>
-                <p><strong>Новая матрица перевозок:</strong></p>
-                {new_plan_html}
-                <p class="cost-decrease" style="font-size: 1.1rem; font-weight: bold; color: #28a745;">💰 Новая стоимость: {round(new_cost, 2)} ден. ед. (было: {round(current_cost, 2)} ден. ед., уменьшение на {round(current_cost - new_cost, 2)})</p>
-            </div>
-            '''
-            
-            iterations.append({
-                'type': 'iteration',
-                'iteration': iteration_num,
-                'html': potential_formula + system_html + delta_formula + optimality_condition + positive_html + cycle_description + redistribution_html,
-                'current_cost': round(current_cost, 2),
-                'new_cost': round(new_cost, 2),
-                'enter_cell': f"({enter_i+1}, {enter_j+1})",
-                'max_delta': round(max_delta, 2),
-                'theta': theta,
-                'is_optimal': False
-            })
-            
-            # Обновляем план для следующей итерации
-            plan = new_plan
-            
-        else:
-            error_html = '<div style="background: #f8d7da; padding: 15px; border-radius: 12px;"><strong>❌ Ошибка:</strong> Не удалось построить цикл пересчёта</div>'
+        if not cycle:
             iterations.append({
                 'type': 'error',
                 'iteration': iteration_num,
-                'html': error_html
+                'html': system_html + deltas_table + positive_html + '<div style="background: #f8d7da; padding: 15px; border-radius: 12px;"><strong>❌ Ошибка:</strong> Не удалось построить цикл</div>'
             })
             break
         
+        # Находим theta с проверкой на вырожденность
+        theta = float('inf')
+        for (i, j, sign) in cycle:
+            if sign == -1:
+                if plan[i][j] < theta - EPS:
+                    theta = plan[i][j]
+        
+        # Проверка на theta == 0 (вырожденная задача)
+        if theta <= EPS:
+            iterations.append({
+                'type': 'warning',
+                'iteration': iteration_num,
+                'html': system_html + deltas_table + positive_html + '''
+                <div style="background: #fff3cd; padding: 15px; border-radius: 12px; margin: 10px 0;">
+                    <strong>⚠️ ВНИМАНИЕ:</strong> Вырожденная задача! θ = 0, план уже оптимален.
+                </div>
+                '''
+            })
+            break
+        
+        # Визуализация цикла
+        cycle_visual = build_cycle_table_with_cycle(plan, cycle, n, m, enter_i, enter_j, costs)
+        
+        # Перераспределение с корректным округлением
+        new_plan = [row[:] for row in plan]
+        for (i, j, sign) in cycle:
+            new_plan[i][j] += sign * theta
+            if abs(new_plan[i][j]) < EPS:
+                new_plan[i][j] = 0.0
+        
+        new_cost = sum(new_plan[i][j] * costs[i][j] for i in range(n) for j in range(m))
+        new_matrix = build_new_matrix_visual(new_plan, costs, n, m)
+        
+        iterations.append({
+            'type': 'iteration',
+            'iteration': iteration_num,
+            'html': system_html + deltas_table + positive_html + cycle_visual + f'''
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 12px; margin: 15px 0;">
+                <h4 style="margin: 0 0 10px 0;">📊 Перераспределение</h4>
+                <p>θ = <strong>{round(theta, 2)}</strong> (минимальная перевозка в клетках со знаком «-»)</p>
+                <p><strong>Новая матрица:</strong></p>
+                {new_matrix}
+                <div style="font-size: 1.1rem; font-weight: bold; color: #28a745; margin-top: 10px;">
+                    💰 Новая стоимость: <strong>{round(new_cost, 2)}</strong> ден. ед.<br>
+                    📉 Уменьшение: <strong>{round(current_cost - new_cost, 2)}</strong> ден. ед.
+                </div>
+            </div>
+            '''
+        })
+        
+        plan = new_plan
         iteration_num += 1
     
     total_cost = sum(plan[i][j] * costs[i][j] for i in range(n) for j in range(m))

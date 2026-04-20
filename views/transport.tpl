@@ -65,7 +65,7 @@
             
             % if result:
             <div class="giant-answer">
-                <h2>✨ ОПТИМАЛЬНОЕ РЕШЕНИЕ ✨</h2>
+                <h2>ОПТИМАЛЬНОЕ РЕШЕНИЕ</h2>
                 <div class="cost-value">{{result['best_cost']}} ден. ед.</div>
                 <div class="cost-label">Минимальная стоимость перевозок</div>
             </div>
@@ -146,58 +146,61 @@
                 <p>{{result['mincost_degenerate']['message']}}</p>
                 <div class="formula-detail"><strong>F = {{result['mincost_cost']}} ден. ед.</strong></div>
             </div>
-            
-            <!-- Метод потенциалов -->
-            <div class="result-box optimal">
-                <h3>Метод потенциалов (оптимизация)</h3>
-                <p><strong>Оптимальный план получен при оптимизации плана метода {{result['best_initial_name']}}</strong></p>
-    
-                % for iter_data in result['best_iterations']:
-                    % if iter_data.get('type') == 'comparison':
-                        {{!iter_data.get('html', '')}}
-                    % elif iter_data.get('type') == 'iteration' or iter_data.get('iteration'):
-                        <div class="iteration-block" style="margin: 20px 0; padding: 15px; border-left: 4px solid #9B2226; background: #fafbfc;">
-                            <h4 style="color: #9B2226;">Итерация {{iter_data['iteration']}}</h4>
-                            {{!iter_data.get('html', '')}}
-                        </div>
-                    % elif iter_data.get('type') == 'optimal':
-                        <div class="iteration-block" style="margin: 20px 0; padding: 15px; border-left: 4px solid #28a745; background: #f0fff4;">
-                            <h4 style="color: #28a745;">✅ Завершение - Оптимальный план найден</h4>
-                            {{!iter_data.get('html', '')}}
-                        </div>
-                    % elif iter_data.get('type') == 'error':
-                        <div class="error-box">{{!iter_data.get('html', '')}}</div>
-                    % end
-                % end
-    
-                <h4>Оптимальный план перевозок</h4>
-                <table class="result-table">
-                    <thead>
-                        <tr><th></th>
-                        % for col in range(result['consumers']):
-                        <th>B{{col+1}}</th>
-                        % end
-                        <th>Запасы</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    % for row in range(result['suppliers']):
-                    <tr>
-                        <th>A{{row+1}}</th>
-                        % for col in range(result['consumers']):
-                        <td><strong>{{ result['best_plan'][row][col] if result['best_plan'][row][col] > 0 else '-' }}</strong></td>
-                        % end
-                        <td>{{ result['supply'][row] }}</td>
-                    </tr>
-                    % end
-                    </tbody>
-                </table>
-    
-                <div class="min-cost-highlight">
-                    Минимальная стоимость перевозок: <span>{{result['best_cost']}} ден. ед.</span>
-                </div>
+        
+                <!-- Метод потенциалов -->
+<div class="result-box optimal">
+    <h3>Метод потенциалов (оптимизация)</h3>
+    <p><strong>Оптимальный план получен при оптимизации плана метода {{result['best_initial_name']}}</strong></p>
+
+    % for iter_data in result['best_iterations']:
+        % if iter_data.get('type') == 'comparison':
+            <div style="margin: 20px 0;">
+                {{!iter_data.get('html', '')}}
             </div>
-            
+        % elif iter_data.get('type') == 'iteration':
+            <div style="margin: 30px 0; padding: 20px; border-left: 4px solid #2196f3; background: #fafbfc; border-radius: 12px;">
+                <h3 style="color: #2196f3; margin: 0 0 15px 0;">🔄 ИТЕРАЦИЯ {{iter_data['iteration']}}</h3>
+                {{!iter_data.get('html', '')}}
+            </div>
+        % elif iter_data.get('type') == 'optimal':
+            <div style="margin: 30px 0; padding: 20px; border-left: 4px solid #28a745; background: #f0fff4; border-radius: 12px;">
+                <h3 style="color: #28a745; margin: 0 0 15px 0;">✅ ЗАВЕРШЕНИЕ</h3>
+                {{!iter_data.get('html', '')}}
+            </div>
+        % elif iter_data.get('type') == 'error':
+            <div class="error-box" style="margin: 20px 0;">{{!iter_data.get('html', '')}}</div>
+        % end
+    % end
+
+    <h4>ОПТИМАЛЬНЫЙ ПЛАН ПЕРЕВОЗОК</h4>
+    <table class="result-table">
+        <thead>
+            <tr><th></th>
+            % for col in range(result['consumers']):
+            <th>B{{col+1}}</th>
+            % end
+            <th>Запасы</th>
+        </tr>
+        </thead>
+        <tbody>
+        % for row in range(result['suppliers']):
+        <tr>
+            <th>A{{row+1}}</th>
+            % for col in range(result['consumers']):
+            <td style="padding: 10px; text-align: center;">
+                <strong>{{ result['best_plan'][row][col] if result['best_plan'][row][col] > 0 else '—' }}</strong>
+                <br><small>c={{ result['costs'][row][col] }}</small>
+            </td>
+            % end
+            <td style="background: #EDE7F6;">{{ result['supply'][row] }}</td>
+        </tr>
+        % end
+        </tbody>
+    </table>
+
+    <div class="min-cost-highlight">
+        МИНИМАЛЬНАЯ СТОИМОСТЬ ПЕРЕВОЗОК: <span>{{result['best_cost']}} ден. ед.</span></div>
+</div>
             <!-- ТЕОРИЯ -->
             <h2>Теоретические основы</h2>
             
@@ -328,13 +331,13 @@
             </div>
             
             <div class="theory-block">
-                <h3>Литература</h3>
-                <ul>
-                    <li>Ваулин А.Е. Методы цифровой обработки данных. — СПб.: ВИККИ, 1993.</li>
-                    <li>Таха Х.А. Введение в исследование операций. — М.: Вильямс, 2005.</li>
-                    <li>Корбут А.А., Финкельштейн Ю.Ю. Дискретное программирование. — М.: Наука, 1969.</li>
-                </ul>
+            <h3>Литература</h3>
+            <div style="padding-left: 1.5rem;">
+                <p>Ваулин А.Е. Методы цифровой обработки данных. — СПб.: ВИККИ, 1993.</p>
+                <p>Таха Х.А. Введение в исследование операций. — М.: Вильямс, 2005.</p>
+                <p>Корбут А.А., Финкельштейн Ю.Ю. Дискретное программирование. — М.: Наука, 1969.</p>
             </div>
+        </div>
         </div>
         
         <div class="sidebar">
