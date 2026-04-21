@@ -19,7 +19,7 @@
     <Name>BottleWebProject_С322_3_ EKP</Name>
     <RootNamespace>BottleWebProject_С322_3_ EKP</RootNamespace>
     <InterpreterId>MSBuild|kl|$(MSBuildProjectFullPath)</InterpreterId>
-    <InterpreterId>MSBuild|zlatik_env|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>MSBuild|env1|$(MSBuildProjectFullPath)</InterpreterId>
     <TestFramework>Pytest</TestFramework>
     <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
     <WebBrowserPort>8080</WebBrowserPort>

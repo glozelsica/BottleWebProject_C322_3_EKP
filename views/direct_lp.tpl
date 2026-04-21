@@ -79,14 +79,14 @@
                 % if result.get('success'):
                 <div class="giant-answer">
                     <h2>✅ ОПТИМАЛЬНОЕ РЕШЕНИЕ НАЙДЕНО</h2>
-                    <div class="cost-value">F = {{"{:.1f}".format(result['value'])}}</div>
+                    <div class="cost-value">F = {{ result['value'] }}</div>
                     <div class="cost-label">Значение целевой функции</div>
                 </div>
                 
                 <div class="result-box">
                     <h3>Оптимальный план</h3>
                     % for i, val in enumerate(result['solution']):
-                    <p><strong>x{{i+1}} = {{"{:.6f}".format(val)}}</strong></p>
+                    <p><strong>x{{i+1}} = {{ val }}</strong></p>
                     % end
                     <p><strong>Общее количество итераций:</strong> {{result.get('total_iterations', 0)}}</p>
                 </div>
@@ -623,37 +623,40 @@
             }, 50);
         }
         
-        function exportToCSV() {
-            % if result and result.get('success'):
-            const solution = {{!result['solution']}};
-            const value = {{result['value']}};
-            let csv = 'Переменная,Значение\n';
-            solution.forEach((val, i) => { csv += `x${i+1},${val}\n`; });
-            csv += `F,${value}\n`;
-            const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'simplex_solution.csv';
-            link.click();
-            URL.revokeObjectURL(link.href);
-            % end
-        }
-        
-        function exportToExcel() {
-            % if result and result.get('success'):
-            const solution = {{!result['solution']}};
-            const value = {{result['value']}};
-            let html = '<table><tr><th>Переменная</th><th>Значение</th></tr>';
-            solution.forEach((val, i) => { html += `<tr><td>x${i+1}</td><td>${val}</td></tr>`; });
-            html += `<tr><td>F</td><td>${value}</td></tr></table>`;
-            const blob = new Blob([html], {type: 'application/vnd.ms-excel;charset=utf-8;'});
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'simplex_solution.xls';
-            link.click();
-            URL.revokeObjectURL(link.href);
-            % end
-        }
+    function exportToCSV() {
+        % if result and result.get('success'):
+        const solution = {{!result['solution']}};
+        const value = {{result['value']}};
+        let csv = 'Переменная,Значение\n';
+        solution.forEach((val, i) => { csv += `x${i+1},${val}\n`; });
+        csv += `F,${value}\n`;
+        // Добавляем BOM для корректного отображения кириллицы в Excel
+        const blob = new Blob(['\uFEFF' + csv], {type: 'text/csv;charset=utf-8;'});
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'simplex_solution.csv';
+        link.click();
+        URL.revokeObjectURL(link.href);
+        % end
+}
+
+    function exportToExcel() {
+        % if result and result.get('success'):
+        const solution = {{!result['solution']}};
+        const value = {{result['value']}};
+        let html = '<html><head><meta charset="UTF-8"></head><body>';
+        html += '<table><tr><th>Переменная</th><th>Значение</th></tr>';
+        solution.forEach((val, i) => { html += `<tr><td>x${i+1}</td><td>${val}</td></tr>`; });
+        html += `<tr><td>F</td><td>${value}</td></tr></table></body></html>`;
+        // Добавляем BOM и сохраняем как .xls с правильной кодировкой
+        const blob = new Blob(['\uFEFF' + html], {type: 'application/vnd.ms-excel;charset=utf-8'});
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'simplex_solution.xls';
+        link.click();
+        URL.revokeObjectURL(link.href);
+        % end
+}
         
         document.addEventListener('DOMContentLoaded', function() {
             updateMatrix();

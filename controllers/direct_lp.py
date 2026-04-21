@@ -337,6 +337,9 @@ def simplex_method_full(c, A, b, maximize=True, constraints_types=None):
         if not res1['success']:
             return {'success': False, 'error': res1['error'], 'steps': steps, 'iterations': iterations}
 
+        # Пересчитываем строку Δ для точного значения Σy
+        tableau = update_objective_row(tableau, basis, c1)
+
         opt_val = tableau[-1][-1]
         if abs(opt_val) > 1e-6:
             add_step('Система несовместна', {'min_сумма_y': opt_val,
@@ -363,6 +366,10 @@ def simplex_method_full(c, A, b, maximize=True, constraints_types=None):
         if not res2['success']:
             return {'success': False, 'error': res2['error'], 'steps': steps, 'iterations': iterations}
 
+        # Пересчитываем строку Δ для точного значения F
+        tableau = update_objective_row(tableau, basis, c2)
+
+        # Общее количество итераций = сумма итераций обеих фаз
         total_iterations = res1.get('iterations', 0) + res2.get('iterations', 0)
 
     else:
@@ -378,31 +385,36 @@ def simplex_method_full(c, A, b, maximize=True, constraints_types=None):
         res = run_simplex_iterations(tableau, basis, new_c, var_names, 1, steps, iterations)
         if not res['success']:
             return {'success': False, 'error': res['error'], 'steps': steps, 'iterations': iterations}
+        
+        # ✅ ВАЖНО: пересчёт строки Δ для точного значения F
+        tableau = update_objective_row(tableau, basis, new_c)
+        
         total_iterations = res.get('iterations', 0)
 
-        # Извлечение решения
+    # Извлечение решения
     solution = [0.0] * canon['original_n']
     for i, bv in enumerate(basis):
         if 0 <= bv < canon['original_n']:
             solution[bv] = tableau[i][-1]
 
     # Правильное извлечение значения целевой функции
-    value_min = -tableau[-1][-1]   # значение минимизированной задачи
+    # Извлечение значения целевой функции
     if maximize:
-        value = -value_min         # исходная задача на максимум
+        # При максимизации мы решали минимизацию с -c, в углу -F
+        value = -tableau[-1][-1]
     else:
-        value = value_min          # исходная задача на минимум
-
+        # При минимизации в углу F
+        value = tableau[-1][-1]
     add_step('=== РЕШЕНИЕ НАЙДЕНО ===', {
-        'оптимальный_план': [round(x, 6) for x in solution],
-        'значение_ЦФ': round(value, 6),
+        'оптимальный_план': [format_number(x) for x in solution],
+        'значение_ЦФ': format_number(value),
         'всего_итераций': total_iterations
     })
 
     return {
         'success': True,
-        'solution': [round(x, 6) for x in solution],
-        'value': round(value, 6),
+        'solution': [format_number(x) for x in solution],
+        'value': format_number(value),
         'steps': steps,
         'iterations': iterations,
         'total_iterations': total_iterations
