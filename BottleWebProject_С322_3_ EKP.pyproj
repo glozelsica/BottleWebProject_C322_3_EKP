@@ -49,6 +49,10 @@
     <Compile Include="static\utils\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="tests\test_assignment.py" />
+    <Compile Include="tests\test_direct.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="controllers\" />
@@ -60,6 +64,7 @@
     <Folder Include="static\images\" />
     <Folder Include="static\utils\" />
     <Folder Include="static\scripts\" />
+    <Folder Include="tests\" />
     <Folder Include="views\" />
   </ItemGroup>
   <ItemGroup>

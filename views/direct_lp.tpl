@@ -78,8 +78,8 @@
             % if result:
                 % if result.get('success'):
                 <div class="giant-answer">
-                    <h2>ОПТИМАЛЬНОЕ РЕШЕНИЕ</h2>
-                    <div class="cost-value">F = {{"{:.6f}".format(result['value'])}}</div>
+                    <h2>✅ ОПТИМАЛЬНОЕ РЕШЕНИЕ НАЙДЕНО</h2>
+                    <div class="cost-value">F = {{"{:.1f}".format(result['value'])}}</div>
                     <div class="cost-label">Значение целевой функции</div>
                 </div>
                 
@@ -88,11 +88,154 @@
                     % for i, val in enumerate(result['solution']):
                     <p><strong>x{{i+1}} = {{"{:.6f}".format(val)}}</strong></p>
                     % end
-                    <p><strong>Количество итераций:</strong> {{result['iterations']}}</p>
+                    <p><strong>Общее количество итераций:</strong> {{result.get('total_iterations', 0)}}</p>
                 </div>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <button class="btn-export" onclick="exportToCSV()">📄 Экспорт в CSV</button>
+                    <button class="btn-export" onclick="exportToExcel()">📊 Экспорт в Excel</button>
+                </div>
+                
+                % if result.get('steps'):
+                <h2>📋 Пошаговое решение</h2>
+                <div class="log-container">
+                    % for step in result['steps']:
+                        <div class="step-item">
+                            <strong>{{step['title']}}</strong>
+                            % if step.get('data'):
+                                % if isinstance(step['data'], dict):
+                                    % for key, val in step['data'].items():
+                                        % if key == 'таблица' or key == 'tableau':
+                                            <div class="tableau-container">
+                                                <table class="tableau-table">
+                                                    <thead>
+                                                        <tr>
+                                                            % for h in val['headers']:
+                                                            <th>{{h}}</th>
+                                                            % end
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        % for row in val['rows']:
+                                                        <tr>
+                                                            <td><strong>{{row['basis']}}</strong></td>
+                                                            <td>{{row['b']}}</td>
+                                                            % for coeff in row['coeffs']:
+                                                            <td>{{coeff}}</td>
+                                                            % end
+                                                        </tr>
+                                                        % end
+                                                        <tr class="obj-row">
+                                                            <td><strong>{{val['obj_row']['basis']}}</strong></td>
+                                                            <td>{{val['obj_row']['b']}}</td>
+                                                            % for coeff in val['obj_row']['coeffs']:
+                                                            <td>{{coeff}}</td>
+                                                            % end
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        % else:
+                                            <p>{{key}}: {{val}}</p>
+                                        % end
+                                    % end
+                                % else:
+                                    <p>{{step['data']}}</p>
+                                % end
+                            % end
+                        </div>
+                    % end
+                </div>
+                % end
+                
+                % if result.get('iterations'):
+                <h2>🔄 Детали итераций</h2>
+                % for iter_data in result['iterations']:
+                    <div class="iteration-block">
+                        <h4>
+                            % if iter_data.get('phase'):
+                            Фаза {{iter_data['phase']}}, 
+                            % end
+                            Итерация {{iter_data['iteration']}}
+                        </h4>
+                        <p><strong>Вводимая переменная:</strong> {{iter_data.get('entering', '—')}}</p>
+                        <p><strong>Выводимая переменная:</strong> {{iter_data.get('leaving', '—')}}</p>
+                        % if iter_data.get('pivot_val'):
+                        <p><strong>Разрешающий элемент:</strong> a[{{iter_data.get('pivot_row', 0)+1}}, {{iter_data.get('pivot_col', 0)+1}}] = {{"{:.4f}".format(iter_data['pivot_val'])}}</p>
+                        % end
+                        
+                        % if iter_data.get('tableau_before'):
+                        <h5>Таблица до итерации:</h5>
+                        <div class="tableau-container">
+                            <table class="tableau-table">
+                                <thead>
+                                    <tr>
+                                        % for h in iter_data['tableau_before']['headers']:
+                                        <th>{{h}}</th>
+                                        % end
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    % for row in iter_data['tableau_before']['rows']:
+                                    <tr>
+                                        <td><strong>{{row['basis']}}</strong></td>
+                                        <td>{{row['b']}}</td>
+                                        % for coeff in row['coeffs']:
+                                        <td>{{coeff}}</td>
+                                        % end
+                                    </tr>
+                                    % end
+                                    <tr class="obj-row">
+                                        <td><strong>{{iter_data['tableau_before']['obj_row']['basis']}}</strong></td>
+                                        <td>{{iter_data['tableau_before']['obj_row']['b']}}</td>
+                                        % for coeff in iter_data['tableau_before']['obj_row']['coeffs']:
+                                        <td>{{coeff}}</td>
+                                        % end
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        % end
+                        
+                        % if iter_data.get('tableau_after'):
+                        <h5>Таблица после итерации:</h5>
+                        <div class="tableau-container">
+                            <table class="tableau-table">
+                                <thead>
+                                    <tr>
+                                        % for h in iter_data['tableau_after']['headers']:
+                                        <th>{{h}}</th>
+                                        % end
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    % for row in iter_data['tableau_after']['rows']:
+                                    <tr>
+                                        <td><strong>{{row['basis']}}</strong></td>
+                                        <td>{{row['b']}}</td>
+                                        % for coeff in row['coeffs']:
+                                        <td>{{coeff}}</td>
+                                        % end
+                                    </tr>
+                                    % end
+                                    <tr class="obj-row">
+                                        <td><strong>{{iter_data['tableau_after']['obj_row']['basis']}}</strong></td>
+                                        <td>{{iter_data['tableau_after']['obj_row']['b']}}</td>
+                                        % for coeff in iter_data['tableau_after']['obj_row']['coeffs']:
+                                        <td>{{coeff}}</td>
+                                        % end
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        % end
+                    </div>
+                % end
+                % end
+                
                 % else:
                 <div class="error-box">
-                    <strong>Ошибка решения:</strong> {{result.get('error', 'Неизвестная ошибка')}}
+                    <strong>❌ Ошибка решения:</strong> {{result.get('error', 'Неизвестная ошибка')}}
                 </div>
                 % end
             % end
@@ -136,10 +279,11 @@
                     <p><strong>Приведение неравенств к равенствам:</strong></p>
                     <ul>
                         <li>Неравенство типа ≤ преобразуется добавлением дополнительной (балансовой) переменной: aᵢ₁x₁ + ... + aᵢₙxₙ + s = bᵢ, s ≥ 0</li>
-                        <li>Неравенство типа ≥ преобразуется вычитанием остаточной переменной: aᵢ₁x₁ + ... + aᵢₙxₙ - s = bᵢ, s ≥ 0</li>
+                        <li>Неравенство типа ≥ преобразуется вычитанием остаточной переменной и добавлением искусственной: aᵢ₁x₁ + ... + aᵢₙxₙ - s + y = bᵢ, s ≥ 0, y ≥ 0</li>
+                        <li>Равенство типа = преобразуется добавлением искусственной переменной: aᵢ₁x₁ + ... + aᵢₙxₙ + y = bᵢ, y ≥ 0</li>
                     </ul>
                     <div style="text-align: center;">
-                        <img src="/static/images/canonical_form.png" class="theory-img" onerror="this.style.display='none'">
+                        <img src="/static/images/canonical_form.png" class="theory-img" alt="Каноническая форма" onerror="this.style.display='none'">
                     </div>
                 </div>
             </div>
@@ -165,7 +309,7 @@
                         <li>Повторить шаги 4-7 до достижения оптимальности</li>
                     </ol>
                     <div style="text-align: center;">
-                        <img src="/static/images/simplex_flowchart.png" class="theory-img" onerror="this.style.display='none'">
+                        <img src="/static/images/simplex_flowchart.png" class="theory-img" alt="Блок-схема симплекс-метода" onerror="this.style.display='none'">
                     </div>
                 </div>
             </div>
@@ -198,7 +342,7 @@
                     <p><strong>Строки 1..m</strong> — коэффициенты при переменных в ограничениях.</p>
                     <p><strong>Индексная строка (F)</strong> — оценки Δⱼ и текущее значение целевой функции.</p>
                     <div style="text-align: center;">
-                        <img src="/static/images/simplex_tableau.png" class="theory-img" onerror="this.style.display='none'">
+                        <img src="/static/images/simplex_tableau.png" class="theory-img" alt="Симплекс-таблица" onerror="this.style.display='none'">
                     </div>
                 </div>
             </div>
@@ -216,7 +360,7 @@
                         новый_элемент = текущий_элемент − (aᵣⱼ × aᵢₛ) / aᵣₛ
                     </div>
                     <div style="text-align: center;">
-                        <img src="/static/images/rectangle_rule.png" class="theory-img" onerror="this.style.display='none'">
+                        <img src="/static/images/rectangle_rule.png" class="theory-img" alt="Правило прямоугольника" onerror="this.style.display='none'">
                     </div>
                 </div>
             </div>
@@ -240,19 +384,8 @@
                         <li>Продолжается решение симплекс-методом до оптимальности</li>
                     </ul>
                     <div style="text-align: center;">
-                        <img src="/static/images/two_phase_method.png" class="theory-img" onerror="this.style.display='none'">
+                        <img src="/static/images/two_phase_method.png" class="theory-img" alt="Двухфазный метод" onerror="this.style.display='none'">
                     </div>
-                </div>
-            </div>
-            
-            <div class="theory-block">
-                <h3>Правило Блэнда (антицикл)</h3>
-                <div class="theory-text">
-                    <p>При вырожденности (bᵢ = 0 для некоторых базисных переменных) симплекс-метод может зациклиться. Правило Блэнда гарантирует конечность алгоритма:</p>
-                    <ol>
-                        <li><strong>Выбор вводимой переменной (столбец s)</strong>: среди всех столбцов с отрицательной Δⱼ выбрать столбец с наименьшим индексом</li>
-                        <li><strong>Выбор выводимой переменной (строка r)</strong>: если несколько строк дают одинаковое минимальное симплекс-отношение Θ, выбрать строку с наименьшим индексом базисной переменной</li>
-                    </ol>
                 </div>
             </div>
             
@@ -272,7 +405,6 @@
                             <tr><td>Неограниченность</td><td>В разрешающем столбце s нет aᵢₛ > 0</td><td>F → −∞ (min) или F → +∞ (max)</td></tr>
                             <tr><td>Несовместность</td><td>min Σy > 0 в фазе 1</td><td>Допустимых решений нет</td></tr>
                             <tr><td>Альтернативный оптимум</td><td>В оптимальной таблице Δⱼ = 0 для небазисной переменной</td><td>Бесконечное множество оптимальных планов</td></tr>
-                            <tr><td>Вырожденность</td><td>bᵢ = 0 для некоторых базисных переменных</td><td>Применяется правило Блэнда</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -283,7 +415,7 @@
                 <div class="theory-text">
                     <p>Для задачи с двумя переменными допустимое множество — это выпуклый многоугольник на плоскости. Целевая функция достигает экстремума в одной из вершин этого многоугольника.</p>
                     <div style="text-align: center;">
-                        <img src="/static/images/simplex_geometry.png" class="theory-img" onerror="this.style.display='none'">
+                        <img src="/static/images/simplex_geometry.png" class="theory-img" alt="Геометрическая интерпретация" onerror="this.style.display='none'">
                     </div>
                 </div>
             </div>
@@ -297,23 +429,7 @@
                         2x₂ ≤ 12<br>
                         x₁ ≥ 0, x₂ ≥ 0
                     </div>
-                    <p><strong>Решение:</strong></p>
-                    <p>1. Приводим к каноническому виду, добавляя дополнительные переменные:</p>
-                    <div style="font-family: monospace;">
-                        x₁ + s₁ = 4<br>
-                        2x₂ + s₂ = 12<br>
-                        F - 3x₁ - 5x₂ = 0
-                    </div>
-                    <p>2. Строим начальную симплекс-таблицу:</p>
-                    <table class="result-table">
-                        <tr><th>Базис</th><th>b</th><th>x₁</th><th>x₂</th><th>s₁</th><th>s₂</th></tr>
-                        <tr><td>s₁</td><td>4</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
-                        <tr><td>s₂</td><td>12</td><td>0</td><td>2</td><td>0</td><td>1</td></tr>
-                        <tr><td>F</td><td>0</td><td>-3</td><td>-5</td><td>0</td><td>0</td></tr>
-                    </table>
-                    <p>3. Выбираем разрешающий столбец x₂ (Δ₂ = -5 — наибольшая по модулю отрицательная оценка).</p>
-                    <p>4. Выбираем разрешающую строку: min(12/2=6) → строка s₂.</p>
-                    <p>5. Выполняем преобразование и получаем оптимальное решение: x₁=4, x₂=6, F=42.</p>
+                    <p><strong>Решение:</strong> оптимальный план x₁=4, x₂=6, F=42.</p>
                 </div>
             </div>
             
@@ -344,7 +460,9 @@
             </div>
             <div class="tip-box" style="margin-top: 15px;">
                 <strong>Тестовый пример</strong>
-                <p>Нажмите "Загрузить пример"</p>
+                <p>F = 3x₁ + 5x₂ → max</p>
+                <p>x₁ ≤ 4, 2x₂ ≤ 12</p>
+                <button onclick="loadExample()" style="margin-top: 10px; padding: 5px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Загрузить пример</button>
             </div>
         </div>
     </div>
@@ -375,31 +493,56 @@
     </footer>
 
     <script>
+        const savedA = {{!A}};
+        const savedB = {{!b}};
+        const savedConstraints = {{!constraints_types}};
+        
         function updateMatrix() {
             const rows = parseInt(document.getElementById('rows').value) || 2;
             const cols = parseInt(document.getElementById('cols').value) || 2;
-            
             const container = document.getElementById('matrixContainer');
             
             let html = '<div class="matrix-input"><h4>Матрица ограничений A</h4>';
             html += '<table class="result-table">';
+            html += '<thead><tr><th>Ограничение</th>';
+            for (let j = 0; j < cols; j++) {
+                html += `<th>x${j+1}</th>`;
+            }
+            html += '<th>Тип</th><th>b</th></tr></thead><tbody>';
             
             for (let i = 0; i < rows; i++) {
                 html += '<tr>';
-                html += `<th>Ограничение ${i+1}</th>`;
+                html += `<td><strong>${i+1}</strong></td>`;
                 for (let j = 0; j < cols; j++) {
-                    const saved = localStorage.getItem(`A_${i}_${j}`);
-                    const val = saved !== null ? saved : '0';
+                    let val = '0';
+                    if (savedA && savedA[i] && savedA[i][j] !== undefined) {
+                        val = savedA[i][j];
+                    } else {
+                        const saved = localStorage.getItem(`A_${i}_${j}`);
+                        if (saved !== null) val = saved;
+                    }
                     html += `<td><input type="number" step="any" name="A_${i}_${j}" value="${val}" style="width:80px;" class="matrix-cell"></td>`;
                 }
-                html += `<td><input type="number" step="any" name="b_${i}" value="${localStorage.getItem(`b_${i}`) || '0'}" style="width:80px;"></td>`;
+                let rel = '<=';
+                if (savedConstraints && savedConstraints[i]) {
+                    rel = savedConstraints[i];
+                }
+                html += `<td><select name="rel_${i}" class="constraint-select">`;
+                html += `<option value="<=" ${rel === '<=' ? 'selected' : ''}>≤</option>`;
+                html += `<option value=">=" ${rel === '>=' ? 'selected' : ''}>≥</option>`;
+                html += `<option value="=" ${rel === '=' ? 'selected' : ''}>=</option>`;
+                html += `</select></td>`;
+                let bVal = '0';
+                if (savedB && savedB[i] !== undefined) {
+                    bVal = savedB[i];
+                } else {
+                    const saved = localStorage.getItem(`b_${i}`);
+                    if (saved !== null) bVal = saved;
+                }
+                html += `<td><input type="number" step="any" name="b_${i}" value="${bVal}" style="width:80px;"></td>`;
                 html += '</tr>';
             }
-            
-            html += '</table></div>';
-            html += '<input type="hidden" name="rows" value="' + rows + '">';
-            html += '<input type="hidden" name="cols" value="' + cols + '">';
-            
+            html += '</tbody></table></div>';
             container.innerHTML = html;
             
             const inputs = container.querySelectorAll('input');
@@ -408,7 +551,6 @@
                     if (this.name) localStorage.setItem(this.name, this.value);
                 });
             });
-            
             setTimeout(addArrowNavigation, 100);
         }
         
@@ -416,7 +558,6 @@
             const cells = document.querySelectorAll('.matrix-cell');
             const rows = parseInt(document.getElementById('rows').value) || 2;
             const cols = parseInt(document.getElementById('cols').value) || 2;
-            
             cells.forEach((cell, index) => {
                 const row = Math.floor(index / cols);
                 const col = index % cols;
@@ -430,28 +571,13 @@
         function arrowHandler(e, row, col, rows, cols) {
             let newRow = row;
             let newCol = col;
-            
             switch(e.key) {
-                case 'ArrowUp':
-                    newRow = Math.max(0, row - 1);
-                    e.preventDefault();
-                    break;
-                case 'ArrowDown':
-                    newRow = Math.min(rows - 1, row + 1);
-                    e.preventDefault();
-                    break;
-                case 'ArrowLeft':
-                    newCol = Math.max(0, col - 1);
-                    e.preventDefault();
-                    break;
-                case 'ArrowRight':
-                    newCol = Math.min(cols - 1, col + 1);
-                    e.preventDefault();
-                    break;
-                default:
-                    return;
+                case 'ArrowUp': newRow = Math.max(0, row - 1); e.preventDefault(); break;
+                case 'ArrowDown': newRow = Math.min(rows - 1, row + 1); e.preventDefault(); break;
+                case 'ArrowLeft': newCol = Math.max(0, col - 1); e.preventDefault(); break;
+                case 'ArrowRight': newCol = Math.min(cols - 1, col + 1); e.preventDefault(); break;
+                default: return;
             }
-            
             const newIndex = newRow * cols + newCol;
             const newCell = document.querySelectorAll('.matrix-cell')[newIndex];
             if (newCell) newCell.focus();
@@ -460,24 +586,17 @@
         function clearForm() {
             localStorage.clear();
             document.getElementById('c_input').value = '';
-            const rows = parseInt(document.getElementById('rows').value) || 2;
-            const cols = parseInt(document.getElementById('cols').value) || 2;
-            for (let i = 0; i < rows; i++) {
-                for (let j = 0; j < cols; j++) {
-                    const input = document.querySelector(`input[name='A_${i}_${j}']`);
-                    if (input) input.value = '0';
-                }
-                const bInput = document.querySelector(`input[name='b_${i}']`);
-                if (bInput) bInput.value = '0';
-            }
+            document.getElementById('rows').value = '2';
+            document.getElementById('cols').value = '2';
             updateMatrix();
         }
         
         function loadExample() {
             document.getElementById('rows').value = '2';
             document.getElementById('cols').value = '2';
-            updateMatrix();
             document.getElementById('c_input').value = '3,5';
+            document.querySelector('input[value="max"]').checked = true;
+            updateMatrix();
             setTimeout(() => {
                 const a00 = document.querySelector('input[name="A_0_0"]');
                 const a01 = document.querySelector('input[name="A_0_1"]');
@@ -485,13 +604,16 @@
                 const a11 = document.querySelector('input[name="A_1_1"]');
                 const b0 = document.querySelector('input[name="b_0"]');
                 const b1 = document.querySelector('input[name="b_1"]');
+                const rel0 = document.querySelector('select[name="rel_0"]');
+                const rel1 = document.querySelector('select[name="rel_1"]');
                 if (a00) a00.value = '1';
                 if (a01) a01.value = '0';
                 if (a10) a10.value = '0';
                 if (a11) a11.value = '2';
                 if (b0) b0.value = '4';
                 if (b1) b1.value = '12';
-                document.querySelector('input[value="max"]').checked = true;
+                if (rel0) rel0.value = '<=';
+                if (rel1) rel1.value = '<=';
                 localStorage.setItem('A_0_0', '1');
                 localStorage.setItem('A_0_1', '0');
                 localStorage.setItem('A_1_0', '0');
@@ -499,6 +621,38 @@
                 localStorage.setItem('b_0', '4');
                 localStorage.setItem('b_1', '12');
             }, 50);
+        }
+        
+        function exportToCSV() {
+            % if result and result.get('success'):
+            const solution = {{!result['solution']}};
+            const value = {{result['value']}};
+            let csv = 'Переменная,Значение\n';
+            solution.forEach((val, i) => { csv += `x${i+1},${val}\n`; });
+            csv += `F,${value}\n`;
+            const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'simplex_solution.csv';
+            link.click();
+            URL.revokeObjectURL(link.href);
+            % end
+        }
+        
+        function exportToExcel() {
+            % if result and result.get('success'):
+            const solution = {{!result['solution']}};
+            const value = {{result['value']}};
+            let html = '<table><tr><th>Переменная</th><th>Значение</th></tr>';
+            solution.forEach((val, i) => { html += `<tr><td>x${i+1}</td><td>${val}</td></tr>`; });
+            html += `<tr><td>F</td><td>${value}</td></tr></table>`;
+            const blob = new Blob([html], {type: 'application/vnd.ms-excel;charset=utf-8;'});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'simplex_solution.xls';
+            link.click();
+            URL.revokeObjectURL(link.href);
+            % end
         }
         
         document.addEventListener('DOMContentLoaded', function() {
