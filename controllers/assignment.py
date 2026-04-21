@@ -8,37 +8,45 @@ import itertools
 import os
 import json
 
-
 def solve_assignment():
-    """
-    Обработчик GET/POST запросов для страницы /assignment.
-    Возвращает отрендеренный HTML-шаблон.
-    """
+    print("=" * 50)
+    print(f"REQUEST METHOD: {request.method}")
+    print(f"FORM DATA: {request.forms.get('matrix_data')}")
+    print(f"MATRIX SIZE: {request.forms.get('matrix_size')}")
+    print("=" * 50)
     result = None
     error = None
     matrix_value = ''
+    matrix_size = 3
+    matrix_values = []
     
     if request.method == 'POST':
         try:
-            matrix_str = request.forms.get('matrix', '').strip()
-            matrix_value = matrix_str  
+            # 1. Сначала получаем размер, чтобы знать, чего ожидать
+            matrix_size = int(request.forms.get('matrix_size', 3))
+            matrix_str = request.forms.get('matrix_data', '').strip()
             
             if not matrix_str:
                 raise ValueError("Поле ввода матрицы пустое.")
             
+            # Парсинг
             rows = [line.strip().split() for line in matrix_str.split('\n') if line.strip()]
             matrix = [[float(v) for v in row] for row in rows]
             
+            # Сохраняем значения для восстановления (округляем для красоты, если нужно)
+            matrix_values = [[int(v) if float(v).is_integer() else float(v) for v in row] for row in rows]
+            
+            # Валидация размеров
             n = len(matrix)
-            if n == 0:
-                raise ValueError("Матрица не должна быть пустой.")
-            if any(len(r) != n for r in matrix):
-                raise ValueError(f"Матрица должна быть квадратной. Получено: {n}×{len(matrix[0]) if matrix else 0}")
-            if n > 6:
-                raise ValueError(f"Размер матрицы не должен превышать 6×6. Получено: {n}×{n}")
+            if n != matrix_size:
+                raise ValueError(f"Размер матрицы не совпадает: ожидается {matrix_size}×{matrix_size}")
             
+            for i, row in enumerate(matrix):
+                if len(row) != n:
+                    raise ValueError(f"В строке {i+1} ожидается {n} элементов")
+            
+            # Алгоритм
             assignment, cost = _hungarian_algorithm(matrix)
-            
             _log_result(matrix, assignment, cost, "SUCCESS")
             
             result = {
@@ -47,20 +55,33 @@ def solve_assignment():
                 'status': 'Оптимальное решение найдено'
             }
             
+        except ValueError as e:
+            error = str(e)
+            # При ошибке тоже сохраняем данные, чтобы пользователь не вводил всё заново
+            matrix_str = request.forms.get('matrix_data', '')
+            if matrix_str:
+                rows = [line.strip().split() for line in matrix_str.split('\n') if line.strip()]
+                try:
+                    matrix_values = [[int(v) if float(v).is_integer() else float(v) for v in row] for row in rows]
+                except:
+                    matrix_values = []
+            _log_result(request.forms.get('matrix_data', ''), None, None, f"ERROR: {error}")
         except Exception as e:
-            error_msg = str(e)
-            _log_result(request.forms.get('matrix', ''), None, None, f"ERROR: {error_msg}")
-            error = error_msg
+            error = f"Произошла ошибка: {str(e)}"
+            _log_result(request.forms.get('matrix_data', ''), None, None, f"ERROR: {error}")
     
     theory_data = _load_theory_json()
     
+    # ВАЖНО: Используем json.dumps для корректного JS-формата
     return template('assignment',
         title='Задача о назначениях',
         message='Венгерский алгоритм: оптимальное распределение исполнителей по работам',
         result=result,
         error=error,
         matrix_value=matrix_value,
-        theory=theory_data,  
+        matrix_size=matrix_size,
+        matrix_values_json=json.dumps(matrix_values),  # <-- Передаём как JSON-строку
+        theory=theory_data,
         year=datetime.now().year
     )
 
