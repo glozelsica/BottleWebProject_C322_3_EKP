@@ -129,7 +129,7 @@
             <div class="tip-box">
                 <strong>Нужна помощь?</strong>
                 <p>Посмотрите видео-инструкцию</p>
-                <a href="/video" class="btn btn-info" style="display:block;">Смотреть урок</a>
+                <a href="/video" class="btn-video">Смотреть урок</a>
             </div>
         </div>
     </div>

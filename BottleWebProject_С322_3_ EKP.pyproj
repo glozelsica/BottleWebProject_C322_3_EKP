@@ -19,7 +19,7 @@
     <Name>BottleWebProject_С322_3_ EKP</Name>
     <RootNamespace>BottleWebProject_С322_3_ EKP</RootNamespace>
     <InterpreterId>MSBuild|kl|$(MSBuildProjectFullPath)</InterpreterId>
-    <InterpreterId>MSBuild|env1|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>MSBuild|zlatik_env|$(MSBuildProjectFullPath)</InterpreterId>
     <TestFramework>Pytest</TestFramework>
     <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
     <WebBrowserPort>8080</WebBrowserPort>
@@ -73,12 +73,15 @@
     <Content Include="static\css\authors.css">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="static\css\contact.css" />
+    <Content Include="static\css\index.css" />
     <Content Include="static\css\style.css">
       <SubType>Code</SubType>
     </Content>
     <Content Include="static\css\transport.css">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="static\css\video.css" />
     <Content Include="static\data\theory_assigment.json">
       <SubType>Code</SubType>
     </Content>
@@ -92,6 +95,8 @@
     <Content Include="static\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="static\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="static\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="static\images\avatar_egarmina.png" />
+    <Content Include="static\images\example_iteration_5.png" />
     <Content Include="static\images\silver_texture4.png" />
     <Content Include="static\images\silver_texture2.png" />
     <Content Include="static\images\silver_texture.png" />
@@ -100,6 +105,7 @@
     <Content Include="static\images\rectangle_rule.png" />
     <Content Include="static\images\simplex_flowchart.png" />
     <Content Include="static\images\simplex_geometry.png" />
+    <Content Include="static\images\simplex_table.png" />
     <Content Include="static\images\simplex_tableau.png" />
     <Content Include="static\images\texture2.png" />
     <Content Include="static\images\texture3.png" />
@@ -122,6 +128,8 @@
     <Content Include="static\images\zero_costs.png" />
     <Content Include="static\images\potential.png" />
     <Content Include="static\images\theorem.png" />
+    <Content Include="static\images\avatar_potylitsyna.png" />
+    <Content Include="static\images\avatar_kornilov.png" />
     <Content Include="static\scripts\bootstrap.js" />
     <Content Include="static\scripts\bootstrap.min.js" />
     <Content Include="static\scripts\jquery-1.10.2.intellisense.js" />

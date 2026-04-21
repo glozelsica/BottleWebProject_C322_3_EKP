@@ -81,6 +81,10 @@
     background: #d9cfe8;
     position: relative;
     overflow: hidden;
+    border-radius: 20px;
+    width: 280px;
+    flex-shrink: 0;
+    padding: 1.2rem;
 }
 
     .sidebar::before {
@@ -94,7 +98,7 @@
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        opacity: 0.15;
+        opacity: 0.2;
         pointer-events: none;
         z-index: 0;
     }
@@ -104,21 +108,80 @@
         z-index: 1;
     }
 
-    /* Убираем лампочки из полезных советов */
+    .sidebar h3 {
+        color: #9B2226;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        border-bottom: 2px solid #9B2226;
+        display: inline-block;
+        padding-bottom: 0.3rem;
+    }
+
     .sidebar ul {
         list-style: none;
         padding-left: 0;
     }
 
     .sidebar li {
-        margin-bottom: 0.8rem;
-        font-size: 0.9rem;
-        padding-left: 0;
+        margin-bottom: 0.6rem;
+        font-size: 0.85rem;
     }
 
-        .sidebar li:before {
-            content: none;
+        .sidebar li a {
+            color: #4a1a1a;
+            text-decoration: none;
+            display: block;
+            padding: 0.4rem 0.6rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
         }
+
+            .sidebar li a:hover {
+                background: #9B2226;
+                color: #EDE7F6;
+                transform: translateX(5px);
+            }
+
+.tip-box {
+    background: #9B222620;
+    padding: 0.8rem;
+    border-radius: 12px;
+    margin-top: 1rem;
+    border-left: 4px solid #9B2226;
+}
+
+    .tip-box strong {
+        font-size: 0.9rem;
+    }
+
+    .tip-box p {
+        font-size: 0.8rem;
+        margin-top: 0.3rem;
+    }
+
+.btn-video {
+    background: linear-gradient(135deg, #F16D95, #d94b73);
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 8px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: 0.85rem;
+}
+
+    .btn-video:hover {
+        background: linear-gradient(135deg, #d94b73, #9B2226);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(241, 109, 149, 0.4);
+    }
 
 /* Уменьшаем отступы */
 .form-section, .theory-block, .result-box {
@@ -182,8 +245,6 @@ h2 {
     white-space: pre-line;
 }
 
-/* ==================== НОВЫЕ СТИЛИ КНОПОК ==================== */
-
 /* Кнопка Обновить таблицу */
 .btn-update {
     background: #FF9B73;
@@ -191,6 +252,10 @@ h2 {
     border: none;
     transition: all 0.3s ease;
     animation: btn-glow 1.5s ease-in-out infinite;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
     .btn-update:hover {
@@ -207,6 +272,10 @@ h2 {
     border: none;
     transition: all 0.3s ease;
     animation: btn-glow 1.5s ease-in-out infinite;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
     .btn-clear:hover {
@@ -223,6 +292,10 @@ h2 {
     border: none;
     transition: all 0.3s ease;
     animation: btn-glow-red 1.5s ease-in-out infinite;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
     .btn-primary:hover {
@@ -239,6 +312,10 @@ h2 {
     border: none;
     transition: all 0.3s ease;
     animation: btn-glow-pink 1.5s ease-in-out infinite;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
     .btn-info:hover {
@@ -269,6 +346,23 @@ h2 {
         color: white;
         transform: translateY(-2px);
         box-shadow: 0 0 15px rgba(108, 0, 108, 0.8), 0 0 30px rgba(108, 0, 108, 0.4);
+    }
+
+/* Кнопки экспорта */
+.btn-success {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+    .btn-success:hover {
+        background: #218838;
+        transform: translateY(-2px);
     }
 
 /* Анимация свечения для кнопок */
