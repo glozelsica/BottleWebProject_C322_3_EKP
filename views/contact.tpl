@@ -142,10 +142,6 @@
                     <p>Учебная практика УП02</p>
                     <p>ПМ02 «Интеграция программных модулей»</p>
                 </div>
-                <div class="footer-section">
-                    <h4>Связь</h4>
-                    <a href="/contact" class="question-btn">Задать вопрос</a>
-                </div>
             </div>
             <div class="footer-bottom">
                 <p>© 2026 Математическое моделирование. Все права защищены.</p>

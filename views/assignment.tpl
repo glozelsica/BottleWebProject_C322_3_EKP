@@ -40,6 +40,94 @@
             background: #f8f9fa;
             border-radius: 8px;
         }
+        
+        /* Блок пошагового решения */
+        .solution-steps {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #9B2226;
+        }
+        .solution-steps h3 {
+            color: #9B2226;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .step-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .step-number {
+            background: #9B2226;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        .step-description {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        .step-matrix {
+            display: inline-block;
+            background: #fff;
+            padding: 0.5rem;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+        .step-matrix table {
+            border-collapse: collapse;
+            margin: 0;
+        }
+        .step-matrix td {
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+            min-width: 45px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        /* Подсветка ячеек */
+        .step-matrix .zero {
+            background: #e8f5e9;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        .step-matrix .assigned {
+            background: #9B2226;
+            color: white;
+            font-weight: bold;
+            border-color: #7a1a1d;
+        }
+        .cost-summary {
+            background: #e8f4fd;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .cost-summary strong {
+            color: #9B2226;
+        }
     </style>
 </head>
 <body>
@@ -91,17 +179,17 @@
             </div>
 
             % if result is not None:
+            <!-- Результат -->
             <div class="result-box" style="background: #d4edda; border-color: #c3e6cb; color: #155724;">
                 <h3 style="color: #155724; margin-top: 0;">✅ {{ result['status'] }}</h3>
                 <p style="font-size: 1.1rem;"><strong>Минимальная суммарная стоимость:</strong> {{ result['cost'] }}</p>
-                
                 <div style="overflow-x: auto;">
                     <table class="result-table" style="width: 100%; border-collapse: collapse; margin-top: 10px;">
                         <thead>
                             <tr style="background: #9B2226; color: white;">
                                 <th style="padding: 10px; border: 1px solid #ddd;">№</th>
-                                <th style="padding: 10px; border: 1px solid #ddd;">Исполнитель (строка)</th>
-                                <th style="padding: 10px; border: 1px solid #ddd;">Работа (столбец)</th>
+                                <th style="padding: 10px; border: 1px solid #ddd;">Исполнитель</th>
+                                <th style="padding: 10px; border: 1px solid #ddd;">Работа</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -116,6 +204,54 @@
                     </table>
                 </div>
             </div>
+
+            <!-- 🔥 Пошаговое решение (ПРОСТАЯ ВЕРСИЯ) -->
+            % if 'steps' in result and result['steps']:
+            <div class="solution-steps">
+                <h3>📚 Пошаговое решение</h3>
+                % for step in result['steps']:
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">{{ step['step_num'] }}</span>
+                        <span>{{ step['title'] }}</span>
+                    </div>
+                    <div class="step-description">{{ !step['description'] }}</div>
+                    
+                    <!-- Матрица - простой вывод -->
+                    % if 'matrix_cells' in step:
+                    <div class="step-matrix">
+                        <table>
+                            % for row in step['matrix_cells']:
+                            <tr>
+                                % for cell in row:
+                                % if cell['css_class']:
+                                <td class="{{ cell['css_class'] }}">{{ cell['value'] }}</td>
+                                % else:
+                                <td>{{ cell['value'] }}</td>
+                                % end
+                                % end
+                            </tr>
+                            % end
+                        </table>
+                    </div>
+                    % end
+                    
+                    <!-- Стоимость -->
+                    % if step.get('assignment') and step.get('original_costs'):
+                    <div class="cost-summary">
+                        <strong>Расчёт стоимости:</strong><br>
+                        % for idx, (i, j) in enumerate(step['assignment']):
+                        • Исполнитель {{ i+1 }} → Работа {{ j+1 }}: {{ step['original_costs'][idx] }}<br>
+                        % end
+                        <strong style="color: #9B2226; display: block; margin-top: 0.5rem;">
+                            Σ = {{ sum(step['original_costs']) }}
+                        </strong>
+                    </div>
+                    % end
+                </div>
+                % end
+            </div>
+            % end
             % end
 
             % if error is not None:
@@ -160,7 +296,7 @@
         <div class="sidebar">
             <h3>Полезные советы</h3>
             <ul>
-                <li>Вводите только целые числа.</li>
+                <li>Вводите только целые неотрицательные числа.</li>
                 <li>Матрица должна быть строго квадратной.</li>
                 <li>При выборе максимизации система автоматически преобразует матрицу.</li>
             </ul>
@@ -190,7 +326,6 @@
 
     <script>
         // Получаем данные от сервера
-        // serverMatrixData теперь приходит как валидный JSON благодаря json.dumps()
         const serverMatrixSize = {{ matrix_size if defined('matrix_size') else 3 }};
         const serverMatrixData = {{ matrix_values_json if defined('matrix_values_json') else '[]' }};
         const hasError = {{ 'true' if error is not None else 'false' }};
@@ -220,7 +355,6 @@
                 html += '<tr>';
                 for (let j = 0; j < n; j++) {
                     const val = (restoreValues && values[i] && values[i][j] !== undefined) ? values[i][j] : '';
-                    // 🔥 Добавлены: min="0", onkeydown, oninput, onblur
                     html += `<td>
                         <input type="number" 
                                id="cell_${i}_${j}" 
@@ -239,8 +373,36 @@
             container.innerHTML = html;
         }
 
+        // Блокирует ввод знаков "-", "+", "e", "E"
+        function blockSigns(event) {
+            const key = event.key;
+            if (key === '-' || key === '+' || key === 'e' || key === 'E') {
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
+
+        // Удаляет недопустимые символы и дробную часть
+        function sanitizeInput(input) {
+            let val = input.value.trim();
+            val = val.replace(/[^0-9]/g, '');
+            if (val !== '') {
+                val = parseInt(val, 10);
+                input.value = val;
+            }
+        }
+
+        // Если поле пустое или отрицательное — ставим 0
+        function clampToZero(input) {
+            let val = parseInt(input.value, 10);
+            if (isNaN(val) || val < 0) {
+                input.value = '';
+            }
+        }
+
         function prepareAndSubmit(event) {
-            event.preventDefault(); // Отменяем стандартную отправку
+            event.preventDefault();
             
             const n = parseInt(document.getElementById('matrix_size').value);
             let matrixRows = [];
@@ -257,9 +419,19 @@
                         input.style.boxShadow = '0 0 5px rgba(220,53,69,0.5)';
                         allFilled = false;
                     } else {
+                        const num = parseInt(val, 10);
+                        
+                        // Проверка на отрицательные числа
+                        if (num < 0) {
+                            alert('Отрицательные значения недопустимы!');
+                            input.style.borderColor = '#dc3545';
+                            input.focus();
+                            return false;
+                        }
+                        
                         input.style.borderColor = '#ccc';
                         input.style.boxShadow = 'none';
-                        currentRow.push(val);
+                        currentRow.push(num);
                     }
                 }
                 matrixRows.push(currentRow);
@@ -270,13 +442,10 @@
                 return false;
             }
 
-            // Формируем строку для отправки
             const matrixString = matrixRows.map(row => row.join(' ')).join('\n');
             document.getElementById('matrix_data').value = matrixString;
             document.getElementById('is_form_submit').value = '1';
             
-            // Ручная отправка формы. 
-            // ВАЖНО: Не возвращаем false после этого, иначе браузер может отменить отправку.
             document.getElementById('assignmentForm').submit();
         }
 
