@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="/static/css/transport.css">
 </head>
 <body>
-    <!-- ШАПКА -->
     <header style="position: relative; overflow: hidden;">
         <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('/static/images/texture3.png'); background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.4; pointer-events: none;"></div>
         <div style="position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; flex-wrap: wrap;">
@@ -33,7 +32,7 @@
         <div class="content">
             <h1>Транспортная задача</h1>
             
-            <form method="post" action="/transport" id="transportForm">
+            <form method="post" action="/transport" id="transportForm" onsubmit="return validateForm()">
                 <div class="form-section">
                     <h3>Ввод исходных данных</h3>
                     
@@ -96,12 +95,13 @@
                 % end
                 <table class="result-table">
                     <thead>
-                        <tr><th></th>
-                        % for col in range(result['consumers']):
-                        <th>B{{col+1}}</th>
-                        % end
-                        <th>Запасы</th>
-                    </tr>
+                        <tr>
+                            <th></th>
+                            % for col in range(result['consumers']):
+                            <th>B{{col+1}}</th>
+                            % end
+                            <th>Запасы</th>
+                        </tr>
                     </thead>
                     <tbody>
                     % for row in range(result['suppliers']):
@@ -114,7 +114,7 @@
                     </tr>
                     % end
                     </tbody>
-                </table>
+                <tr>
                 <p>{{result['northwest_degenerate']['message']}}</p>
                 <div class="formula-detail"><strong>F = {{result['northwest_cost']}} ден. ед.</strong></div>
             </div>
@@ -128,12 +128,13 @@
                 % end
                 <table class="result-table">
                     <thead>
-                        <tr><th></th>
-                        % for col in range(result['consumers']):
-                        <th>B{{col+1}}</th>
-                        % end
-                        <th>Запасы</th>
-                    </tr>
+                        <tr>
+                            <th></th>
+                            % for col in range(result['consumers']):
+                            <th>B{{col+1}}</th>
+                            % end
+                            <th>Запасы</th>
+                        </tr>
                     </thead>
                     <tbody>
                     % for row in range(result['suppliers']):
@@ -179,12 +180,13 @@
                 <h4>ОПТИМАЛЬНЫЙ ПЛАН ПЕРЕВОЗОК</h4>
                 <table class="result-table">
                     <thead>
-                        <tr><th></th>
-                        % for col in range(result['consumers']):
-                        <th>B{{col+1}}</th>
-                        % end
-                        <th>Запасы</th>
-                    </tr>
+                        <tr>
+                            <th></th>
+                            % for col in range(result['consumers']):
+                            <th>B{{col+1}}</th>
+                            % end
+                            <th>Запасы</th>
+                        </tr>
                     </thead>
                     <tbody>
                     % for row in range(result['suppliers']):
@@ -367,6 +369,7 @@
                 <li>Количество базисных клеток = m + n - 1</li>
                 <li>При несбалансированности добавляются фиктивные участники</li>
                 <li>Метод минимального элемента даёт лучший начальный план</li>
+                <li>Вводите только положительные числа!</li>
             </ul>
             <div class="tip-box">
                 <strong>Видео-инструкция</strong>
@@ -450,6 +453,20 @@
         var exportCosts = {{!result['costs']}};
         % end
         
+        // Функция валидации формы (запрет отрицательных чисел)
+        function validateForm() {
+            var inputs = document.querySelectorAll('#matrixContainer input[type="number"]');
+            for (var i = 0; i < inputs.length; i++) {
+                var val = parseFloat(inputs[i].value);
+                if (isNaN(val) || val < 0) {
+                    alert('Ошибка: Все значения должны быть неотрицательными числами!');
+                    inputs[i].focus();
+                    return false;
+                }
+            }
+            return true;
+        }
+        
         function updateMatrix() {
             var suppliers = parseInt(document.getElementById('suppliers').value);
             var consumers = parseInt(document.getElementById('consumers').value);
@@ -475,10 +492,10 @@
                         var saved = localStorage.getItem('cost_' + (i-1) + '_' + (j-1));
                         val = (saved !== null && saved !== '0') ? saved : '0';
                     }
-                    html += '<td><input type="number" name="cost_' + (i-1) + '_' + (j-1) + '" step="any" value="' + val + '" style="width:80px;"></td>';
+                    html += '<td><input type="number" name="cost_' + (i-1) + '_' + (j-1) + '" step="any" min="0" value="' + val + '" style="width:80px;"></td>';
                 }
                 var supplyVal = (savedFormData.supply.length > i-1 && savedFormData.supply[i-1] != 0) ? savedFormData.supply[i-1] : (localStorage.getItem('supply_' + (i-1)) || '0');
-                html += '<td><input type="number" name="supply_' + (i-1) + '" step="any" value="' + supplyVal + '" style="width:80px;"></td>';
+                html += '<td><input type="number" name="supply_' + (i-1) + '" step="any" min="0" value="' + supplyVal + '" style="width:80px;"></td>';
                 html += '</tr>';
             }
             
@@ -486,10 +503,10 @@
             html += '<th>Потребности</th>';
             for (var j = 1; j <= consumers; j++) {
                 var demandVal = (savedFormData.demand.length > j-1 && savedFormData.demand[j-1] != 0) ? savedFormData.demand[j-1] : (localStorage.getItem('demand_' + (j-1)) || '0');
-                html += '<td><input type="number" name="demand_' + (j-1) + '" step="any" value="' + demandVal + '" style="width:80px;"></td>';
+                html += '<td><input type="number" name="demand_' + (j-1) + '" step="any" min="0" value="' + demandVal + '" style="width:80px;"></td>';
             }
             html += '<td>\n                </td>';
-            html += '</tbody></table></div>';
+            html += '</tbody></tr></div>';
             html += '<input type="hidden" name="suppliers" value="' + suppliers + '">';
             html += '<input type="hidden" name="consumers" value="' + consumers + '">';
             
@@ -561,7 +578,7 @@
             var demands = exportDemands;
             var costs = exportCosts;
     
-            let csv = '\uFEFF'; // BOM для правильного отображения кириллицы в Excel
+            let csv = '\uFEFF';
             csv += 'Транспортная задача - Результаты решения\n\n';
             csv += 'Исходные данные\n';
             csv += 'Запасы поставщиков: ' + supplies.join(', ') + '\n';
@@ -670,7 +687,10 @@
             URL.revokeObjectURL(link.href);
             % end
         }
-        document.addEventListener('DOMContentLoaded', function() { updateMatrix(); });
+        
+        document.addEventListener('DOMContentLoaded', function() { 
+            updateMatrix(); 
+        });
     </script>
 </body>
 </html>
