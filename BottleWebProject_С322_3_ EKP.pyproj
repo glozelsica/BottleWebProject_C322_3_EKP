@@ -50,7 +50,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tests\test_assignment.py" />
-    <Compile Include="tests\test_direct.py">
+    <Compile Include="tests\test_simplex.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
