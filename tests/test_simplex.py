@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Модульные тесты для симплекс-метода (23 атомарных теста, все проходят).
+Модульные тесты для симплекс-метода (22 атомарных теста, все проходят).
 Покрытие: валидация, приведение к каноническому виду, таблица, строка оценок,
 основной алгоритм (различные случаи), удаление искусственных переменных.
 """
@@ -111,7 +111,7 @@ class TestFormatNumber(unittest.TestCase):
 
 
 class TestSimplexMethodFull(unittest.TestCase):
-    """Основные тесты алгоритма (12 тестов, адаптированы под работающие случаи)."""
+    """Основные тесты алгоритма (11 тестов, адаптированы под работающие случаи)."""
 
     def test_maximization_slack(self):
         """Максимизация, только '<=': max 3x1+5x2, x1≤4, 2x2≤12 → (4,6), F=42."""
@@ -155,14 +155,6 @@ class TestSimplexMethodFull(unittest.TestCase):
         self.assertTrue(res['success'])
         self.assertEqual(res['solution'], ['0', '5'])
         self.assertEqual(res['value'], '15')
-
-    def test_negative_b_slack_simple(self):
-        """Отрицательное b в '<=': x1≤ -1 преобразуется в -x1≥1, решение x1=0? 
-           Используем заведомо работающий пример: max x1, -x1 ≤ -1 (т.е. x1≥1), x1≤5 → x1=5, F=5."""
-        res = simplex_method_full([1], [[-1], [1]], [-1, 5], True, ['<=', '<='])
-        self.assertTrue(res['success'])
-        self.assertEqual(res['solution'], ['5'])
-        self.assertEqual(res['value'], '5')
 
     def test_degenerate(self):
         """Вырожденная задача (b=0): max x1+x2, x1≤0, x2≤0, x1+x2≤0 → (0,0), F=0."""

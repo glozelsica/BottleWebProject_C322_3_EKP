@@ -20,9 +20,11 @@
     <RootNamespace>BottleWebProject_С322_3_ EKP</RootNamespace>
     <InterpreterId>MSBuild|kl|$(MSBuildProjectFullPath)</InterpreterId>
     <InterpreterId>MSBuild|env1|$(MSBuildProjectFullPath)</InterpreterId>
-    <TestFramework>Pytest</TestFramework>
+    <TestFramework>unittest</TestFramework>
     <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
     <WebBrowserPort>8080</WebBrowserPort>
+    <UnitTestPattern>test*.py</UnitTestPattern>
+    <UnitTestRootDirectory>.</UnitTestRootDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
