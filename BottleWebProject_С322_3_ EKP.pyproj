@@ -53,6 +53,9 @@
     <Compile Include="tests\test_simplex.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="tests\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="controllers\" />
@@ -70,6 +73,9 @@
   <ItemGroup>
     <Content Include="requirements.txt" />
     <Content Include="static\content\site.css" />
+    <Content Include="static\css\assignment.css">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="static\css\authors.css">
       <SubType>Code</SubType>
     </Content>

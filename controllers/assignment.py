@@ -1,7 +1,3 @@
-"""
-Контроллер для решения задачи о назначениях (Венгерский алгоритм).
-Совместим с архитектурой BottleWebProject_C322_3_EKP.
-"""
 from bottle import template, request
 from datetime import datetime
 import itertools
@@ -11,7 +7,6 @@ import copy
 
 
 def solve_assignment():
-    """Обработчик GET/POST запросов для страницы /assignment."""
     result = None
     error = None
     matrix_value = ''
