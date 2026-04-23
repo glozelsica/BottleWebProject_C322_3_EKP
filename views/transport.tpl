@@ -13,7 +13,7 @@
         <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('/static/images/texture3.png'); background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.4; pointer-events: none;"></div>
         <div style="position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; flex-wrap: wrap;">
             <div class="logo" style="display: flex; align-items: center; gap: 0.5rem;">
-                <img src="/static/images/logo.png" alt="Логотип" style="height: 35px; width: 35px; object-fit: contain;" onerror="this.style.display='none'"> 
+                <img src="/static/images/logo.png" alt="Логотип приложения Математическое моделирование" style="height: 35px; width: 35px; object-fit: contain;" onerror="this.style.display='none'"> 
                 <span style="color: white;">Математическое моделирование</span>
             </div>
             <nav style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
@@ -34,7 +34,7 @@
             
             <form method="post" action="/transport" id="transportForm" onsubmit="return validateForm()">
                 <div class="form-section">
-                    <h3>Ввод исходных данных</h3>
+                    <h2>Ввод исходных данных</h2>
                     
                     <div class="dimension-controls">
                         <div class="form-group">
@@ -49,6 +49,10 @@
                     </div>
                     
                     <div id="matrixContainer"></div>
+                    
+                    <!-- Скрытые поля вынесены ЗА пределы таблицы (исправление ошибки валидации) -->
+                    <input type="hidden" name="suppliers_hidden" id="suppliers_hidden" value="">
+                    <input type="hidden" name="consumers_hidden" id="consumers_hidden" value="">
                     
                     <div class="button-group">
                         <button type="submit" class="btn btn-primary">Решить задачу</button>
@@ -114,7 +118,7 @@
                     </tr>
                     % end
                     </tbody>
-                <tr>
+                </table>
                 <p>{{result['northwest_degenerate']['message']}}</p>
                 <div class="formula-detail"><strong>F = {{result['northwest_cost']}} ден. ед.</strong></div>
             </div>
@@ -217,14 +221,14 @@
                     <p>Пусть в пунктах А₁, А₂, ..., Аₘ производится некоторый продукт, причем объем производства в п. Аᵢ составляет aᵢ единиц. Произведенный продукт должен быть доставлен в пункты потребления В₁, В₂, ..., Вₙ, причем объем потребления в п. Вⱼ составляет bⱼ единиц. Транспортные издержки на перевозку единицы продукции из п. Аᵢ в п. Вⱼ составляют Cᵢⱼ денежных единиц. Задача состоит в организации такого плана перевозок, при котором суммарные транспортные издержки были бы минимальными.</p>
                     <p><strong>ОПРЕДЕЛЕНИЕ 1.</strong> Если общая потребность в продукте в пунктах потребления равна общему запасу продукта в пунктах производства, то модель транспортной задачи называется закрытой. Если это условие не выполняется, то модель называется открытой.</p>
                      <div style="text-align: center;">
-                    <img src="/static/images/formula_balance.png" class="formula-img" onerror="this.style.display='none'">
+                    <img src="/static/images/formula_balance.png" class="formula-img" alt="Формула баланса: сумма запасов равна сумме потребностей" onerror="this.style.display='none'">
                     </div>
                     <p><strong>ТЕОРЕМА</strong> Для разрешимости транспортной задачи необходимо и достаточно, чтобы запасы продукта в пунктах производства были равны потребностям в пунктах потребления, т.е. чтобы выполнялось равенство.</p>
                     <p><strong>ЗАМЕЧАНИЯ</strong> 1. Если запас превышает потребность вводится фиктивный (n+1)-й пункт потребления с потребностью, а соответствующие транспортные издержки равны нулю.</p>
                     <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">
-                    <img src="/static/images/requirement.png" class="theory-img" style="max-width: 200px;" onerror="this.style.display='none'">
-                    <img src="/static/images/fixed_point.png" class="theory-img" style="max-width: 200px;" onerror="this.style.display='none'">
-                    <img src="/static/images/zero_costs.png" class="theory-img" style="max-width: 200px;" onerror="this.style.display='none'">
+                    <img src="/static/images/requirement.png" class="theory-img" style="max-width: 200px;" alt="Иллюстрация условия баланса" onerror="this.style.display='none'">
+                    <img src="/static/images/fixed_point.png" class="theory-img" style="max-width: 200px;" alt="Иллюстрация фиктивного пункта" onerror="this.style.display='none'">
+                    <img src="/static/images/zero_costs.png" class="theory-img" style="max-width: 200px;" alt="Нулевые тарифы для фиктивных участников" onerror="this.style.display='none'">
                     </div>
                     <p><strong>ОПРЕДЕЛЕНИЕ 2.</strong> Всякое неотрицательное решение системы линейных уравнений называется планом транспортной задачи.</p>
                     <p><strong>ОПРЕДЕЛЕНИЕ 3.</strong></p>
@@ -237,8 +241,8 @@
                     <p><strong>Число базисных клеток:</strong> N = m + n - 1</p>
                 </div>
                 <div style="text-align: center;">
-                    <img src="/static/images/formula_supply.png" class="formula-img" onerror="this.style.display='none'">
-                    <img src="/static/images/formula_demand.png" class="formula-img" onerror="this.style.display='none'">
+                    <img src="/static/images/formula_supply.png" class="formula-img" alt="Формула ограничений по запасам" onerror="this.style.display='none'">
+                    <img src="/static/images/formula_demand.png" class="formula-img" alt="Формула ограничений по потребностям" onerror="this.style.display='none'">
                 </div>
             </div>
             
@@ -250,8 +254,8 @@
                     <p><strong>Метод минимального элемента</strong></p>
                     <p>Заполнение клеток осуществляется по принципу: "Самая дешевая перевозка осуществляется первой". Выбирается клетка с минимальным тарифом и заполняется максимально возможным числом, при этом исчерпываются либо запасы, либо потребности (вычеркивается строка или столбец), выбирается следующая клетка с минимальным тарифом и т.д.</p>
                 </div>
-                <img src="/static/images/northwest_method.png" class="theory-img" onerror="this.style.display='none'">
-                <img src="/static/images/mincost_method.png" class="theory-img" onerror="this.style.display='none'">
+                <img src="/static/images/northwest_method.png" class="theory-img" alt="Иллюстрация метода северо-западного угла" onerror="this.style.display='none'">
+                <img src="/static/images/mincost_method.png" class="theory-img" alt="Иллюстрация метода минимального элемента" onerror="this.style.display='none'">
             </div>
             
             <div class="theory-block">
@@ -264,9 +268,9 @@
                     <p><strong>Цикл пересчёта</strong> — ломаная линия по базисным клеткам с чередованием знаков «+» и «-».</p>
                 </div>
                 <div style="text-align: center;">
-                    <img src="/static/images/formula_basic_condition.png" class="formula-img" onerror="this.style.display='none'">
-                    <img src="/static/images/formula_delta.png" class="formula-img" onerror="this.style.display='none'">
-                    <img src="/static/images/formula_theta.png" class="formula-img" onerror="this.style.display='none'">
+                    <img src="/static/images/formula_basic_condition.png" class="formula-img" alt="Условие для базисных клеток: u_i + v_j = c_ij" onerror="this.style.display='none'">
+                    <img src="/static/images/formula_delta.png" class="formula-img" alt="Оценка свободной клетки: Δ_ij = u_i + v_j - c_ij" onerror="this.style.display='none'">
+                    <img src="/static/images/formula_theta.png" class="formula-img" alt="Величина перераспределения: θ = min x_ij" onerror="this.style.display='none'">
                 </div>
             </div>
 
@@ -277,19 +281,19 @@
                     <p>2. Построенный опорный план следует проверить на оптимальность, для чего используют следующую теорему.</p>
                     <p><strong>ТЕОРЕМА</strong></p>
                     <div>
-                        <img src="/static/images/theorem.png" class="theory-img" onerror="this.style.display='none'">
+                        <img src="/static/images/theorem.png" class="theory-img" alt="Теорема о потенциалах" onerror="this.style.display='none'">
                     </div>
                     <p><strong>ОПРЕДЕЛЕНИЕ 4</strong> Числа называются потенциалами, поставщиков и потребителей</p>
                     <div>
-                        <img src="/static/images/potential.png" class="theory-img" onerror="this.style.display='none'">
+                        <img src="/static/images/potential.png" class="theory-img" alt="Формула потенциалов" onerror="this.style.display='none'">
                     </div>
                     <p>Найдя потенциалы поставщиков и потребителей, удовлетворяющие условиям теоремы, мы докажем оптимальность построенного плана. 
 Число заполненных клеток, xij > 0, равно n+m-1 (невырожденный план), то система с n+m неизвестными содержит n+m-1 уравнение. Положим одно из неизвестных равным нулю и последовательно найдем значения остальных неизвестных. Затем для всех свободных клеток, xij = 0, определим числа.</p>
                     <p><strong>ЗАМЕЧАНИЯ</strong> 1. Если запас превышает потребность вводится фиктивный (n+1)-й пункт потребления с потребностью, а соответствующие транспортные издержки равны нулю.</p>
                     <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">
-                    <img src="/static/images/requirement.png" class="theory-img" style="max-width: 200px;" onerror="this.style.display='none'">
-                    <img src="/static/images/fixed_point.png" class="theory-img" style="max-width: 200px;" onerror="this.style.display='none'">
-                    <img src="/static/images/zero_costs.png" class="theory-img" style="max-width: 200px;" onerror="this.style.display='none'">
+                    <img src="/static/images/requirement.png" class="theory-img" style="max-width: 200px;" alt="Условие баланса" onerror="this.style.display='none'">
+                    <img src="/static/images/fixed_point.png" class="theory-img" style="max-width: 200px;" alt="Фиктивный пункт" onerror="this.style.display='none'">
+                    <img src="/static/images/zero_costs.png" class="theory-img" style="max-width: 200px;" alt="Нулевые тарифы" onerror="this.style.display='none'">
                     </div>
                     <p><strong>ОПРЕДЕЛЕНИЕ 5.</strong> Циклом пересчета называется ломаная линия, вершины которой расположены в занятых клетках, а звенья - вдоль строк и столбцов, причем в каждой вершине цикла может быть только два звена.</p>
                 </div>
@@ -314,7 +318,7 @@
                     <p>Запасы: 80, 60, 30, 60. Потребности: 10, 30, 40, 50, 70, 30.</p>
                     <p>Сумма запасов = 230, сумма потребностей = 230 — задача сбалансирована.</p>
                     <div>
-                    <img src="/static/images/cycle_example.png" class="theory-img" onerror="this.style.display='none'">
+                    <img src="/static/images/cycle_example.png" class="theory-img" alt="Пример цикла перераспределения" onerror="this.style.display='none'">
                     </div>
                     <p>Предварительный этап решения транспортной задачи сводится к определению ее типа, открытой она является или закрытой. Проверим необходимое и достаточное условие разрешимости задачи.</p>
                     <p><strong>∑a = 80 + 60 + 30 + 60 = 230</strong></p>
@@ -325,23 +329,23 @@
 </p>
                     <p><strong>Итерация 1.</strong> Минимальный элемент матрицы равен нулю. Для этого элемента запасы равны 60, потребности 30. Выбираем из них минимальное число 30 и вычитаем его. При этом из таблицы вычеркиваем шестой столбец (потребности у него равны 0).</p>
                     <div>
-                    <img src="/static/images/example_iteration_1.png" class="theory-img" onerror="this.style.display='none'">
+                    <img src="/static/images/example_iteration_1.png" class="theory-img" alt="Пример итерации 1 метода минимального элемента" onerror="this.style.display='none'">
                     </div>
                     <p><strong>Итерация 2.</strong> Снова ищем минимум (0). Из пары (60;50) выбираем минимальное число 50. Вычеркиваем пятый столбец.</p>
                     <div>
-                    <img src="/static/images/example_iteration2.png" class="theory-img" onerror="this.style.display='none'">
+                    <img src="/static/images/example_iteration2.png" class="theory-img" alt="Пример итерации 2 метода минимального элемента" onerror="this.style.display='none'">
                     </div>
                     <p><strong>Итерация 3.</strong> Процесс продолжаем до тех пор, пока не выберем все потребности и запасы.</p>
                     <p><strong>Итерация 4.</strong> Искомый элемент равен 8. Для этого элемента запасы равны потребностям (40).</p>
                     <div>
-                    <img src="/static/images/example_iteration3.png" class="theory-img" onerror="this.style.display='none'">
+                    <img src="/static/images/example_iteration3.png" class="theory-img" alt="Пример итерации 3 метода минимального элемента" onerror="this.style.display='none'">
                     </div>
                     <div>
-                    <img src="/static/images/example_iteration4.png" class="theory-img" onerror="this.style.display='none'">
+                    <img src="/static/images/example_iteration4.png" class="theory-img" alt="Пример итерации 4 метода минимального элемента" onerror="this.style.display='none'">
                     </div>
                     <p>Подсчитаем число занятых клеток таблицы, их 8, а должно быть m + n - 1 = 9. Следовательно, опорный план является вырожденным. Строим новый план. Иногда приходится строить несколько опорных планов, прежде чем найти не вырожденный.</p>
                     <div>
-                    <img src="/static/images/example_iteration_5.png" class="theory-img" onerror="this.style.display='none'">
+                    <img src="/static/images/example_iteration_5.png" class="theory-img" alt="Пример итерации 5 - невырожденный план" onerror="this.style.display='none'">
                     </div>
                     <p>В результате получен первый опорный план, который является опустимым, так как число занятых клеток таблицы равно 9 и соответствует формуле m + n - 1 = 6 + 4 - 1 = 9, т.е. опорный план является невырожденным. 
 Третий этап заключается в улучшении найденного опорного плана. Здесь используют метод потенциалов или распределительный метод. На этом этапе правильность решения можно контролировать через функцию стоимости F(x). Если она уменьшается (при условии минимизации затрат), то ход решения верный.
@@ -455,6 +459,10 @@
         
         // Функция валидации формы (запрет отрицательных чисел)
         function validateForm() {
+            // Обновляем скрытые поля перед отправкой
+            document.getElementById('suppliers_hidden').value = document.getElementById('suppliers').value;
+            document.getElementById('consumers_hidden').value = document.getElementById('consumers').value;
+            
             var inputs = document.querySelectorAll('#matrixContainer input[type="number"]');
             for (var i = 0; i < inputs.length; i++) {
                 var val = parseFloat(inputs[i].value);
@@ -472,7 +480,11 @@
             var consumers = parseInt(document.getElementById('consumers').value);
             var container = document.getElementById('matrixContainer');
             
-            var html = '<div class="matrix-input"><h4>Матрица тарифов</h4>';
+            // Обновляем скрытые поля
+            document.getElementById('suppliers_hidden').value = suppliers;
+            document.getElementById('consumers_hidden').value = consumers;
+            
+            var html = '<div class="matrix-input"><h3>Матрица тарифов</h3>';
             html += '<table class="result-table">';
             html += '<thead><tr><th></th>';
             for (var j = 1; j <= consumers; j++) {
@@ -496,7 +508,7 @@
                 }
                 var supplyVal = (savedFormData.supply.length > i-1 && savedFormData.supply[i-1] != 0) ? savedFormData.supply[i-1] : (localStorage.getItem('supply_' + (i-1)) || '0');
                 html += '<td><input type="number" name="supply_' + (i-1) + '" step="any" min="0" value="' + supplyVal + '" style="width:80px;"></td>';
-                html += '</tr>';
+                html += '</td>';
             }
             
             html += '<tr>';
@@ -505,10 +517,8 @@
                 var demandVal = (savedFormData.demand.length > j-1 && savedFormData.demand[j-1] != 0) ? savedFormData.demand[j-1] : (localStorage.getItem('demand_' + (j-1)) || '0');
                 html += '<td><input type="number" name="demand_' + (j-1) + '" step="any" min="0" value="' + demandVal + '" style="width:80px;"></td>';
             }
-            html += '<td>\n                </td>';
-            html += '</tbody></tr></div>';
-            html += '<input type="hidden" name="suppliers" value="' + suppliers + '">';
-            html += '<input type="hidden" name="consumers" value="' + consumers + '">';
+            html += '<td>\n                </tr>';
+            html += '</tbody></table></div>';
             
             container.innerHTML = html;
             
@@ -647,13 +657,13 @@
                 for (var j = 0; j < costs[i].length; j++) {
                     html += '<td>' + costs[i][j] + '</td>';
                 }
-                html += '<td>' + supplies[i] + 'NS存款';
+                html += '<td>' + supplies[i] + '</td></tr>';
             }
             html += '<tr><th>Потребности</th>';
             for (var j = 0; j < demands.length; j++) {
                 html += '<td>' + demands[j] + '</td>';
             }
-            html += '<td>\n                <tr>';
+            html += '<td>\n                </tr>';
             html += '</table>';
     
             html += '<h2>Результаты методов</h2>';
@@ -674,7 +684,7 @@
                 for (var j = 0; j < bestPlan[i].length; j++) {
                     html += '<td>' + (bestPlan[i][j] > 0 ? bestPlan[i][j] : '-') + '</td>';
                 }
-                html += '<td>' + supplies[i] + 'NS存款';
+                html += '<td>' + supplies[i] + '</td></tr>';
             }
             html += '</table>';
             html += '</body></html>';

@@ -19,7 +19,7 @@
     <Name>BottleWebProject_С322_3_ EKP</Name>
     <RootNamespace>BottleWebProject_С322_3_ EKP</RootNamespace>
     <InterpreterId>MSBuild|kl|$(MSBuildProjectFullPath)</InterpreterId>
-    <InterpreterId>MSBuild|env1|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>MSBuild|ZLATA_env|$(MSBuildProjectFullPath)</InterpreterId>
     <TestFramework>unittest</TestFramework>
     <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
     <WebBrowserPort>8080</WebBrowserPort>
@@ -52,9 +52,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tests\test_assignment.py" />
+    <Compile Include="tests\test_selenium_transport.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tests\test_simplex.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="tests\test_transport.py" />
     <Compile Include="tests\__init__.py">
       <SubType>Code</SubType>
     </Compile>
@@ -62,7 +66,6 @@
   <ItemGroup>
     <Folder Include="controllers\" />
     <Folder Include="static\" />
-    <Folder Include="static\content\" />
     <Folder Include="static\fonts\" />
     <Folder Include="static\css\" />
     <Folder Include="static\data\" />
@@ -74,7 +77,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
-    <Content Include="static\content\site.css" />
     <Content Include="static\css\assignment.css">
       <SubType>Code</SubType>
     </Content>
@@ -104,7 +106,6 @@
     <Content Include="static\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="static\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="static\images\avatar_egarmina.png" />
-    <Content Include="static\images\example_iteration_5.png" />
     <Content Include="static\images\silver_texture4.png" />
     <Content Include="static\images\silver_texture2.png" />
     <Content Include="static\images\silver_texture.png" />
@@ -196,6 +197,15 @@
       <Id>kl</Id>
       <Version>3.9</Version>
       <Description>kl (Python 3.9 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+    <Interpreter Include="ZLATA_env\">
+      <Id>ZLATA_env</Id>
+      <Version>3.13</Version>
+      <Description>ZLATA_env (Python 3.13 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
